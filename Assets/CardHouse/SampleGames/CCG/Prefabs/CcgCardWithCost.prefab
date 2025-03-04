@@ -33,10 +33,6 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 477027971768463103, guid: d4aa526a332a63b4aba658161c612f14, type: 3}
-      propertyPath: OnPlay.m_PersistentCalls.m_Calls.Array.data[1].m_Target
-      value: 
-      objectReference: {fileID: 8469058276514919841}
-    - target: {fileID: 477027971768463103, guid: d4aa526a332a63b4aba658161c612f14, type: 3}
       propertyPath: OnPlayTest.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 1
       objectReference: {fileID: 0}
@@ -51,7 +47,7 @@ PrefabInstance:
     - target: {fileID: 477027971768463103, guid: d4aa526a332a63b4aba658161c612f14, type: 3}
       propertyPath: OnPlayTest.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1696114598198819657}
+      objectReference: {fileID: 0}
     - target: {fileID: 477027971768463103, guid: d4aa526a332a63b4aba658161c612f14, type: 3}
       propertyPath: OnPlayResponses.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 1
@@ -64,10 +60,6 @@ PrefabInstance:
       propertyPath: OnPlayTest.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: OnPlay
       objectReference: {fileID: 0}
-    - target: {fileID: 477027971768463103, guid: d4aa526a332a63b4aba658161c612f14, type: 3}
-      propertyPath: OnPlayResponses.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 8469058276514919841}
     - target: {fileID: 477027971768463103, guid: d4aa526a332a63b4aba658161c612f14, type: 3}
       propertyPath: OnPlayResponses.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
@@ -212,6 +204,10 @@ PrefabInstance:
       propertyPath: GroupTransitionEvents.Array.data[0].EntryEvent.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 1378863673549506160, guid: d4aa526a332a63b4aba658161c612f14, type: 3}
+      propertyPath: m_text
+      value: Spider
+      objectReference: {fileID: 0}
     - target: {fileID: 1378863674091576224, guid: d4aa526a332a63b4aba658161c612f14, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -260,6 +256,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: CcgCardWithCost
       objectReference: {fileID: 0}
+    - target: {fileID: 1378863674317606125, guid: d4aa526a332a63b4aba658161c612f14, type: 3}
+      propertyPath: m_text
+      value: Can block creatures with <b>Flying</b>
+      objectReference: {fileID: 0}
+    - target: {fileID: 1378863674611326518, guid: d4aa526a332a63b4aba658161c612f14, type: 3}
+      propertyPath: m_Size.x
+      value: 1.76
+      objectReference: {fileID: 0}
+    - target: {fileID: 1378863674611326518, guid: d4aa526a332a63b4aba658161c612f14, type: 3}
+      propertyPath: m_Size.y
+      value: 1.56
+      objectReference: {fileID: 0}
+    - target: {fileID: 1378863674611326518, guid: d4aa526a332a63b4aba658161c612f14, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: efca71ce24daac74981e2ecb48e9e413, type: 3}
     - target: {fileID: 4304800268894246246, guid: d4aa526a332a63b4aba658161c612f14, type: 3}
       propertyPath: IsActive
       value: 1
@@ -271,7 +283,7 @@ PrefabInstance:
     - target: {fileID: 6617618776902060248, guid: d4aa526a332a63b4aba658161c612f14, type: 3}
       propertyPath: DragGates.Gates.Array.data[1]
       value: 
-      objectReference: {fileID: 3105139003747331473}
+      objectReference: {fileID: 2226837711583719566}
     - target: {fileID: 7167054873169898450, guid: d4aa526a332a63b4aba658161c612f14, type: 3}
       propertyPath: IsActive
       value: 1
@@ -279,103 +291,17 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 1378863674091576227, guid: d4aa526a332a63b4aba658161c612f14, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 3105139003747331473}
-    - targetCorrespondingSourceObject: {fileID: 1378863674091576227, guid: d4aa526a332a63b4aba658161c612f14, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7921336788058812627}
-    - targetCorrespondingSourceObject: {fileID: 1378863674091576227, guid: d4aa526a332a63b4aba658161c612f14, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 8469058276514919841}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d4aa526a332a63b4aba658161c612f14, type: 3}
---- !u!1 &159249280873958933 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1378863674091576227, guid: d4aa526a332a63b4aba658161c612f14, type: 3}
-  m_PrefabInstance: {fileID: 1231577629485798838}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &3105139003747331473
+--- !u!114 &2226837711583719566 stripped
 MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 159249280873958933}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a62983fb42843ad42af58b203cedad95, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  IsActive: 1
---- !u!114 &7921336788058812627
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 159249280873958933}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c6c6fe72e86513845a04733a3eb317d1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  OnCurrencyChange:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3074489998576386256}
-        m_TargetAssemblyTypeName: DragGateDimmer, Assembly-CSharp
-        m_MethodName: UpdateHandler
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &8469058276514919841
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 159249280873958933}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a5790d0c82467a1449358e9b88edeee3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Cost:
-  - Cost:
-      CurrencyType: {fileID: 11400000, guid: 212771e626ce09b4fb35a62643ee67d0, type: 2}
-      Amount: 3
-    Label: {fileID: 793977335635379613}
-  - Cost:
-      CurrencyType: {fileID: 11400000, guid: ccb9a2a71ed2c9748aa9af75280a6abf, type: 2}
-      Amount: 1
-    Label: {fileID: 0}
---- !u!114 &793977335635379613 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1879047205039607851, guid: d4aa526a332a63b4aba658161c612f14, type: 3}
+  m_CorrespondingSourceObject: {fileID: 1148453422709974328, guid: d4aa526a332a63b4aba658161c612f14, type: 3}
   m_PrefabInstance: {fileID: 1231577629485798838}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9541d86e2fd84c1d9990edf0852d74ab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1696114598198819657 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 477027971768463103, guid: d4aa526a332a63b4aba658161c612f14, type: 3}
-  m_PrefabInstance: {fileID: 1231577629485798838}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 159249280873958933}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 629ff1b3646a21a47a5bdec8da361d75, type: 3}
+  m_Script: {fileID: 11500000, guid: a62983fb42843ad42af58b203cedad95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &3074489998576386256 stripped
@@ -383,7 +309,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4304800268894246246, guid: d4aa526a332a63b4aba658161c612f14, type: 3}
   m_PrefabInstance: {fileID: 1231577629485798838}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 159249280873958933}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 97247fe53d8fc4a4c8685da719d8da7a, type: 3}

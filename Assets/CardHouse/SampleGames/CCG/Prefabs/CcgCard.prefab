@@ -23,6 +23,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1378863673084323969}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0.00999999}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -30,7 +31,6 @@ Transform:
   m_Children:
   - {fileID: 1378863675127916499}
   m_Father: {fileID: 3683466170647170087}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1378863673402961181
 GameObject:
@@ -55,6 +55,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1378863673402961181}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -69,7 +70,6 @@ Transform:
   - {fileID: 4540521169564071544}
   - {fileID: 4540521169225884007}
   m_Father: {fileID: 3683466170647170087}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1378863673549506162
 GameObject:
@@ -102,7 +102,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1378863673402961178}
-  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -171,7 +170,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Skull Bat
+  m_text: Spider
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -268,13 +267,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1378863673902737212}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0.01}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1378863673402961178}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1378863673902737210
 SpriteRenderer:
@@ -356,7 +355,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1378863674091576224}
   - component: {fileID: 1689174951601951915}
-  - component: {fileID: 477027971768463103}
+  - component: {fileID: 8329929860262184823}
   - component: {fileID: 6617618776902060248}
   - component: {fileID: 1170635495998516905}
   - component: {fileID: 8942351371885531209}
@@ -369,6 +368,10 @@ GameObject:
   - component: {fileID: 7167054873169898450}
   - component: {fileID: 4318936903697098333}
   - component: {fileID: 3938110044830137136}
+  - component: {fileID: 1148453422709974328}
+  - component: {fileID: 2326598314429523158}
+  - component: {fileID: 7654714390534779323}
+  - component: {fileID: 2321431357507355708}
   m_Layer: 0
   m_Name: CcgCard
   m_TagString: Untagged
@@ -383,6 +386,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1378863674091576227}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 2.0103247, y: -0.42494008, z: -0.32651114}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -390,7 +394,6 @@ Transform:
   m_Children:
   - {fileID: 3683466170647170087}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &1689174951601951915
 BoxCollider2D:
@@ -437,7 +440,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.87606466, y: 1.2662313}
   m_EdgeRadius: 0
---- !u!114 &477027971768463103
+--- !u!114 &8329929860262184823
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -446,7 +449,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1378863674091576227}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 629ff1b3646a21a47a5bdec8da361d75, type: 3}
+  m_Script: {fileID: 11500000, guid: 335176a4d3b4948e2a256a0d90dc7298, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Group: {fileID: 0}
@@ -463,6 +466,18 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 3608550373247366735}
+          m_TargetAssemblyTypeName: Toggleable, Assembly-CSharp
+          m_MethodName: SetIsActive
+          m_Mode: 6
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 1
+          m_CallState: 2
+        - m_Target: {fileID: 0}
           m_TargetAssemblyTypeName: Toggleable, Assembly-CSharp
           m_MethodName: SetIsActive
           m_Mode: 6
@@ -501,9 +516,21 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-        - m_Target: {fileID: 477027971768463103}
+        - m_Target: {fileID: 0}
           m_TargetAssemblyTypeName: Blard, Assembly-CSharp
           m_MethodName: SetFocus
+          m_Mode: 6
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 0}
+          m_TargetAssemblyTypeName: Toggleable, Assembly-CSharp
+          m_MethodName: SetIsActive
           m_Mode: 6
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -588,7 +615,31 @@ MonoBehaviour:
       m_Calls: []
   OnPlay:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1378863674091576227}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 0
+      - m_Target: {fileID: 7654714390534779323}
+        m_TargetAssemblyTypeName: CardHouse.CurrencyCost, Assembly-CSharp
+        m_MethodName: Activate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &6617618776902060248
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -605,11 +656,12 @@ MonoBehaviour:
   DragGates:
     Gates:
     - {fileID: 4770390252292026886}
+    - {fileID: 1148453422709974328}
   OnDragStart:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 477027971768463103}
-        m_TargetAssemblyTypeName: Blard, Assembly-CSharp
+      - m_Target: {fileID: 8329929860262184823}
+        m_TargetAssemblyTypeName: CardHouse.Card, Assembly-CSharp
         m_MethodName: SetFocus
         m_Mode: 6
         m_Arguments:
@@ -743,8 +795,8 @@ MonoBehaviour:
   OnHover:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 477027971768463103}
-        m_TargetAssemblyTypeName: Blard, Assembly-CSharp
+      - m_Target: {fileID: 8329929860262184823}
+        m_TargetAssemblyTypeName: CardHouse.Card, Assembly-CSharp
         m_MethodName: SetFocus
         m_Mode: 6
         m_Arguments:
@@ -758,8 +810,8 @@ MonoBehaviour:
   OnUnHover:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 477027971768463103}
-        m_TargetAssemblyTypeName: Blard, Assembly-CSharp
+      - m_Target: {fileID: 8329929860262184823}
+        m_TargetAssemblyTypeName: CardHouse.Card, Assembly-CSharp
         m_MethodName: SetFocus
         m_Mode: 6
         m_Arguments:
@@ -789,8 +841,8 @@ MonoBehaviour:
   OnButtonClicked:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 477027971768463103}
-        m_TargetAssemblyTypeName: Blard, Assembly-CSharp
+      - m_Target: {fileID: 8329929860262184823}
+        m_TargetAssemblyTypeName: CardHouse.Card, Assembly-CSharp
         m_MethodName: ToggleFocus
         m_Mode: 1
         m_Arguments:
@@ -851,7 +903,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c79447bd02085354da554fbc67da38d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsActive: 0
+  IsActive: 1
   Handler: {fileID: 6164254349654927448}
   ActiveMessage: Active
   InactiveMessage: Dim
@@ -909,6 +961,81 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &1148453422709974328
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1378863674091576227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a62983fb42843ad42af58b203cedad95, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IsActive: 1
+--- !u!114 &2326598314429523158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1378863674091576227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6c6fe72e86513845a04733a3eb317d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnCurrencyChange:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4304800268894246246}
+        m_TargetAssemblyTypeName: DragGateDimmer, Assembly-CSharp
+        m_MethodName: UpdateHandler
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &7654714390534779323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1378863674091576227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32c925f82414f4dcaac34be8f542a717, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Cost:
+  - Cost:
+      CurrencyType: {fileID: 11400000, guid: 212771e626ce09b4fb35a62643ee67d0, type: 2}
+      Amount: 3
+    Label: {fileID: 1879047205039607851}
+  - Cost:
+      CurrencyType: {fileID: 11400000, guid: ccb9a2a71ed2c9748aa9af75280a6abf, type: 2}
+      Amount: 1
+    Label: {fileID: 0}
+--- !u!114 &2321431357507355708
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1378863674091576227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13623353120e045b1a6bf9a1d34365c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  card: {fileID: 8329929860262184823}
+  Image: {fileID: 1378863674611326518}
 --- !u!1 &1378863674317606127
 GameObject:
   m_ObjectHideFlags: 0
@@ -940,7 +1067,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1378863673402961178}
-  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1009,9 +1135,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '<b>Flying</b>
+  m_text: '<b>Skitter</b>
 
-    Whenever <b>Skull Bat</b> attacks, draw a card.'
+    Can block creatures with <i>Flying</i>'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1108,13 +1234,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1378863674611326536}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0.007, y: 0.313, z: 0.03}
   m_LocalScale: {x: 0.31855866, y: 0.31855866, z: 0.31855866}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1378863673402961178}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1378863674611326518
 SpriteRenderer:
@@ -1157,12 +1283,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: de7f3f86c06cf854b8f7353bacbeb675, type: 3}
+  m_Sprite: {fileID: 21300000, guid: efca71ce24daac74981e2ecb48e9e413, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 2.9, y: 2.22}
+  m_Size: {x: 1.76, y: 1.56}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -1210,13 +1336,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1378863675127916498}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1378863673084323982}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!212 &1378863675127916496
 SpriteRenderer:
@@ -1295,13 +1421,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1658626965900755420}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0.04}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1378863673402961178}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &6073543908218639285
 SpriteRenderer:
@@ -1401,6 +1527,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8673583277012916404}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -1409,7 +1536,6 @@ Transform:
   - {fileID: 1378863673402961178}
   - {fileID: 1378863673084323982}
   m_Father: {fileID: 1378863674091576224}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &6166900394498349862
 Animator:
@@ -1515,7 +1641,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2054888909894088852, guid: 87f1a8534e86b1647b89173caa696976, type: 3}
       propertyPath: m_text
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2054888909894088852, guid: 87f1a8534e86b1647b89173caa696976, type: 3}
       propertyPath: m_fontColor.b
@@ -1627,6 +1753,17 @@ MonoBehaviour:
     Color: {r: 0.77748257, g: 0.22000003, b: 1, a: 1}
   - Name: Dim
     Color: {r: 0.51790583, g: 0.14647841, b: 0.667, a: 1}
+--- !u!114 &1879047205039607851 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2054888909894088852, guid: 87f1a8534e86b1647b89173caa696976, type: 3}
+  m_PrefabInstance: {fileID: 475087883476396223}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9541d86e2fd84c1d9990edf0852d74ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &3077725663646972181 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3179997389208687018, guid: 87f1a8534e86b1647b89173caa696976, type: 3}
@@ -1843,7 +1980,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2054888909894088852, guid: 87f1a8534e86b1647b89173caa696976, type: 3}
       propertyPath: m_text
-      value: 1
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 2054888909894088852, guid: 87f1a8534e86b1647b89173caa696976, type: 3}
       propertyPath: m_fontColor.b
