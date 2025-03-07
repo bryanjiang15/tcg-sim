@@ -10,11 +10,13 @@ namespace CardHouse
     {
         public List<Button> AllPhaseDependentButtons;
         public List<Phase> Phases;
-        public Phase CurrentPhase => (CurrentPhaseIndex >= 0 && CurrentPhaseIndex < Phases.Count) ? Phases[CurrentPhaseIndex] : null;
-        int CurrentPhaseIndex = 0;
+        public virtual Phase CurrentPhase => (CurrentPhaseIndex >= 0 && CurrentPhaseIndex < Phases.Count) ? Phases[CurrentPhaseIndex] : null;
+        public int CurrentPhaseIndex = 0;
         public int PlayerIndex
         {
-            get { return CurrentPhase.PlayerIndex; }
+            get { 
+                return CurrentPhase.PlayerIndex; 
+            }
         }
 
         public Action<Phase> OnPhaseChanged;

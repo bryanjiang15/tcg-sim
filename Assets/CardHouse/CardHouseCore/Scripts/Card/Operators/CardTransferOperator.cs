@@ -22,7 +22,6 @@ namespace CardHouse
         protected override void OnActivate()
         {
             var cardsToMove = NumberToTransfer > 0 ? Transition.Source.Get(GrabFrom, NumberToTransfer) : Transition.Source.MountedCards.ToList();
-
             TransferCards(cardsToMove);
 
             if (NumberToTransfer > cardsToMove.Count)

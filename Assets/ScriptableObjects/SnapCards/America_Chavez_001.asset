@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8c47cb6cbd684c0d8329ed925e4fde1, type: 3}
-  m_Name: SnapCardDefinition
+  m_Name: America_Chavez_001
   m_EditorClassIdentifier: 
   BackArt: {fileID: 0}
   power: 2

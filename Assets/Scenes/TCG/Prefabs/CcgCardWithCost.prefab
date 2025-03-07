@@ -92,8 +92,68 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1981443593388610979, guid: d4aa526a332a63b4aba658161c612f14, type: 3}
+      propertyPath: m_Color.g
+      value: 0.49820757
+      objectReference: {fileID: 0}
+    - target: {fileID: 4540521169564071544, guid: d4aa526a332a63b4aba658161c612f14, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.38
+      objectReference: {fileID: 0}
+    - target: {fileID: 4540521169564071544, guid: d4aa526a332a63b4aba658161c612f14, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.578
+      objectReference: {fileID: 0}
+    - target: {fileID: 6529408315081524679, guid: d4aa526a332a63b4aba658161c612f14, type: 3}
+      propertyPath: m_Name
+      value: PowerJewel
+      objectReference: {fileID: 0}
+    - target: {fileID: 8329929860262184823, guid: d4aa526a332a63b4aba658161c612f14, type: 3}
+      propertyPath: CanBeUpsideDown
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8329929860262184823, guid: d4aa526a332a63b4aba658161c612f14, type: 3}
+      propertyPath: UpsideDownChance
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8329929860262184823, guid: d4aa526a332a63b4aba658161c612f14, type: 3}
+      propertyPath: RootToRotateWhenUpsideDown
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1378863674091576227, guid: d4aa526a332a63b4aba658161c612f14, type: 3}
+      insertIndex: 18
+      addedObject: {fileID: 2537292727617357086}
   m_SourcePrefab: {fileID: 100100000, guid: d4aa526a332a63b4aba658161c612f14, type: 3}
+--- !u!1 &159249280873958933 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1378863674091576227, guid: d4aa526a332a63b4aba658161c612f14, type: 3}
+  m_PrefabInstance: {fileID: 1231577629485798838}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2537292727617357086
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 159249280873958933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2714e904847d9473ca29efa445e34e24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PowerText: {fileID: 2211736853550467824}
+--- !u!114 &2211736853550467824 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1127830267450728262, guid: d4aa526a332a63b4aba658161c612f14, type: 3}
+  m_PrefabInstance: {fileID: 1231577629485798838}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9541d86e2fd84c1d9990edf0852d74ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

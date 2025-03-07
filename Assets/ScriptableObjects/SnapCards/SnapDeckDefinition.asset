@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CardBackArt: {fileID: 0}
   CardCollection:
-  - {fileID: 11400000, guid: 3bc2fb6b67ffd4783bf26390567a584c, type: 2}
+  - {fileID: 11400000, guid: e939c24b9b9194d808f6c2826ef66208, type: 2}
   - {fileID: 11400000, guid: 3bc2fb6b67ffd4783bf26390567a584c, type: 2}
   - {fileID: 11400000, guid: 3bc2fb6b67ffd4783bf26390567a584c, type: 2}
   - {fileID: 11400000, guid: 3bc2fb6b67ffd4783bf26390567a584c, type: 2}

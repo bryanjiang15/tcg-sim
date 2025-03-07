@@ -20,6 +20,8 @@ namespace CardHouse
         CardGroupSettings Strategy;
 
         public UnityEvent OnGroupChanged;
+        public UnityEvent<Card> OnCardMounted;
+        public UnityEvent<Card> OnCardUnmounted;
 
         public static Action<CardGroup> OnNewActiveGroup;
         public static Action<Card, Card> OnCardUsedOnTarget;
@@ -360,6 +362,7 @@ namespace CardHouse
             card.Group = this;
             card.TriggerMountEvents(this);
             OnGroupChanged?.Invoke();
+            OnCardMounted?.Invoke(card);
 
             Strategy.Apply(MountedCards, instaFlip, seekerSets);
         }
@@ -397,6 +400,7 @@ namespace CardHouse
 
                 card.TriggerUnMountEvents(GroupRegistry.Instance?.GetGroupName(this) ?? GroupName.None);
                 OnGroupChanged?.Invoke();
+                OnCardUnmounted?.Invoke(card);
             }
             return card;
         }
@@ -426,7 +430,6 @@ namespace CardHouse
         public List<Card> Get(GroupTargetType targetType, int count)
         {
             var output = new List<Card>();
-
             var pool = MountedCards.ToList();
             for (int i = 0; i < count; i++)
             {
