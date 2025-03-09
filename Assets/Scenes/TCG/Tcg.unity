@@ -1476,6 +1476,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 737547674092594729, guid: a2aaac701b7f7443abdbf99d652c72e7, type: 3}
+      propertyPath: player
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 737547674092594729, guid: a2aaac701b7f7443abdbf99d652c72e7, type: 3}
       propertyPath: cardGroup
       value: 
       objectReference: {fileID: 1378954826}
@@ -3641,6 +3645,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6089223669796112708, guid: 9aa470ac017dc5c4a841406dde1da1be, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6155219491839174575}
+    - targetCorrespondingSourceObject: {fileID: 6089223669796112708, guid: 9aa470ac017dc5c4a841406dde1da1be, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6155219491839174584}
   m_SourcePrefab: {fileID: 100100000, guid: 9aa470ac017dc5c4a841406dde1da1be, type: 3}
 --- !u!1 &6155219491839174571 stripped
 GameObject:
@@ -3816,7 +3823,7 @@ MonoBehaviour:
     - {fileID: 163788787}
     ValidDrags: []
     OnPhaseStartEventChain:
-    - Duration: 0
+    - Duration: 1
       Event:
         m_PersistentCalls:
           m_Calls:
@@ -3844,95 +3851,27 @@ MonoBehaviour:
               m_StringArgument: 
               m_BoolArgument: 0
             m_CallState: 2
+    - Duration: 0
+      Event:
+        m_PersistentCalls:
+          m_Calls:
+          - m_Target: {fileID: 6155219491839174584}
+            m_TargetAssemblyTypeName: RevealEventHandler, Assembly-CSharp
+            m_MethodName: EnterRevealPhase
+            m_Mode: 1
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
     OnPhaseEndEventChain:
     - Duration: 0
       Event:
         m_PersistentCalls:
           m_Calls: []
-  - Name: P1Turn
-    PlayerIndex: 0
-    CameraPosition: {fileID: 1505187658}
-    CardPresentationPosition: {fileID: 934511657}
-    ActiveButtons: []
-    ValidClickTargets:
-    - {fileID: 8275320233858973973}
-    - {fileID: 53362525}
-    ValidDrags:
-    - Source: {fileID: 673341365}
-      Destination: {fileID: 6819727805608071735}
-      DragAction: 1
-    - Source: {fileID: 673341365}
-      Destination: {fileID: 1378954826}
-      DragAction: 2
-    - Source: {fileID: 673341365}
-      Destination: {fileID: 1378954826}
-      DragAction: 3
-    - Source: {fileID: 673341365}
-      Destination: {fileID: 6819727805608071735}
-      DragAction: 2
-    - Source: {fileID: 673341365}
-      Destination: {fileID: 6819727805608071735}
-      DragAction: 3
-    OnPhaseStartEventChain:
-    - Duration: 0
-      Event:
-        m_PersistentCalls:
-          m_Calls:
-          - m_Target: {fileID: 6155219491839174575}
-            m_TargetAssemblyTypeName: ResourceOperator, Assembly-CSharp
-            m_MethodName: Activate
-            m_Mode: 1
-            m_Arguments:
-              m_ObjectArgument: {fileID: 0}
-              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-              m_IntArgument: 0
-              m_FloatArgument: 0
-              m_StringArgument: 
-              m_BoolArgument: 0
-            m_CallState: 2
-    OnPhaseEndEventChain: []
-  - Name: P2Turn
-    PlayerIndex: 1
-    CameraPosition: {fileID: 1226679125}
-    CardPresentationPosition: {fileID: 310048699}
-    ActiveButtons: []
-    ValidClickTargets:
-    - {fileID: 163788787}
-    - {fileID: 1970082753}
-    ValidDrags:
-    - Source: {fileID: 1873821903}
-      Destination: {fileID: 1378954826}
-      DragAction: 1
-    - Source: {fileID: 1873821903}
-      Destination: {fileID: 1378954826}
-      DragAction: 2
-    - Source: {fileID: 1873821903}
-      Destination: {fileID: 1378954826}
-      DragAction: 3
-    - Source: {fileID: 1873821903}
-      Destination: {fileID: 6819727805608071735}
-      DragAction: 3
-    - Source: {fileID: 1873821903}
-      Destination: {fileID: 6819727805608071735}
-      DragAction: 2
-    OnPhaseStartEventChain:
-    - Duration: 0
-      Event:
-        m_PersistentCalls:
-          m_Calls:
-          - m_Target: {fileID: 6155219491839174575}
-            m_TargetAssemblyTypeName: ResourceOperator, Assembly-CSharp
-            m_MethodName: Activate
-            m_Mode: 1
-            m_Arguments:
-              m_ObjectArgument: {fileID: 0}
-              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-              m_IntArgument: 0
-              m_FloatArgument: 0
-              m_StringArgument: 
-              m_BoolArgument: 0
-            m_CallState: 2
-    OnPhaseEndEventChain: []
   CurrentPhaseIndex: 0
   Turn: 1
   maxTurn: 6
@@ -3956,6 +3895,19 @@ MonoBehaviour:
     ValidDrags: []
     OnPhaseStartEventChain: []
     OnPhaseEndEventChain: []
+--- !u!114 &6155219491839174584
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6155219491839174571}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5352bdcdb9bb46feac16c5fc4b430c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EventDelay: 0.5
 --- !u!114 &6819727805608071735 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7652209544016752822, guid: a2aaac701b7f7443abdbf99d652c72e7, type: 3}

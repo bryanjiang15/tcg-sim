@@ -13,8 +13,29 @@ MonoBehaviour:
   m_Name: America_Chavez_001
   m_EditorClassIdentifier: 
   BackArt: {fileID: 0}
-  power: 2
   cost: 1
-  card_name: Skull Bat
+  power: 2
+  card_name: America_Chavez
   series: 1
   Art: {fileID: 21300000, guid: f87f6d719757148a5a687ef19db42200, type: 3}
+  abilities:
+  - trigger: 0
+    effect: 0
+    amount:
+      type: 0
+      amount: 2
+    target: 0
+    targetRange: 2
+    targetSort: 0
+    requirement:
+      hasRequirement: 0
+      ReqTarget: 0
+      ReqTargetRange: 0
+      ReqTargetSort: 0
+      ReqType: 0
+      ReqComparator: 0
+      ReqAmount:
+        type: 0
+        amount: 
+    excludeSelf: 0
+    description: 

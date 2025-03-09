@@ -2,8 +2,16 @@ using UnityEngine;
 using UnityEngine.UI;
 using CardHouse;
 using TMPro;
+public enum LocationPosition {
+    Left,
+    Center,
+    Right
+}
 
 public class Location : MonoBehaviour {
+
+    public Player player;
+    public LocationPosition position;
     public CardGroup cardGroup;
     public TextMeshPro powerLabel;
 
@@ -39,7 +47,7 @@ public class Location : MonoBehaviour {
     void UpdatePowerLabel() {
         int totalPower = 0;
         foreach (var card in cardGroup.MountedCards) {
-            if (card is SnapCard) {
+            if (card is SnapCard && ((SnapCard)card).revealed) {
                 SnapCard snapCard = (SnapCard)card;
                 totalPower += snapCard.stats.power;
             }

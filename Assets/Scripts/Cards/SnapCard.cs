@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using CardHouse;
 using UnityEngine;
 using UnityEngine.Events;
@@ -23,6 +24,9 @@ public class SnapCard : Card {
     [HideInInspector] public bool revealed { get; private set; } = false;
 
     public UnityEvent CardRevealed = new UnityEvent();
+    public UnityEvent CardPlayed = new UnityEvent();
+
+    public List<Buff> buffs = new List<Buff>();
 
     public void initCardStats(SnapCardStats stats) {
         this.stats = stats;
@@ -33,8 +37,32 @@ public class SnapCard : Card {
         power.SetPower(stats.power);
     }
 
+    public void AddBuff(Buff buff) {
+        buffs.Add(buff);
+        switch(buff.type) {
+            case BuffType.AdditionalPower:
+                StatBuff statBuff = (StatBuff)buff;
+                GetComponent<Power>().AddPower(statBuff.amount);
+                break;
+        }
+    }
+
+    public void SetupAbility(AbilityDefinition abilityDefinition) {
+        var ability = gameObject.AddComponent<Ability>();
+        ability.definition = abilityDefinition;
+    }
+
     public IEnumerator revealCard() {
+        SetFacing(CardFacing.FaceUp);
+        revealed = true;
         CardRevealed.Invoke();
+
+        List<Ability> abilities = new List<Ability>(GetComponents<Ability>());
+
+        // abilities.ForEach(ability => {
+        //     if(ability.definition.trigger == AbilityTrigger.OnReveal)
+        //         RevealEventHandler.Instance.PushEvent(ability.ActivateAbility());
+        // });
         yield return null;
     }
 }
