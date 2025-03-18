@@ -23,19 +23,12 @@ MonoBehaviour:
     effect: 0
     amount:
       type: 0
-      amount: 2
-    target: 0
-    targetRange: 2
-    targetSort: 0
-    requirement:
-      hasRequirement: 0
-      ReqTarget: 0
-      ReqTargetRange: 0
-      ReqTargetSort: 0
-      ReqType: 0
-      ReqComparator: 0
-      ReqAmount:
-        type: 0
-        amount: 
-    excludeSelf: 0
+      value: 2
+    targetDefinition:
+      target: 0
+      targetRange: 2
+      targetSort: 0
+      targetRequirement: []
+      excludeSelf: 0
+    activationRequirements: []
     description: 

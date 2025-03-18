@@ -19,8 +19,10 @@ public class SnapCardSetup : CardSetup {
 
             List<AbilityDefinition> abilities = new List<AbilityDefinition>(snapCardDef.abilities);
             abilities.ForEach(abilityDef => {
-                var ability = card.gameObject.AddComponent<Ability>();
-                ability.definition = abilityDef;
+                var ability = new Ability();
+                ability.SetOwner(card);
+                ability.SetUpDefinition(abilityDef);
+                AbilityManager.Instance.RegisterAbility(ability);
             });
         }else{
             Debug.LogError("SnapCardSetup.Apply: CardDefinition is not SnapCardDefinition");

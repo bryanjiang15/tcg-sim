@@ -107,6 +107,15 @@ namespace CardHouse
             }
         }
 
+        public void AdjustCurrencyRefillValue(string name, int playerIndex, int amount)
+        {
+            var currency = FindCurrency(name, playerIndex);
+            if (currency != null)
+            {
+                currency.RefillValue += amount;
+            }
+        }
+
         public void Refill(string name, int playerIndex)
         {
             var currency = FindCurrency(name, playerIndex);

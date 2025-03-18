@@ -5,41 +5,30 @@ using CardHouse;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Ability : MonoBehaviour
+public class Ability
 {
     public AbilityDefinition definition;
-    public AbilityTrigger trigger;
-
-    public Func<IEnumerator> abilityEffect { get; private set; }
-
-    private void Start()
-    {
-    }
+    public GameAction abilityTrigger { get; private set; }
+    public GameAction abilityEffect { get; private set; }
+    public SnapCard owner { get; private set; }
 
     public void SetUpDefinition(AbilityDefinition abilityDefinition)
     {
         definition = abilityDefinition;
-        trigger = definition.trigger;
         switch(definition.effect){
             case AbilityEffect.GainPower:
-                if(definition.amount.type != AbilityAmountType.Constant){
-                    Debug.LogError("Ability.SetupDefinition: AbilityAmountType is not Constant");
-                    break;
-                }
-                abilityEffect = new Func<IEnumerator>(() => {
-                    StatBuff buff = new StatBuff(BuffType.AdditionalPower, int.Parse(definition.amount.value));
-                    GetComponent<SnapCard>().buffs.Add(buff);
-                    return null;
-                });
+                abilityEffect = new GainPowerGA(owner, definition.targetDefinition, definition.amount);
                 break;
             //TODO: Implement other effects
         }
     }
 
-    public IEnumerator ActivateAbility()
-    {
-        yield return abilityEffect();
-
-        yield return null;
+    public void SetOwner(SnapCard owner){
+        this.owner = owner;
     }
+
+    private void OnDestroy() {
+        AbilityManager.Instance.UnregisterAbility(this);
+    }
+
 }

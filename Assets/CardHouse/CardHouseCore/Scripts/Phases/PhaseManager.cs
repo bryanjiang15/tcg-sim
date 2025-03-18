@@ -52,7 +52,7 @@ namespace CardHouse
             }
         }
 
-        public void NextPhase()
+        public virtual void NextPhase()
         {
             foreach (var button in AllPhaseDependentButtons)
             {
@@ -61,7 +61,7 @@ namespace CardHouse
             StartCoroutine(PhaseTransition());
         }
 
-        IEnumerator PhaseTransition()
+        public virtual IEnumerator PhaseTransition()
         {
             yield return CurrentPhase.End();
             CurrentPhaseIndex = (CurrentPhaseIndex + 1) % Phases.Count;

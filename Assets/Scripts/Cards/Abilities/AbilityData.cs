@@ -61,6 +61,7 @@ public enum AbilityTarget {
     Self,
     PlayerDirectLocationCards,
     EnemyDirectLocationCards,
+    AllDirectLocationCards,
     AllPlayerCards,
     AllEnemyCards,
     AllBoardCards,
@@ -89,7 +90,8 @@ public enum AbilityTargetSort
 {
     None,
     Power,
-    Cost,
+    BaseCost,
+    CurrentCost,
     PlayedOrder,
     LocationOrder,
 
@@ -105,7 +107,10 @@ public enum AbilityRequirementType
     CurrentMaxEnergy,
     LocationPowerDifference,
     HasKeyword,
-    Created,
+    IsCreated,
+    CardName, // New: Check for specific card names
+    BuffPresent, // New: Check if a specific buff is present
+    LocationOccupied, // New: Check if a location is occupied
 }
 
 public enum AbilityRequirementComparator
@@ -116,4 +121,9 @@ public enum AbilityRequirementComparator
     LessThan,
     GEQ,
     LEQ,
+    IsHighestInLocation,
+    IsMinInGroup,
+    NotEqual, // New: Check for inequality
+    Contains, // New: Check if a collection contains a value
+    DoesNotContain, // New: Check if a collection does not contain a value
 }

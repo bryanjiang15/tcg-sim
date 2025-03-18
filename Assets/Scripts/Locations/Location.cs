@@ -14,20 +14,50 @@ public class Location : MonoBehaviour {
     public LocationPosition position;
     public CardGroup cardGroup;
     public TextMeshPro powerLabel;
+    public SnapCard cardRepresentation;
 
     void Start() {
         if (cardGroup != null) {
-            cardGroup.OnCardMounted.AddListener((Card card) => {
-                if (card is SnapCard snapCard) {
-                    snapCard.CardRevealed.AddListener(UpdatePowerLabel);
-                }
-            });
-            cardGroup.OnCardUnmounted.AddListener((Card card) => {
-                if (card is SnapCard snapCard) {
-                    snapCard.CardRevealed.RemoveListener(UpdatePowerLabel);
-                }
-            });
+            cardGroup.OnCardMounted.AddListener(subscribePowerListener);
+            cardGroup.OnCardUnmounted.AddListener(unsubscribePowerListener);
             UpdatePowerLabel();
+        }
+
+        cardRepresentation.initCardStats(new SnapCardStats(0, 0, "Location", 0));
+    }
+
+    void subscribePowerListener(Card card) 
+    {
+        if (card is SnapCard snapCard) {
+            snapCard.SetPlayedLocation(this);
+            if (!SnapPhaseManager.Instance.GetCurrentPhaseType().Equals(SnapPhaseType.Preparation)) 
+                UpdatePowerLabel();
+            else
+                snapCard.CardRevealed.AddListener(UpdatePowerLabel);
+            Power power = snapCard.GetComponent<Power>();
+            if (power != null) {
+                power.PowerChanged.AddListener(UpdatePowerLabel);
+            }
+        }
+    }
+
+    void unsubscribePowerListener(Card card) {
+        if (card is SnapCard snapCard) {
+            snapCard.SetPlayedLocation(null);
+            if (!SnapPhaseManager.Instance.GetCurrentPhaseType().Equals(SnapPhaseType.Preparation)) 
+                UpdatePowerLabel();
+            else
+                snapCard.CardRevealed.RemoveListener(UpdatePowerLabel);
+            Power power = snapCard.GetComponent<Power>();
+            if (power != null) {
+                power.PowerChanged.RemoveListener(UpdatePowerLabel);
+            }
+        }
+    }
+
+    void OnEnable() {
+        if (cardGroup != null) {
+            cardGroup.OnGroupChanged.AddListener(UpdatePowerLabel);
         }
     }
 
@@ -37,21 +67,15 @@ public class Location : MonoBehaviour {
         }
     }
 
-    void UpdatePowerListener() {
-        
-        foreach (var card in cardGroup.MountedCards) {
-            
-        }
-    }
-
     void UpdatePowerLabel() {
         int totalPower = 0;
         foreach (var card in cardGroup.MountedCards) {
-            if (card is SnapCard && ((SnapCard)card).revealed) {
+            if (card is SnapCard && ((SnapCard)card).Revealed) {
                 SnapCard snapCard = (SnapCard)card;
                 totalPower += snapCard.stats.power;
             }
         }
+        totalPower += cardRepresentation.GetPower();
         powerLabel.text = totalPower.ToString();
     }
 
@@ -59,7 +83,7 @@ public class Location : MonoBehaviour {
         foreach (var card in cardGroup.MountedCards) {
             if (card is SnapCard) {
                 SnapCard snapCard = (SnapCard)card;
-                if (!snapCard.revealed) {
+                if (!snapCard.Revealed) {
                     snapCard.SetFacing(CardFacing.FaceDown);
                 }
             }
