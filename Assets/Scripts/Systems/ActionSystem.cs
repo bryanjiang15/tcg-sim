@@ -54,14 +54,13 @@ public class ActionSystem : Singleton<ActionSystem>
         }
     }
 
-    private void PerformSubscribers(GameAction action, Dictionary<Type, List<Action<GameAction>>> subs)
-    {
+    private void PerformSubscribers(GameAction action, Dictionary<Type, List<Action<GameAction>>> subs) {
         Type type = action.GetType();
-        if (subs.ContainsKey(type))
-        {
-            foreach (var sub in subs[type])
-            {
-                sub(action);
+        foreach (var key in subs.Keys) {
+            if (key.IsAssignableFrom(type)) { // Check if the key is a parent type of the action's type
+                foreach (var sub in subs[key]) {
+                    sub(action);
+                }
             }
         }
     }

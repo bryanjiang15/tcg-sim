@@ -17,25 +17,24 @@ MonoBehaviour:
   power: 1
   card_name: Bishop
   series: 1
-  Art: {fileID: 21300000, guid: 5770f3c06eb4643bf9a9e11df82c6c93, type: 3}
+  Art: {fileID: 7456606911083429552, guid: 2a0f632aca54ca04ca8746467b4e5390, type: 3}
   abilities:
-  - trigger: 12
+  - trigger: 14
     effect: 0
     amount:
       type: 0
-      amount: 1
-    target: 2
-    targetRange: 0
-    targetSort: 0
-    requirement:
-      hasRequirement: 0
-      ReqTarget: 0
-      ReqTargetRange: 0
-      ReqTargetSort: 0
-      ReqType: 0
-      ReqComparator: 0
-      ReqAmount:
-        type: 0
-        amount: 
-    excludeSelf: 0
+      value: 1
+    targetDefinition:
+    - target: 2
+      targetRange: 0
+      targetSort: 0
+      targetRequirement: []
+      excludeSelf: 0
+    activationRequirements: []
+    activationRequirementTargets:
+      target: 0
+      targetRange: 0
+      targetSort: 0
+      targetRequirement: []
+      excludeSelf: 0
     description: 

@@ -15,7 +15,7 @@ public class RevealEventHandler : MonoBehaviour {
 
     private void Awake() {
         Instance = this;
-        locations = FindObjectsOfType<Location>().ToList();
+        locations = FindObjectsByType<Location>(FindObjectsSortMode.None).ToList();
         foreach (var location in locations) {
             location.cardGroup.OnCardMounted.AddListener((Card card) => {
                 if (card is SnapCard snapCard && SnapPhaseManager.Instance.GetCurrentPhaseType().Equals(SnapPhaseType.Preparation)) 
@@ -29,6 +29,8 @@ public class RevealEventHandler : MonoBehaviour {
         }
 
         ActionSystem.AttachPerformer<RevealCardGA>(RevealCardPerformer);
+        PlayedCards.Add(Player.Player1, new List<SnapCard>());
+        PlayedCards.Add(Player.Player2, new List<SnapCard>());
     }
 
     //GAMEACTION PERFORMER
@@ -37,7 +39,7 @@ public class RevealEventHandler : MonoBehaviour {
     }
 
     public void EnterRevealPhase() {
-        var locations = FindObjectsOfType<Location>();
+        var locations = FindObjectsByType<Location>(FindObjectsSortMode.None);
         var p1Locations = locations.Where(location => location.player == Player.Player1);
         var p2Locations = locations.Where(location => location.player == Player.Player2);
 
@@ -50,11 +52,13 @@ public class RevealEventHandler : MonoBehaviour {
             while(ActionSystem.Instance.IsPerforming) yield return null;
             ActionSystem.Instance.Perform(new RevealCardGA(card));
         }
+        PlayedCards[currentPlayer].Clear();
         while(ActionSystem.Instance.IsPerforming) yield return null;
         SnapPhaseManager.Instance.NextPhase();
     }
 
     void ReadyPlayedCard(Location location, SnapCard card) {
+        
         if (PlayedCards.ContainsKey(location.player)) {
             PlayedCards[location.player].Add(card);
         }else{

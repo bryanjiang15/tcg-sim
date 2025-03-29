@@ -7,6 +7,8 @@ namespace CardHouse
         Deck,
         Hand,
         Board,
+        Location,
+        Destroy,
         A,
         B,
         C,

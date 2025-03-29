@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using CardHouse;
 using TMPro;
+using System.Collections.Generic;
+using UnityEngine.Events;
 public enum LocationPosition {
     Left,
     Center,
@@ -14,26 +16,33 @@ public class Location : MonoBehaviour {
     public LocationPosition position;
     public CardGroup cardGroup;
     public TextMeshPro powerLabel;
-    public SnapCard cardRepresentation;
+    public LocationCard cardRepresentation;
+    public List<SnapCard> playedCards;
+    public UnityEvent OnPlayedCardChanged = new UnityEvent();
 
     void Start() {
+        cardRepresentation.initCardStats(new SnapCardStats(0, 0, "Location", 0));
+        cardRepresentation.SetLocation(this);
         if (cardGroup != null) {
             cardGroup.OnCardMounted.AddListener(subscribePowerListener);
             cardGroup.OnCardUnmounted.AddListener(unsubscribePowerListener);
             UpdatePowerLabel();
         }
-
-        cardRepresentation.initCardStats(new SnapCardStats(0, 0, "Location", 0));
     }
 
     void subscribePowerListener(Card card) 
     {
         if (card is SnapCard snapCard) {
             snapCard.SetPlayedLocation(this);
-            if (!SnapPhaseManager.Instance.GetCurrentPhaseType().Equals(SnapPhaseType.Preparation)) 
-                UpdatePowerLabel();
-            else
+            if (!SnapPhaseManager.Instance.GetCurrentPhaseType().Equals(SnapPhaseType.Preparation)) {
+                AddPlayedCard(snapCard);
+            }
+            else{
                 snapCard.CardRevealed.AddListener(UpdatePowerLabel);
+                snapCard.CardRevealed.AddListener(() => {
+                    AddPlayedCard(snapCard);
+                });
+            }
             Power power = snapCard.GetComponent<Power>();
             if (power != null) {
                 power.PowerChanged.AddListener(UpdatePowerLabel);
@@ -67,12 +76,17 @@ public class Location : MonoBehaviour {
         }
     }
 
+    void AddPlayedCard(SnapCard card) {
+        playedCards.Add(card);
+        OnPlayedCardChanged.Invoke();
+    }
+
     void UpdatePowerLabel() {
         int totalPower = 0;
         foreach (var card in cardGroup.MountedCards) {
             if (card is SnapCard && ((SnapCard)card).Revealed) {
                 SnapCard snapCard = (SnapCard)card;
-                totalPower += snapCard.stats.power;
+                totalPower += snapCard.GetPower();
             }
         }
         totalPower += cardRepresentation.GetPower();

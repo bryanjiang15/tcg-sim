@@ -34,17 +34,22 @@ public class SnapCard : Card, IBuffObtainable {
 
     public static float FlipCardDelay = 0.5f;
 
-    public void OnCardDrawnReaction() {
+    private void OnEnable() {
+        ActionSystem.SubscribeReaction<DrawCardGA>(OnCardDrawnReaction, ReactionTiming.POST);
+    }
+    public void OnCardDrawnReaction(DrawCardGA action) {
         //ActionSystem.Instance.AddReaction(new OnCardDrawnAction(this));
     }
 
     public void initCardStats(SnapCardStats stats) {
         this.stats = stats;
         SnapCurrencyCost currencyCost = GetComponent<SnapCurrencyCost>();
-        currencyCost.SetBaseEnergyCost(stats.cost);
+        if (currencyCost != null)
+            currencyCost.SetBaseEnergyCost(stats.cost);
         
         Power power = GetComponent<Power>();
-        power.SetBasePower(stats.power);
+        if (power != null)
+            power.SetBasePower(stats.power);
     }
 
     public void SetPlayedLocation(Location location) {
@@ -87,10 +92,12 @@ public class SnapCard : Card, IBuffObtainable {
         BuffChanged.Invoke();
     }
     
-    public void RemoveBuff(Buff buff)
+    public void RemoveBuff(Buff buff, bool replacingRemovedBuff = false)
     {
         buffs.Remove(buff);
-        BuffChanged.Invoke();
+
+        if(!replacingRemovedBuff)
+            BuffChanged.Invoke();
     }
 
     public void RemoveAllBuffs()
@@ -102,5 +109,14 @@ public class SnapCard : Card, IBuffObtainable {
     public bool IsBuffValid(Buff buff)
     {
         throw new System.NotImplementedException();
+    }
+
+    public bool HasKeyword(string keyword)
+    {
+        if (keyword=="OnReveal" || keyword=="Ongoing")
+            return AbilityManager.Instance.GetAbilities()[this].Any(ability => ability.definition.trigger.ToString() == keyword);
+        else{
+            return buffs.Any(buff => buff.type.ToString() == keyword);
+        }
     }
 }

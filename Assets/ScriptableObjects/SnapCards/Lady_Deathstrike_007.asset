@@ -13,9 +13,28 @@ MonoBehaviour:
   m_Name: Lady_Deathstrike_007
   m_EditorClassIdentifier: 
   BackArt: {fileID: 0}
-  cost: 0
-  power: 0
+  cost: 5
+  power: 8
   card_name: 
   series: 0
-  Art: {fileID: 0}
-  abilities: []
+  Art: {fileID: 6808459088318349336, guid: 50ed53d55d6d7de4a84c676647e019fd, type: 3}
+  abilities:
+  - trigger: 0
+    effect: 6
+    amount:
+      type: 0
+      value: 
+    targetDefinition:
+    - target: 3
+      targetRange: 3
+      targetSort: 0
+      targetRequirement: []
+      excludeSelf: 1
+    activationRequirements: []
+    activationRequirementTargets:
+      target: 0
+      targetRange: 0
+      targetSort: 0
+      targetRequirement: []
+      excludeSelf: 0
+    description: 

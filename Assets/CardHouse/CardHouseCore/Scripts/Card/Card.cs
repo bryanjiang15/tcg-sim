@@ -121,12 +121,23 @@ namespace CardHouse
             return discardGroup;
         }
 
+        public CardGroup GetDestroyGroup()
+        {
+            var ownerIndex = GroupRegistry.Instance.GetOwnerIndex(Group);
+            if (ownerIndex == null && GetComponent<CardLoyalty>() != null)
+            {
+                ownerIndex = GetComponent<CardLoyalty>().PlayerIndex;
+            }
+            var destroyGroup = GroupRegistry.Instance?.Get(GroupName.Destroy, ownerIndex);
+            return destroyGroup;
+        }
+
         public void SetFocus(bool isFocused)
         {
             IsFocused = isFocused;
             FaceHoming.StartSeeking(isFocused ? Camera.main.transform.position + Vector3.forward * 2f : Vector3.zero, useLocalSpace: !isFocused);
             FaceTurning.StartSeeking(isFocused ? Camera.main.transform.rotation.eulerAngles.z : 0, useLocalSpace: !isFocused);
-            FaceScaling.StartSeeking(isFocused ? 2f * Camera.main.orthographicSize / 4f : 1f, useLocalSpace: !isFocused);
+            FaceScaling.StartSeeking(isFocused ? Camera.main.orthographicSize / 6f : 1f, useLocalSpace: !isFocused);
             if (isFocused)
             {
                 OnCardFocused?.Invoke(this);

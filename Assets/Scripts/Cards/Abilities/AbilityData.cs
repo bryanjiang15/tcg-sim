@@ -6,13 +6,15 @@ public enum AbilityTrigger
     EndTurn,
     EndGame,
     InHand,
+    InDeck,
     Destroyed,
     Discarded,
     Moved,
     Banished,
     StartTurn,
     Activate,
-    CardPlayed,
+    BeforeCardPlayed, //Triggered before OnrevealGA is performed
+    AfterCardPlayed, //Triggered after OnrevealGA is performed
     AfterAbilityTriggered,
     None
 }
@@ -45,14 +47,23 @@ public enum AbilityEffect
     SetCost,
     CopyAndActivate,
     AddKeyword,
+    AddTemporaryAbility,
 }
 
 public enum AbilityAmountType
 {
     Constant,
-    ConstForEveryReqMet,
+    ForEachTarget,
     Cardid,
-    Json
+    Json,
+    TargetValue,
+    Boolean,
+}
+
+public enum AbilityAmountValueType
+{
+    Total,
+    Count,
 }
 
 public enum AbilityTarget {
@@ -110,15 +121,15 @@ public enum AbilityRequirementType
     IsCreated,
     CardName, // New: Check for specific card names
     BuffPresent, // New: Check if a specific buff is present
-    LocationOccupied, // New: Check if a location is occupied
+    LocationFull, // New: Check if a location is occupied
 }
 
 public enum AbilityRequirementComparator
 {
     None,
     Equal,
-    GreaterThan,
-    LessThan,
+    Greater,
+    Less,
     GEQ,
     LEQ,
     IsHighestInLocation,
@@ -126,4 +137,10 @@ public enum AbilityRequirementComparator
     NotEqual, // New: Check for inequality
     Contains, // New: Check if a collection contains a value
     DoesNotContain, // New: Check if a collection does not contain a value
+}
+
+public enum AbilityRequirementCondition
+{
+    All,
+    Any
 }

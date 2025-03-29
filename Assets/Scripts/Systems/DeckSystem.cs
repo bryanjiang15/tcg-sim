@@ -28,8 +28,8 @@ public class DeckSystem : MonoBehaviour {
         for (int i = 0; i < action.numberOfCards; i++) {
             if (action.player == Player.Player1) {
                 p1DrawOperator.Activate();
-                SnapCard drawnCard = handGroupP1.MountedCards[handGroupP1.MountedCards.Count - 1] as SnapCard;
-                drawnCard.OnCardDrawnReaction();
+                // SnapCard drawnCard = handGroupP1.MountedCards[handGroupP1.MountedCards.Count - 1] as SnapCard;
+                // drawnCard.OnCardDrawnReaction();
                 
             } else {
                 p2DrawOperator.Activate();

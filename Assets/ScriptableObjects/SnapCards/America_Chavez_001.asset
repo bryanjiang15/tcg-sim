@@ -17,7 +17,7 @@ MonoBehaviour:
   power: 2
   card_name: America_Chavez
   series: 1
-  Art: {fileID: 21300000, guid: f87f6d719757148a5a687ef19db42200, type: 3}
+  Art: {fileID: -2667395916182224997, guid: 3939ff614a93b7f42958b9b9c0dee251, type: 3}
   abilities:
   - trigger: 0
     effect: 0
@@ -25,10 +25,16 @@ MonoBehaviour:
       type: 0
       value: 2
     targetDefinition:
-      target: 0
+    - target: 0
       targetRange: 2
       targetSort: 0
       targetRequirement: []
       excludeSelf: 0
     activationRequirements: []
+    activationRequirementTargets:
+      target: 0
+      targetRange: 0
+      targetSort: 0
+      targetRequirement: []
+      excludeSelf: 0
     description: 

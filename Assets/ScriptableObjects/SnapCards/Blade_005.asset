@@ -17,25 +17,24 @@ MonoBehaviour:
   power: 3
   card_name: Blade
   series: 0
-  Art: {fileID: 21300000, guid: 7e2d11e62ac0e4cf6b46b530ee542202, type: 3}
+  Art: {fileID: 4898635720451536882, guid: 37f5cdf11a76cde4f86de6dded441b34, type: 3}
   abilities:
   - trigger: 0
     effect: 5
     amount:
       type: 0
-      amount: 1
-    target: 1
-    targetRange: 2
-    targetSort: 0
-    requirement:
-      hasRequirement: 0
-      ReqTarget: 0
-      ReqTargetRange: 0
-      ReqTargetSort: 0
-      ReqType: 0
-      ReqComparator: 0
-      ReqAmount:
-        type: 0
-        amount: 
-    excludeSelf: 0
+      value: 
+    targetDefinition:
+    - target: 1
+      targetRange: 2
+      targetSort: 0
+      targetRequirement: []
+      excludeSelf: 0
+    activationRequirements: []
+    activationRequirementTargets:
+      target: 0
+      targetRange: 0
+      targetSort: 0
+      targetRequirement: []
+      excludeSelf: 0
     description: 

@@ -17,7 +17,7 @@ MonoBehaviour:
   power: 3
   card_name: Captain America
   series: 1
-  Art: {fileID: 21300000, guid: 969e3df4cf347462db728fcd5f40761e, type: 3}
+  Art: {fileID: 770443925654411152, guid: 0f1feb8faee501648a55401c7e721386, type: 3}
   abilities:
   - trigger: 1
     effect: 0
@@ -25,19 +25,22 @@ MonoBehaviour:
       type: 0
       value: 2
     targetDefinition:
-      target: 3
+    - target: 3
       targetRange: 5
       targetSort: 0
       targetRequirement:
-      - hasRequirement: 1
-        ReqTarget: 2
-        ReqTargetRange: 0
-        ReqTargetSort: 0
-        ReqType: 7
+      - ReqType: 7
         ReqComparator: 0
+        ReqCondition: 0
         ReqAmount:
           type: 0
-          value: ' '
-      excludeSelf: 0
+          value: Ongoing
+      excludeSelf: 1
     activationRequirements: []
+    activationRequirementTargets:
+      target: 0
+      targetRange: 0
+      targetSort: 0
+      targetRequirement: []
+      excludeSelf: 0
     description: 

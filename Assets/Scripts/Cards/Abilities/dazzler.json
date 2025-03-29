@@ -1,0 +1,19 @@
+{
+    "target": {
+        "target": "AllPlayerLocation",
+        "targetRange": "AllRequirementsMet",
+        "targetSort": "None",
+        "excludeSelf": false,
+        "targetRequirement": [{
+            "reqType": "LocationFull",
+            "ReqComparator": "None",
+            "ReqCondition": "All",
+            "ReqAmount": {
+                "type": "Boolean",
+                "value": true
+            }
+        }]
+    },
+    "value": 2
+    
+}
