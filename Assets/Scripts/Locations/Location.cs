@@ -19,6 +19,8 @@ public class Location : MonoBehaviour {
     public LocationCard cardRepresentation;
     public List<SnapCard> playedCards;
     public UnityEvent OnPlayedCardChanged = new UnityEvent();
+    public int maxCards = 4;
+    private int totalPower;
 
     void Start() {
         cardRepresentation.initCardStats(new SnapCardStats(0, 0, "Location", 0));
@@ -82,7 +84,7 @@ public class Location : MonoBehaviour {
     }
 
     void UpdatePowerLabel() {
-        int totalPower = 0;
+        totalPower = 0;
         foreach (var card in cardGroup.MountedCards) {
             if (card is SnapCard && ((SnapCard)card).Revealed) {
                 SnapCard snapCard = (SnapCard)card;
@@ -102,5 +104,9 @@ public class Location : MonoBehaviour {
                 }
             }
         }
+    }
+
+    public bool isFull() {
+        return playedCards.Count >= maxCards;
     }
 }

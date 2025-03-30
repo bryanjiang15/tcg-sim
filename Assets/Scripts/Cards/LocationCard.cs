@@ -1,19 +1,11 @@
 using UnityEngine;
 
 public class LocationCard : SnapCard {
+    // A card object that represents the location. Holds location buffs
     Location location;
 
     public bool IsFull() {
-        return !location.cardGroup.HasRoom() && AreAllCardsRevealed();
-    }
-
-    bool AreAllCardsRevealed() {
-        foreach (var card in location.playedCards) {
-            if (!card.Revealed) {
-                return false;
-            }
-        }
-        return true;
+        return location.isFull();
     }
 
     public bool IsEmpty() {
@@ -23,4 +15,8 @@ public class LocationCard : SnapCard {
     public void SetLocation(Location location) {
         this.location = location;
     }
+
+    // public int GetLocationPower() {
+    //     return location;
+    // }
 }

@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      CaptainAmerica_Foreground_Common_0: 770443925654411152
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Blade_02_Foreground_Common_0: 4898635720451536882
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

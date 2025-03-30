@@ -184,7 +184,10 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      AmericaChavez_05_Foreground_Common_0: 1862806786802738693
+      AmericaChavez_05_Foreground_Common_1: -2667395916182224997
+      AmericaChavez_05_Foreground_Common_2: 9000953709242538098
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

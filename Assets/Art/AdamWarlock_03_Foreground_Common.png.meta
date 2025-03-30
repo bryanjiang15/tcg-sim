@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      AdamWarlock_03_Foreground_Common_0: 2003840908695831687
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

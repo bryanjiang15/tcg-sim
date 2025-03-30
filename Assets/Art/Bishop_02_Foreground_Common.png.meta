@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Bishop_02_Foreground_Common_0: 7456606911083429552
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

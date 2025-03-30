@@ -159,7 +159,9 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Dazzler_03_Foreground_Common_0: 8689238303521206069
+      Dazzler_03_Foreground_Common_1: -5264264106846292154
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

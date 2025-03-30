@@ -28,9 +28,7 @@ public class OngoingAbility : Ability {
         listenedTypes = new List<Type>();
         listenedTypes.AddRange(ConfigureAmountListeners(definition.amount));
         listenedTypes.AddRange(ConfigureTargetListeners(definition.targetDefinition));
-        foreach (var type in listenedTypes) {
-            Debug.Log("Listening to type: " + type);
-        }
+
         ActionSystem.SubscribeReaction<GameAction>(UpdateTargets, ReactionTiming.POST);
         currentTargets = TargetSystem.Instance.GetTargets(definition.targetDefinition, owner);
         currentAmount = definition.amount.GetValue<int>(owner);
@@ -40,28 +38,24 @@ public class OngoingAbility : Ability {
     private void UpdateTargets(GameAction action) {
         if (!listenedTypes.Contains(action.GetType()) && 
             !listenedTypes.Exists(type => type.IsAssignableFrom(action.GetType()))) return;
-        Debug.Log("Updating targets for ongoing ability: " + action.GetType());
 
         List<SnapCard> newTargets = TargetSystem.Instance.GetTargets(definition.targetDefinition, owner);
         List<SnapCard> unaffectedTargets = newTargets.FindAll(target => !currentTargets.Contains(target));
         List<SnapCard> affectedTargets = currentTargets.FindAll(target => !newTargets.Contains(target));
-        if (ActionSystem.Instance.IsPerforming) {
-            if (definition.amount.type == AbilityAmountType.ForEachTarget) {
-                foreach(SnapCard target in newTargets) {
-                    int newAmount = definition.amount.GetValue<int>(target); 
-                    Debug.Log($"Ongoing ability {definition.effect} amount changed from {currentAmount} to {newAmount}");
-                    if (newAmount != currentAmount) {
-                        
-                        //Remove current buff from affected targets without triggering update, then add it to unaffected targets
-                        RemoveAbilityEffect(new List<SnapCard> { target }, replacingBuff: true);
-                        unaffectedTargets.Add(target);
-                    }
+        if (definition.amount.type == AbilityAmountType.ForEachTarget) {
+            foreach(SnapCard target in newTargets) {
+                int newAmount = definition.amount.GetValue<int>(target); 
+                if (newAmount != GetTargetCurrentBuffAmount(target)) {
+                    //Remove current buff from affected targets without triggering update, then add it to unaffected targets
+                    RemoveAbilityEffect(new List<SnapCard> { target }, replacingBuff: true);
+                    unaffectedTargets.Add(target);
                 }
-                
             }
-            if (affectedTargets.Count > 0) RemoveAbilityEffect(affectedTargets);
-            if (unaffectedTargets.Count > 0) ActionSystem.Instance.AddReaction(getAbilityEffect(unaffectedTargets));
+            
         }
+        if (affectedTargets.Count > 0) RemoveAbilityEffect(affectedTargets);
+        if (unaffectedTargets.Count > 0) ActionSystem.Instance.AddReaction(getAbilityEffect(unaffectedTargets));
+        
         currentTargets = newTargets;
         
 
@@ -127,11 +121,21 @@ public class OngoingAbility : Ability {
 
     public GameAction RemoveAbilityEffect(List<SnapCard> targets, bool replacingBuff = false) {
         foreach (SnapCard target in targets) {
-            Buff buffToRemove = target.buffs.Find(buff => buff.source == owner && buff.ongoingAbilitySource == this);
+            Buff buffToRemove = target.buffs.Find(buff => buff.source == owner);
             if (buffToRemove != null) {
                 target.RemoveBuff(buffToRemove, replacingRemovedBuff: replacingBuff);
             }
         }
         return null; // Return null as no specific GameAction is performed here
+    }
+
+    public int GetTargetCurrentBuffAmount(SnapCard target) {
+        StatBuff buff = target.buffs.Find(
+            buff => buff.source == owner &&
+            buff is StatBuff) as StatBuff;
+        if (buff != null) {
+            return buff.amount;
+        }
+        return 0;
     }
 }

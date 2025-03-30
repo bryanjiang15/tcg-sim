@@ -37,6 +37,18 @@ public struct AbilityAmount{
                     return (T)System.Convert.ChangeType(targets.Count * multiplierValue, typeof(int));
                 }
                 return default(T);
+            case AbilityAmountType.TargetValue:
+                var jsonValue = JsonConvert.DeserializeObject<Dictionary<string, object>>(value);
+                AbilityRequirementType requirementType = (AbilityRequirementType)System.Enum.Parse(typeof(AbilityRequirementType), jsonValue["type"].ToString());
+                AbilityTargetDefinition targetDef = JsonConvert.DeserializeObject<AbilityTargetDefinition>(jsonValue["target"].ToString());
+                List<SnapCard> targetCards = TargetSystem.Instance.GetTargets(new List<AbilityTargetDefinition> { targetDef }, owner);
+                
+                AbilityAmount targetValue = TargetSystem.Instance.GetTargetValue(requirementType, targetCards[0]);
+                if (targetValue.type == AbilityAmountType.Constant)
+                {
+                    return (T)System.Convert.ChangeType(targetValue.value, typeof(int));
+                }
+                return default(T);
             case AbilityAmountType.Boolean:
                 if (typeof(T) == typeof(bool)) return (T)System.Convert.ChangeType(value, typeof(bool));
                 return default(T);

@@ -142,5 +142,14 @@ public class AbilityManager : MonoBehaviour {
         yield return null;
     }
 
+    private IEnumerator GainCostPerformer(IncreaseCostGA action) {
+        List<SnapCard> targets = action.targets;
+        foreach (SnapCard target in targets) {
+            Buff costBuff = new StatBuff(BuffType.AdditionalCost, action.owner, action.amount.GetValue<int>(action.owner));
+            target.ApplyBuff(costBuff);   
+        }
+        yield return null;
+    }
+
     
 }

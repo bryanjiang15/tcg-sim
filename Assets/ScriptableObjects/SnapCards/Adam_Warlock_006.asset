@@ -31,14 +31,14 @@ MonoBehaviour:
       targetRequirement: []
       excludeSelf: 0
     activationRequirements:
-    - ReqType: 6
+    - ReqType: 1
       ReqComparator: 2
       ReqCondition: 0
       ReqAmount:
-        type: 0
+        type: 4
         value: 0
     activationRequirementTargets:
-      target: 13
+      target: 3
       targetRange: 0
       targetSort: 0
       targetRequirement: []

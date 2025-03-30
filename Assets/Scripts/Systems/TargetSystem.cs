@@ -191,7 +191,7 @@ public class TargetSystem : MonoBehaviour {
         AbilityAmount reqAmount = requirement.ReqAmount;
         int satisfiedCount = 0;
         foreach (SnapCard snapCard in target) {
-            AbilityAmount targetValue = GetRequirementValue(reqType, snapCard);
+            AbilityAmount targetValue = GetTargetValue(reqType, snapCard);
             if(targetValue.type == AbilityAmountType.Boolean){
                 return targetValue.GetValue<bool>(snapCard) == reqAmount.GetValue<bool>(snapCard);
             }
@@ -234,7 +234,7 @@ public class TargetSystem : MonoBehaviour {
         }
     }
 
-    AbilityAmount GetRequirementValue(AbilityRequirementType reqType, SnapCard target) {
+    public AbilityAmount GetTargetValue(AbilityRequirementType reqType, SnapCard target) {
         switch (reqType) {
             case AbilityRequirementType.Power:
                 return new AbilityAmount { type = AbilityAmountType.Constant, value = target.GetPower().ToString() };

@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      LadyDeathstrike_Foreground_Common_0: 6808459088318349336
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
