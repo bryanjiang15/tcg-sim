@@ -27,33 +27,66 @@ public struct AbilityAmount{
                 else if (typeof(T) == typeof(float)) return (T)System.Convert.ChangeType(value, typeof(float));
                 else return default(T);
             case AbilityAmountType.ForEachTarget:
-                if (typeof(T) == typeof(int))
-                {
-                    // Assuming value is a JSON string containing a dictionary of target values
-                    var targetValues = JsonConvert.DeserializeObject<Dictionary<string, object>>(value);
-                    AbilityTargetDefinition targetDefinition = JsonConvert.DeserializeObject<AbilityTargetDefinition>(targetValues["target"].ToString());
-                    int multiplierValue = int.Parse(targetValues["value"].ToString());
-                    List<SnapCard> targets = TargetSystem.Instance.GetTargets(new List<AbilityTargetDefinition> { targetDefinition }, owner);
-                    return (T)System.Convert.ChangeType(targets.Count * multiplierValue, typeof(int));
-                }
-                return default(T);
+                return (T)System.Convert.ChangeType(GetForEachTargetValue(owner), typeof(T));
             case AbilityAmountType.TargetValue:
-                var jsonValue = JsonConvert.DeserializeObject<Dictionary<string, object>>(value);
-                AbilityRequirementType requirementType = (AbilityRequirementType)System.Enum.Parse(typeof(AbilityRequirementType), jsonValue["type"].ToString());
-                AbilityTargetDefinition targetDef = JsonConvert.DeserializeObject<AbilityTargetDefinition>(jsonValue["target"].ToString());
-                List<SnapCard> targetCards = TargetSystem.Instance.GetTargets(new List<AbilityTargetDefinition> { targetDef }, owner);
-                
-                AbilityAmount targetValue = TargetSystem.Instance.GetTargetValue(requirementType, targetCards[0]);
-                if (targetValue.type == AbilityAmountType.Constant)
-                {
-                    return (T)System.Convert.ChangeType(targetValue.value, typeof(int));
-                }
-                return default(T);
+                return (T)System.Convert.ChangeType(GetTargetValue(owner), typeof(T));
             case AbilityAmountType.Boolean:
                 if (typeof(T) == typeof(bool)) return (T)System.Convert.ChangeType(value, typeof(bool));
                 return default(T);
             default:
                 return default(T);
+        }
+    }
+
+    private int GetForEachTargetValue(SnapCard owner) {
+        var targetValues = JsonConvert.DeserializeObject<Dictionary<string, object>>(value);
+        AbilityTargetDefinition targetDefinition = JsonConvert.DeserializeObject<AbilityTargetDefinition>(targetValues["target"].ToString());
+        int multiplierValue = int.Parse(targetValues["value"].ToString());
+        List<SnapCard> targets = TargetSystem.Instance.GetTargets(new List<AbilityTargetDefinition> { targetDefinition }, owner);
+        return targets.Count * multiplierValue;
+    }
+
+    private int GetTargetValue(SnapCard owner) {
+        var jsonValue = JsonConvert.DeserializeObject<Dictionary<string, object>>(value);
+        AbilityRequirementType requirementType = (AbilityRequirementType)System.Enum.Parse(typeof(AbilityRequirementType), jsonValue["type"].ToString());
+        AbilityTargetDefinition targetDef = JsonConvert.DeserializeObject<AbilityTargetDefinition>(jsonValue["target"].ToString());
+        List<SnapCard> targetCards = TargetSystem.Instance.GetTargets(new List<AbilityTargetDefinition> { targetDef }, owner);
+        CalculationType calculationType = (CalculationType)System.Enum.Parse(typeof(CalculationType), jsonValue["calculation"].ToString());
+        if (calculationType == CalculationType.MaxValue)
+        {
+            int maxValue = 0;
+            foreach (var targetCard in targetCards)
+            {
+                AbilityAmount value = TargetSystem.Instance.GetTargetValue(requirementType, targetCard);
+                int cardValue = value.GetValue<int>(targetCard);
+                if (cardValue > maxValue)
+                {
+                    maxValue = cardValue;
+                }
+            }
+            return maxValue;
+        }else if (calculationType == CalculationType.MinValue)
+        {
+            int minValue = int.MaxValue;
+            foreach (var targetCard in targetCards)
+            {
+                AbilityAmount value = TargetSystem.Instance.GetTargetValue(requirementType, targetCard);
+                int cardValue = value.GetValue<int>(targetCard);
+                if (cardValue < minValue)
+                {
+                    minValue = cardValue;
+                }
+            }
+            return minValue;
+        }else
+        {
+            int totalValue = 0;
+            foreach (var targetCard in targetCards)
+            {
+                AbilityAmount value = TargetSystem.Instance.GetTargetValue(requirementType, targetCard);
+                totalValue += value.GetValue<int>(targetCard);
+            }
+            return totalValue;
         }
     }
 

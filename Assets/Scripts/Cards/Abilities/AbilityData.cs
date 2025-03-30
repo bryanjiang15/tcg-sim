@@ -60,10 +60,11 @@ public enum AbilityAmountType
     Boolean,
 }
 
-public enum AbilityAmountValueType
+public enum CalculationType
 {
     Total,
-    Count,
+    MaxValue,
+    MinValue
 }
 
 public enum AbilityTarget {
