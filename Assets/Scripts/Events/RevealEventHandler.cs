@@ -35,7 +35,7 @@ public class RevealEventHandler : MonoBehaviour {
 
     //GAMEACTION PERFORMER
     private IEnumerator RevealCardPerformer(RevealCardGA action) {
-        yield return action.card.revealCard();
+        yield return action.card.revealCard(action.IsCardPlayed);
     }
 
     public void EnterRevealPhase() {

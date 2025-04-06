@@ -30,7 +30,15 @@ public class SnapCard : Card, IBuffObtainable {
     public UnityEvent BuffChanged = new UnityEvent();
     public List<Buff> buffs = new List<Buff>();
     public Location PlayedLocation { get; private set; }
-    public Player ownedPlayer => PlayedLocation.player;
+    public virtual Player ownedPlayer => PlayedLocation.player;
+
+    Vector3 originalScale; // Original scale of the card for resizing during drag
+    private void Start() {
+        BoxCollider2D collider = GetComponentInChildren<BoxCollider2D>();
+        if (collider != null) {
+            originalScale = collider.size; // Store the original size of the collider for resizing during drag
+        }
+    }
 
     public static float FlipCardDelay = 0.5f;
 
@@ -56,11 +64,14 @@ public class SnapCard : Card, IBuffObtainable {
         PlayedLocation = location;
     }
 
-    public IEnumerator revealCard() {
-        SetFacing(CardFacing.FaceUp);
+    public IEnumerator revealCard(bool IsCardPlayed = true) {
+        if (IsCardPlayed){
+            SetFacing(CardFacing.FaceUp);
+        }
         Revealed = true;
         CardRevealed.Invoke();
-        yield return new WaitForSeconds(FlipCardDelay);
+        if (IsCardPlayed)
+            yield return new WaitForSeconds(FlipCardDelay);
         AbilityManager.Instance.ActivateOnRevealAbility(this);
 
         //List<Ability> abilities = new List<Ability>(GetComponents<Ability>());
@@ -72,7 +83,7 @@ public class SnapCard : Card, IBuffObtainable {
         yield return null;
     }
 
-    public int GetPower() {
+    public virtual int GetPower() {
         return GetComponent<Power>().powerlevel;
     }
 
@@ -88,6 +99,10 @@ public class SnapCard : Card, IBuffObtainable {
 
     public void ApplyBuff(Buff buff)
     {
+        if (buff.type == BuffType.SetPower){
+            //Remove other SetPower buffs
+            buffs.RemoveAll(b => b.type == BuffType.SetPower || b.type == BuffType.AdditionalPower);
+        }
         buffs.Add(buff);
         BuffChanged.Invoke();
     }
@@ -95,7 +110,6 @@ public class SnapCard : Card, IBuffObtainable {
     public void RemoveBuff(Buff buff, bool replacingRemovedBuff = false)
     {
         buffs.Remove(buff);
-
         if(!replacingRemovedBuff)
             BuffChanged.Invoke();
     }
@@ -114,9 +128,39 @@ public class SnapCard : Card, IBuffObtainable {
     public bool HasKeyword(string keyword)
     {
         if (keyword=="OnReveal" || keyword=="Ongoing")
-            return AbilityManager.Instance.GetAbilities()[this].Any(ability => ability.definition.trigger.ToString() == keyword);
+            return AbilityManager.Instance.GetAbilities()[this].Any(ability => ability.definition.triggerDefinition.trigger.ToString() == keyword);
         else{
             return buffs.Any(buff => buff.type.ToString() == keyword);
         }
     }
+
+    public void MinimizeColliderOnDrag(bool isDragging) {
+        // Resize collider when dragging to be smaller
+        BoxCollider2D boxCollider = GetComponentInChildren<BoxCollider2D>(); // Get the BoxCollider component attached to the card
+        if (boxCollider == null) {
+            return;
+        }
+        if (isDragging) {
+            // Reduce the size of the collider when dragging
+            boxCollider.size = new Vector3(originalScale.x * 0.5f, originalScale.y * 0.5f, originalScale.z);
+        } else {
+            // Reset the size of the collider to its original size when not dragging
+            boxCollider.size = originalScale; // Use the stored original scale
+        }
+    }
+
+#if UNITY_EDITOR
+    private void OnDrawGizmosSelected() {
+        Debug.Log($"Card Name: {stats.card_name}, Power: {stats.power}, Cost: {stats.cost}, Series: {stats.series}");
+        if (buffs != null && buffs.Count > 0) {
+            for(int i = 0; i < buffs.Count; i++) {
+                Buff buff = buffs[i];
+                StatBuff statBuff = buff as StatBuff;
+                Debug.Log($"- Buff Type: {statBuff.type}, Amount: {statBuff.amount}, Source: {statBuff.source.stats.card_name}, count: {i}");
+            }
+        } else {
+            Debug.Log($"No buffs on {stats.card_name}");
+        }
+    }
+#endif
 }

@@ -10,22 +10,34 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8c47cb6cbd684c0d8329ed925e4fde1, type: 3}
-  m_Name: Bishop_002
+  m_Name: Brood
   m_EditorClassIdentifier: 
   BackArt: {fileID: 0}
   cost: 3
-  power: 1
-  card_name: Bishop
-  series: 1
-  Art: {fileID: 7456606911083429552, guid: 2a0f632aca54ca04ca8746467b4e5390, type: 3}
+  power: 2
+  card_name: Brood
+  series: 3
+  Art: {fileID: 6463726566717575322, guid: f6eca4590ce159a468931cbf7cabd209, type: 3}
   abilities:
-  - trigger: 14
-    effect: 0
+  - triggerDefinition:
+      trigger: 0
+      triggeredTarget:
+      - target: 2
+        targetRange: 0
+        targetSort: 0
+        targetRequirement: []
+        excludeSelf: 0
+    effect: 14
     amount:
-      type: 0
-      value: 1
+      type: 2
+      value: Broodlings
     targetDefinition:
-    - target: 2
+    - target: 9
+      targetRange: 0
+      targetSort: 0
+      targetRequirement: []
+      excludeSelf: 0
+    - target: 9
       targetRange: 0
       targetSort: 0
       targetRequirement: []

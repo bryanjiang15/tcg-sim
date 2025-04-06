@@ -5,6 +5,8 @@ using System.Linq;
 using System.Reflection;
 using System.Collections;
 using CardHouse;
+using Unity.Mathematics;
+using UnityEditor;
 
 public class AbilityManager : MonoBehaviour {
     public static AbilityManager Instance;
@@ -25,6 +27,9 @@ public class AbilityManager : MonoBehaviour {
         ActionSystem.AttachPerformer<GainPowerGA>(GainPowerPerformer);
         ActionSystem.AttachPerformer<DestroyCardGA>(DestroyCardPerformer);
         ActionSystem.AttachPerformer<DiscardCardGA>(DiscardCardPerformer);
+        ActionSystem.AttachPerformer<IncreaseCostGA>(GainCostPerformer);
+        ActionSystem.AttachPerformer<CreateCardInLocationGA>(CreateCardInLocationPerformer);
+        ActionSystem.AttachPerformer<SetPowerGA>(SetPowerPerformer);
     }
 
     public Dictionary<SnapCard, List<Ability>> GetAbilities() {
@@ -47,14 +52,32 @@ public class AbilityManager : MonoBehaviour {
         }
     }
 
+    public void SetUpAbilities(SnapCardDefinition snapCardDefinition, SnapCard owner){
+        Ability lastAbility = null;
+        for(int i = 0; i < snapCardDefinition.abilities.Count(); i++){
+            AbilityDefinition abilityDefinition = snapCardDefinition.abilities[i];
+            Ability ability = new Ability();
+            ability.SetOwner(owner);
+            ability.SetUpDefinition(abilityDefinition);
+            if(ability.definition.triggerDefinition.trigger == AbilityTrigger.AfterAbilityTriggered){
+                if(lastAbility != null){
+                    SubscribeAbilityChain(lastAbility, ability);
+                }else{
+                    Debug.LogError($"No last ability found for ability {i} on card {owner.name}");
+                }
+            }
+            RegisterAbility(ability);
+            lastAbility = ability;
+        }
+    }
+
     //Call during performance of OnrevealGA
     public void ActivateOnRevealAbility(SnapCard card){
         if (abilities.ContainsKey(card)) {
             foreach (Ability ability in abilities[card]) {
-                AbilityTrigger trigger = ability.definition.trigger;
+                AbilityTrigger trigger = ability.definition.triggerDefinition.trigger;
                 if (trigger == AbilityTrigger.OnReveal) {
-                    List<SnapCard> targets = TargetSystem.Instance.GetTargets(ability.definition.targetDefinition, card);
-                    ActionSystem.Instance.AddReaction(ability.getAbilityEffect(targets));
+                    TriggerAbilityReaction(card, ability); // Trigger the reaction for OnReveal abilities
                 } else if (trigger == AbilityTrigger.Ongoing) {
                     OngoingAbility ongoingAbility = new OngoingAbility(ability);
                     activeAbilities.Add(ongoingAbility);
@@ -66,34 +89,49 @@ public class AbilityManager : MonoBehaviour {
         }
     }
 
+    public void TriggerAbilityReaction(SnapCard owner, Ability ability, List<SnapCard> targets=null, GameAction triggeredAction = null) {
+        if (ability.definition.activationRequirements != null && ability.definition.activationRequirements.Count > 0) {
+            // Check if activation requirements are met
+            List<AbilityTargetDefinition> activationTargetDefinitions = new List<AbilityTargetDefinition> { ability.definition.activationRequirementTargets };
+            List<SnapCard> ActivationReqTargets = TargetSystem.Instance.GetTargets(activationTargetDefinitions, owner, triggeredAction: triggeredAction);
+            foreach (var requirement in ability.definition.activationRequirements) {
+                if (!TargetSystem.Instance.IsRequirementMet(requirement, ActivationReqTargets)) {
+                    Debug.Log($"Activation requirements not met for ability: {ability.owner.name} - {ability.definition.description}");
+                    return; // Do not activate if requirements are not met
+                }
+            }
+        }
+        ActionSystem.Instance.AddReaction(ability.getAbilityEffect(targets, triggeredAction));
+    }
+
     public bool IsAbilityActiveOnPlay(AbilityTrigger trigger) {
         return trigger != AbilityTrigger.InHand && trigger != AbilityTrigger.InDeck;
     }
 
     public void ActivateAbility(Ability ability) {
         activeAbilities.Add(ability);
-        switch(ability.definition.trigger){
+        switch(ability.definition.triggerDefinition.trigger) {
             case AbilityTrigger.GameStart:
                 // AbilityManager.Instance.ActivateOnRevealAbility(owner);
                 break;
             case AbilityTrigger.EndTurn:
                 ActionSystem.SubscribeReaction<EndPhaseGA>((endPhaseGA) =>{
                     if(SnapPhaseManager.Instance.GetCurrentPhaseType() == SnapPhaseType.Reveal){
-                        ActionSystem.Instance.AddReaction(ability.getAbilityEffect());
+                        TriggerAbilityReaction(ability.owner, ability);
                     }
                 }, ReactionTiming.PRE);
                 break;
             case AbilityTrigger.BeforeCardPlayed:
                 ActionSystem.SubscribeReaction<RevealCardGA>((revealCardGA) =>{
-                    if(revealCardGA.card == ability.owner){
-                        ActionSystem.Instance.AddReaction(ability.getAbilityEffect());
+                    if(revealCardGA.card != ability.owner){
+                        TriggerAbilityReaction(ability.owner, ability);
                     }
                 }, ReactionTiming.PRE);
                 break;
             case AbilityTrigger.AfterCardPlayed:
                 ActionSystem.SubscribeReaction<RevealCardGA>((revealCardGA) =>{
                     if(revealCardGA.card != ability.owner){
-                        ActionSystem.Instance.AddReaction(ability.getAbilityEffect());
+                        TriggerAbilityReaction(ability.owner, ability);
                     }
                 }, ReactionTiming.POST);
                 break;
@@ -103,9 +141,47 @@ public class AbilityManager : MonoBehaviour {
 
     public void HandleNextPlayedCardAbility(Ability ability) {
         Ability temporaryAbility = ability;
-        temporaryAbility.definition.trigger = AbilityTrigger.AfterCardPlayed;
+        temporaryAbility.definition.triggerDefinition.trigger = AbilityTrigger.AfterCardPlayed;
         temporaryAbility.exhaust = true;
         ActivateAbility(temporaryAbility);
+    }
+
+    public SnapCard GetCard(string cardName) {
+        SnapCardDefinition cardDefinition = Resources.Load<SnapCardDefinition>($"ScriptableObjects/SnapCards/{cardName}");
+        
+        if (cardDefinition == null) {
+            Debug.LogError($"SnapCardDefinition with name {cardName} not found.");
+            return null;
+        }
+
+        GameObject cardPrefab = Resources.Load<GameObject>("Prefab/SnapCard");
+        if (cardPrefab == null) {
+            Debug.LogError("SnapCard prefab not found.");
+            return null;
+        }
+
+        GameObject cardObject = Instantiate(cardPrefab);
+
+        SnapCardSetup cardSetup = cardObject.GetComponent<SnapCardSetup>();
+        if (cardSetup != null) {
+            cardSetup.Apply(cardDefinition);
+        } else {
+            Debug.LogError("SnapCardSetup component missing on instantiated prefab.");
+            Destroy(cardObject);
+        }
+        return cardObject.GetComponent<SnapCard>();
+    }
+
+    private void SubscribeAbilityChain(Ability trigger, Ability activatedAbility) {
+        Type abilityEffectType = Ability.AbilityEffectTypeMap[trigger.definition.effect];
+        MethodInfo subscribeMethod = typeof(ActionSystem).GetMethod("SubscribeReaction").MakeGenericMethod(abilityEffectType);
+        subscribeMethod.Invoke(null, new object[] { (Action<GameAction>)((abilityTriggeredGA) => {
+            Debug.Log($"Ability triggered: {abilityTriggeredGA}");
+            if (abilityTriggeredGA is AbilityEffectGA abilityEffectGA && abilityEffectGA.ability == trigger) {
+                 // Trigger the reaction for the activated ability
+                TriggerAbilityReaction(activatedAbility.owner, activatedAbility, triggeredAction: abilityTriggeredGA);
+            }
+        }), ReactionTiming.POST });
     }
 
     //GAMEACTION PERFORMER
@@ -113,7 +189,7 @@ public class AbilityManager : MonoBehaviour {
     private IEnumerator GainPowerPerformer(GainPowerGA action) {
         List<SnapCard> targets = action.targets;
         foreach (SnapCard target in targets) {
-            Buff powerBuff = new StatBuff(BuffType.AdditionalPower, action.owner, action.amount.GetValue<int>(action.owner));
+            Buff powerBuff = new StatBuff(BuffType.AdditionalPower, action.owner, action.amount.GetValue<int>(action.owner, triggeredAction: action));
             target.ApplyBuff(powerBuff);   
         }
         yield return null;
@@ -142,11 +218,45 @@ public class AbilityManager : MonoBehaviour {
         yield return null;
     }
 
+    private IEnumerator CreateCardInLocationPerformer(CreateCardInLocationGA action) {
+        List<SnapCard> targets = action.targets;
+        foreach (SnapCard target in targets) {
+            if (!(target is LocationCard)) {
+                continue;
+            }
+            LocationCard locationCard = target as LocationCard;
+            // Create a new card in the location
+            if (!locationCard.IsFull()) {
+                SnapCard newCard = GetCard(action.amount.GetValue<string>(action.owner, triggeredAction: action));
+                if (newCard == null) {
+                    Debug.LogError($"Failed to create card: {action.amount.GetValue<string>(action.owner, triggeredAction: action)}");
+                    continue;
+                }
+                
+                locationCard.location.cardGroup.Mount(newCard);
+                action.createdCards.Add(newCard);
+                ActionSystem.Instance.AddReaction(new RevealCardGA(newCard, IsCardPlayed: false));
+            }
+            
+        }
+        yield return null;
+    }
+
     private IEnumerator GainCostPerformer(IncreaseCostGA action) {
         List<SnapCard> targets = action.targets;
         foreach (SnapCard target in targets) {
-            Buff costBuff = new StatBuff(BuffType.AdditionalCost, action.owner, action.amount.GetValue<int>(action.owner));
+            Buff costBuff = new StatBuff(BuffType.AdditionalCost, action.owner, action.amount.GetValue<int>(action.owner, triggeredAction: action));
             target.ApplyBuff(costBuff);   
+        }
+        yield return null;
+    }
+
+    private IEnumerator SetPowerPerformer(SetPowerGA action) {
+        List<SnapCard> targets = action.targets;
+        foreach (SnapCard target in targets) {
+            StatBuff powerBuff = new StatBuff(BuffType.SetPower, action.owner, action.amount.GetValue<int>(action.owner, triggeredAction: action));
+            Debug.Log($"Setting power of {target.name} to {powerBuff.amount}");
+            target.ApplyBuff(powerBuff);   
         }
         yield return null;
     }

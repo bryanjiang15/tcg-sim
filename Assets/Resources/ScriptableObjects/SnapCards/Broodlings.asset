@@ -10,23 +10,33 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8c47cb6cbd684c0d8329ed925e4fde1, type: 3}
-  m_Name: Blade_005
+  m_Name: Broodlings
   m_EditorClassIdentifier: 
   BackArt: {fileID: 0}
-  cost: 1
-  power: 3
-  card_name: Blade
+  cost: 3
+  power: 0
+  card_name: Broodlings
   series: 0
-  Art: {fileID: 4898635720451536882, guid: 37f5cdf11a76cde4f86de6dded441b34, type: 3}
+  Art: {fileID: 6463726566717575322, guid: f6eca4590ce159a468931cbf7cabd209, type: 3}
   abilities:
-  - trigger: 0
-    effect: 5
+  - triggerDefinition:
+      trigger: 16
+      triggeredTarget:
+      - target: 2
+        targetRange: 0
+        targetSort: 0
+        targetRequirement: []
+        excludeSelf: 0
+    effect: 22
     amount:
-      type: 0
-      value: 
+      type: 4
+      value: '{     "target": {         "target": "TriggeredActionSource",        
+        "targetRange": "None",         "targetSort": "None",         "excludeSelf":
+        false,         "targetRequirement": []     },     "type": "Power",     "calculation":
+        "Total"      }'
     targetDefinition:
-    - target: 1
-      targetRange: 2
+    - target: 2
+      targetRange: 0
       targetSort: 0
       targetRequirement: []
       excludeSelf: 0

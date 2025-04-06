@@ -16,15 +16,15 @@ public class TargetSystem : MonoBehaviour {
         }
     }
 
-    public List<SnapCard> GetTargets(List<AbilityTargetDefinition> targetDefinitions, SnapCard owner) {
+    public List<SnapCard> GetTargets(List<AbilityTargetDefinition> targetDefinitions, SnapCard owner, GameAction triggeredAction = null) {
         List<SnapCard> targets = new List<SnapCard>();
         foreach (AbilityTargetDefinition targetDefinition in targetDefinitions) {
-            targets.AddRange(GetTargets(targetDefinition, owner));
+            targets.AddRange(GetTargets(targetDefinition, owner, triggeredAction));
         }
         return targets;
     }
 
-    public List<SnapCard> GetTargets(AbilityTargetDefinition targetDefinition, SnapCard owner) {
+    public List<SnapCard> GetTargets(AbilityTargetDefinition targetDefinition, SnapCard owner, GameAction triggeredAction = null) {
         List<SnapCard> targets = new List<SnapCard>();
         Location ownerLocation = owner.PlayedLocation;
         Player enemyPlayer = owner.ownedPlayer == Player.Player1 ? Player.Player2 : Player.Player1;
@@ -90,17 +90,51 @@ public class TargetSystem : MonoBehaviour {
                 break;
             case AbilityTarget.NextPlayedCard:
                 break;
+            case AbilityTarget.TriggeredActionTargets:
+                if (triggeredAction == null) {
+                    targets = new List<SnapCard>();
+                }
+                else if (triggeredAction is AbilityEffectGA){
+                    AbilityEffectGA abilityEffectGA = (AbilityEffectGA)triggeredAction;
+                    targets = abilityEffectGA.targets; // Use the targets from the triggered action if available
+                }
+                break;
                 // Add more cases as needed
+            case AbilityTarget.TriggeredActionSource:
+                if (triggeredAction == null) {
+                    targets = new List<SnapCard>();
+                }
+                else if (triggeredAction is AbilityEffectGA){
+                    AbilityEffectGA abilityEffectGA = (AbilityEffectGA)triggeredAction;
+                    targets = new List<SnapCard> { abilityEffectGA.owner }; // Use the owner from the triggered action if available
+                }
+                break;
+            case AbilityTarget.CreatedCard:
+                if (triggeredAction == null) {
+                    targets = new List<SnapCard>();
+                }
+                else if (triggeredAction is CreateCardGA createCardGA){
+                    targets = createCardGA.createdCards; // Use the created cards from the triggered action if available
+                }else
+                {
+                    targets = new List<SnapCard>();
+                }
+                break;
         }
         // Apply additional filters based on targetRange, targetSort, and targetRequirement
-        targets = ApplyRangeFilter(targets, targetDefinition);
+        targets = ApplyRangeFilter(targets, targetDefinition, triggeredAction);
         if (targetDefinition.excludeSelf) {
             targets = targets.Where(target => target != owner).ToList();
         }
         return targets;
     }
 
-    private List<SnapCard> ApplyRangeFilter(List<SnapCard> targets, AbilityTargetDefinition targetDefinition) {
+    public bool IsCardATarget(List<AbilityTargetDefinition> targetDefinitions, SnapCard cardToCheck, SnapCard owner, GameAction triggeredAction = null) {
+        var targets = GetTargets(targetDefinitions, owner, triggeredAction);
+        return false;
+    }
+
+    private List<SnapCard> ApplyRangeFilter(List<SnapCard> targets, AbilityTargetDefinition targetDefinition, GameAction triggeredAction = null) {
         targets = ApplySortFilter(targets, targetDefinition.targetSort);
         AbilityTargetRange range = targetDefinition.targetRange;
         switch (range) {
@@ -111,7 +145,7 @@ public class TargetSystem : MonoBehaviour {
             case AbilityTargetRange.Last:
                 return targets.Count > 0 && targets[targets.Count - 1] != null ? new List<SnapCard> { targets[targets.Count - 1] } : new List<SnapCard>();
             case AbilityTargetRange.AllRequirementsMet:
-                return ApplyRequirementFilter(targets, targetDefinition.targetRequirement);
+                return ApplyRequirementFilter(targets, targetDefinition.targetRequirement, triggeredAction);
             case AbilityTargetRange.Random:
                 Shuffle(targets);
                 if (targets.Count > 0) {
@@ -119,7 +153,7 @@ public class TargetSystem : MonoBehaviour {
                 }
                 return new List<SnapCard>();
             case AbilityTargetRange.RandomRequirementsMet:
-                targets = ApplyRequirementFilter(targets, targetDefinition.targetRequirement);
+                targets = ApplyRequirementFilter(targets, targetDefinition.targetRequirement, triggeredAction);
                 Shuffle(targets);
                 if (targets.Count > 0) {
                     return new List<SnapCard> { targets[0] };
@@ -177,15 +211,15 @@ public class TargetSystem : MonoBehaviour {
         }
     }
 
-    private List<SnapCard> ApplyRequirementFilter(List<SnapCard> targets, List<AbilityRequirement> requirements) {
+    private List<SnapCard> ApplyRequirementFilter(List<SnapCard> targets, List<AbilityRequirement> requirements, GameAction triggeredAction = null) {
         // Implement logic to filter targets based on requirements
         foreach (AbilityRequirement requirement in requirements) {
-            targets = targets.Where(target => IsRequirementMet(requirement, new List<SnapCard> { target })).ToList();
+            targets = targets.Where(target => IsRequirementMet(requirement, new List<SnapCard> { target }, triggeredAction)).ToList();
         }
         return targets;
     }
 
-    public bool IsRequirementMet(AbilityRequirement requirement, List<SnapCard> target) {
+    public bool IsRequirementMet(AbilityRequirement requirement, List<SnapCard> target, GameAction triggeredAction = null) {
         AbilityRequirementType reqType = requirement.ReqType;
         AbilityRequirementComparator reqComparator = requirement.ReqComparator;
         AbilityAmount reqAmount = requirement.ReqAmount;
@@ -193,12 +227,13 @@ public class TargetSystem : MonoBehaviour {
         foreach (SnapCard snapCard in target) {
             AbilityAmount targetValue = GetTargetValue(reqType, snapCard);
             if(targetValue.type == AbilityAmountType.Boolean){
-                return targetValue.GetValue<bool>(snapCard) == reqAmount.GetValue<bool>(snapCard);
+                return targetValue.GetValue<bool>(snapCard, triggeredAction) == reqAmount.GetValue<bool>(snapCard, triggeredAction);
             }
-            if (reqType==AbilityRequirementType.HasKeyword && snapCard.HasKeyword(reqAmount.value)) {
-                satisfiedCount++;
+            if (reqType==AbilityRequirementType.HasKeyword) {
+                if (snapCard.HasKeyword(reqAmount.value))  // Assuming reqAmount.value is a string representing the keyword
+                    satisfiedCount++;
             }
-            else if (CompareRequirementValue(snapCard, targetValue, reqAmount, reqComparator)) {
+            else if (CompareRequirementValue(snapCard, targetValue, reqAmount, reqComparator, triggeredAction)) {
                 satisfiedCount++;
             }
         }
@@ -208,29 +243,30 @@ public class TargetSystem : MonoBehaviour {
         return satisfiedCount > 0;
     }
 
-    bool CompareRequirementValue(SnapCard target, AbilityAmount targetValue, AbilityAmount reqAmount, AbilityRequirementComparator reqComparator) {
+    bool CompareRequirementValue(SnapCard target, AbilityAmount targetValue, AbilityAmount reqAmount, AbilityRequirementComparator reqComparator, GameAction triggeredAction = null) {
+        int targetValueInt = targetValue.GetValue<int>(target, triggeredAction);
+        int reqAmountInt = reqAmount.GetValue<int>(target, triggeredAction);
+        
         switch (reqComparator) {
             case AbilityRequirementComparator.Equal:
                 return targetValue.value == reqAmount.value;
             case AbilityRequirementComparator.NotEqual:
                 return targetValue.value != reqAmount.value;
             case AbilityRequirementComparator.Greater:
-                return targetValue.GetValue<int>(target) > reqAmount.GetValue<int>(target);
+                return targetValueInt > reqAmountInt;
             case AbilityRequirementComparator.Less:
-                return targetValue.GetValue<int>(target) < reqAmount.GetValue<int>(target);
+                return targetValueInt < reqAmountInt;
             case AbilityRequirementComparator.GEQ:
-                return targetValue.GetValue<int>(target) >= reqAmount.GetValue<int>(target);
+                return targetValueInt >= reqAmountInt;
             case AbilityRequirementComparator.LEQ:
-                return targetValue.GetValue<int>(target) <= reqAmount.GetValue<int>(target);
+                return targetValueInt <= reqAmountInt;
             case AbilityRequirementComparator.Contains:
                 return targetValue.value.Contains(reqAmount.value);
             case AbilityRequirementComparator.DoesNotContain:
                 return !targetValue.value.Contains(reqAmount.value);
-            case AbilityRequirementComparator.None:
-                return targetValue.GetValue<int>(target) == 1;
             
             default:
-                return false;
+                return true;
         }
     }
 

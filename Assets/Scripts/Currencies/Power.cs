@@ -33,12 +33,18 @@ public class Power : MonoBehaviour {
     
     public void UpdatePower(){
         int oldPower = powerlevel;
-        powerlevel = BasePower;
+        int basePower = BasePower;
+        powerlevel = 0;
         List<StatBuff> powerBuffs = GetComponent<SnapCard>().buffs.FindAll(buff => buff.type == BuffType.AdditionalPower).ConvertAll(buff => (StatBuff)buff);
         foreach (StatBuff buff in powerBuffs)
         {
             powerlevel += buff.amount;
         }
+        StatBuff setPowerBuff = GetComponent<SnapCard>().buffs.Find(buff => buff.type == BuffType.SetPower) as StatBuff;
+        if (setPowerBuff != null){
+            basePower = setPowerBuff.amount;
+        }
+        powerlevel += basePower;
         UpdatePowerText();
         if (oldPower != powerlevel)
             PowerChanged.Invoke();

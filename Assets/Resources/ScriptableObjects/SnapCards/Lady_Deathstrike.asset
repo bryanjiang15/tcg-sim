@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8c47cb6cbd684c0d8329ed925e4fde1, type: 3}
+  m_Name: Lady_Deathstrike
+  m_EditorClassIdentifier: 
+  BackArt: {fileID: 0}
+  cost: 5
+  power: 8
+  card_name: 
+  series: 0
+  Art: {fileID: 6808459088318349336, guid: 50ed53d55d6d7de4a84c676647e019fd, type: 3}
+  abilities:
+  - triggerDefinition:
+      trigger: 0
+      triggeredTarget:
+      - target: 2
+        targetRange: 0
+        targetSort: 0
+        targetRequirement: []
+        excludeSelf: 0
+    effect: 6
+    amount:
+      type: 0
+      value: 
+    targetDefinition:
+    - target: 3
+      targetRange: 3
+      targetSort: 0
+      targetRequirement: []
+      excludeSelf: 1
+    activationRequirements: []
+    activationRequirementTargets:
+      target: 0
+      targetRange: 0
+      targetSort: 0
+      targetRequirement: []
+      excludeSelf: 0
+    description: 

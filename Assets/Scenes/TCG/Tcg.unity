@@ -419,6 +419,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 180}
+--- !u!114 &312931910 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7652209544016752822, guid: a2aaac701b7f7443abdbf99d652c72e7, type: 3}
+  m_PrefabInstance: {fileID: 1693348411}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 318865ee4312095429feca847343d7fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &372845512 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8172168332549887722, guid: 84c907ed25fea4f40aa2238aa2527f04, type: 3}
@@ -754,6 +765,17 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!114 &579319724 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7652209544016752822, guid: a2aaac701b7f7443abdbf99d652c72e7, type: 3}
+  m_PrefabInstance: {fileID: 1905135306}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 318865ee4312095429feca847343d7fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &600575741 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7652209544016752822, guid: a2aaac701b7f7443abdbf99d652c72e7, type: 3}
@@ -956,6 +978,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &973728353 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7652209544016752822, guid: a2aaac701b7f7443abdbf99d652c72e7, type: 3}
+  m_PrefabInstance: {fileID: 517689293}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 318865ee4312095429feca847343d7fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1035774616 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 737547674092594729, guid: a2aaac701b7f7443abdbf99d652c72e7, type: 3}
@@ -2464,22 +2497,6 @@ PrefabInstance:
     - target: {fileID: 372975957250209054, guid: a2aaac701b7f7443abdbf99d652c72e7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 515945031834664288, guid: a2aaac701b7f7443abdbf99d652c72e7, type: 3}
-      propertyPath: GroupTransitionEvents.Array.data[0].ExitEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 515945031834664288, guid: a2aaac701b7f7443abdbf99d652c72e7, type: 3}
-      propertyPath: GroupTransitionEvents.Array.data[1].ExitEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 515945031834664288, guid: a2aaac701b7f7443abdbf99d652c72e7, type: 3}
-      propertyPath: GroupTransitionEvents.Array.data[0].EntryEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 515945031834664288, guid: a2aaac701b7f7443abdbf99d652c72e7, type: 3}
-      propertyPath: GroupTransitionEvents.Array.data[1].EntryEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4207,16 +4224,28 @@ MonoBehaviour:
     Group: {fileID: 673341365}
   - PlayerIndex: 0
     Name: 5
+    Group: {fileID: 600575741}
+  - PlayerIndex: 0
+    Name: 5
     Group: {fileID: 6819727805608071735}
+  - PlayerIndex: 0
+    Name: 5
+    Group: {fileID: 739560308}
   - PlayerIndex: 0
     Name: 6
     Group: {fileID: 2012651991}
   - PlayerIndex: 1
-    Name: 5
-    Group: {fileID: 0}
-  - PlayerIndex: 1
     Name: 3
     Group: {fileID: 1873821903}
+  - PlayerIndex: 1
+    Name: 5
+    Group: {fileID: 312931910}
+  - PlayerIndex: 1
+    Name: 5
+    Group: {fileID: 973728353}
+  - PlayerIndex: 1
+    Name: 5
+    Group: {fileID: 579319724}
   - PlayerIndex: 1
     Name: 1
     Group: {fileID: 1684115159}
@@ -4268,8 +4297,7 @@ MonoBehaviour:
     CardPresentationPosition: {fileID: 934511657}
     ActiveButtons:
     - {fileID: 1203202216}
-    ValidClickTargets:
-    - {fileID: 0}
+    ValidClickTargets: []
     ValidDrags:
     - Source: {fileID: 673341365}
       Destination: {fileID: 6819727805608071735}

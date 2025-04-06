@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8c47cb6cbd684c0d8329ed925e4fde1, type: 3}
-  m_Name: Adam_Warlock_006
+  m_Name: Adam_Warlock
   m_EditorClassIdentifier: 
   BackArt: {fileID: 0}
   cost: 2
@@ -19,7 +19,9 @@ MonoBehaviour:
   series: 0
   Art: {fileID: 2003840908695831687, guid: e7843ba3f8de4f74ba268e39fbc72f86, type: 3}
   abilities:
-  - trigger: 3
+  - triggerDefinition:
+      trigger: 3
+      triggeredTarget: []
     effect: 4
     amount:
       type: 0
@@ -36,15 +38,20 @@ MonoBehaviour:
       ReqCondition: 0
       ReqAmount:
         type: 4
-        value: 0
+        value: '{     "target": {         "target": "EnemyDirectLocation",        
+          "targetRange": "None",         "targetSort": "None",         "excludeSelf":
+          false,         "targetRequirement": []     },     "type": "Power",    
+          "calculation": "Total"      }'
     activationRequirementTargets:
-      target: 3
+      target: 9
       targetRange: 0
       targetSort: 0
       targetRequirement: []
       excludeSelf: 0
     description: 
-  - trigger: 3
+  - triggerDefinition:
+      trigger: 3
+      triggeredTarget: []
     effect: 0
     amount:
       type: 0
@@ -56,14 +63,17 @@ MonoBehaviour:
       targetRequirement: []
       excludeSelf: 0
     activationRequirements:
-    - ReqType: 6
+    - ReqType: 1
       ReqComparator: 5
       ReqCondition: 0
       ReqAmount:
-        type: 0
-        value: 0
+        type: 4
+        value: '{     "target": {         "target": "EnemyDirectLocation",        
+          "targetRange": "None",         "targetSort": "None",         "excludeSelf":
+          false,         "targetRequirement": []     },     "type": "Power",    
+          "calculation": "Total"      }'
     activationRequirementTargets:
-      target: 13
+      target: 9
       targetRange: 0
       targetSort: 0
       targetRequirement: []

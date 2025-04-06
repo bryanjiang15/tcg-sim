@@ -20,7 +20,8 @@ public class Location : MonoBehaviour {
     public List<SnapCard> playedCards;
     public UnityEvent OnPlayedCardChanged = new UnityEvent();
     public int maxCards = 4;
-    private int totalPower;
+    public int freeSlots => maxCards - cardGroup.MountedCards.Count;
+    public int totalPower {get; private set;} // Total power of all cards in this location, including the location card itself
 
     void Start() {
         cardRepresentation.initCardStats(new SnapCardStats(0, 0, "Location", 0));
@@ -37,7 +38,9 @@ public class Location : MonoBehaviour {
         if (card is SnapCard snapCard) {
             snapCard.SetPlayedLocation(this);
             if (!SnapPhaseManager.Instance.GetCurrentPhaseType().Equals(SnapPhaseType.Preparation)) {
+                Debug.Log("Adding card to played cards: " + snapCard.stats.card_name);
                 AddPlayedCard(snapCard);
+                UpdatePowerLabel();
             }
             else{
                 snapCard.CardRevealed.AddListener(UpdatePowerLabel);
@@ -85,13 +88,12 @@ public class Location : MonoBehaviour {
 
     void UpdatePowerLabel() {
         totalPower = 0;
-        foreach (var card in cardGroup.MountedCards) {
-            if (card is SnapCard && ((SnapCard)card).Revealed) {
-                SnapCard snapCard = (SnapCard)card;
+        foreach (var card in playedCards) {
+            if (card is SnapCard snapCard) {
                 totalPower += snapCard.GetPower();
             }
         }
-        totalPower += cardRepresentation.GetPower();
+        totalPower += cardRepresentation.GetPowerBuffs();
         powerLabel.text = totalPower.ToString();
     }
 

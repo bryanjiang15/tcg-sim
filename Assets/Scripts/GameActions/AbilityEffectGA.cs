@@ -1,199 +1,134 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GainPowerGA : GameAction, IPowerChangedEffect {
-    public SnapCard owner;
-    public List<SnapCard> targets;
-    public AbilityAmount amount;
-    public GainPowerGA(SnapCard owner, List<SnapCard> targets, AbilityAmount amount) {
-        this.owner = owner;
+public class AbilityEffectGA : GameAction {
+    public SnapCard owner; // The card that owns this ability effect
+    public List<SnapCard> targets; // The list of target cards affected by this ability
+    public AbilityAmount amount; // The amount associated with this ability effect
+    public Ability ability;
+
+    public AbilityEffectGA(Ability ability, List<SnapCard> targets, AbilityAmount amount) {
+        this.ability = ability;
+        this.owner = ability.owner;
         this.targets = targets;
         this.amount = amount;
     }
 }
 
-public class DiscardCardGA : GameAction, IHandUpdated {
-    public SnapCard owner;
-    public List<SnapCard> targets;
-
-    public AbilityAmount amount;
-
-    public DiscardCardGA(SnapCard owner, List<SnapCard> targets, AbilityAmount amount) {
-        this.owner = owner;
-        this.targets = targets;
-        this.amount = amount;
+public class GainPowerGA : AbilityEffectGA, IPowerChangedEffect {
+    public GainPowerGA(Ability ability, List<SnapCard> targets, AbilityAmount amount) 
+        : base(ability, targets, amount) {
     }
 }
 
-public class DestroyCardGA : GameAction, ILocationCardsUpdated {
-    public SnapCard owner;
-    public List<SnapCard> targets;
-
-    public AbilityAmount amount;
-
-    public DestroyCardGA(SnapCard owner, List<SnapCard> targets, AbilityAmount amount) {
-        this.owner = owner;
-        this.targets = targets;
-        this.amount = amount;
+public class DiscardCardGA : AbilityEffectGA, IHandUpdated {
+    public DiscardCardGA(Ability ability, List<SnapCard> targets, AbilityAmount amount) 
+        : base(ability, targets, amount) {
     }
 }
 
-public class MoveCardGA : GameAction, ILocationCardsUpdated {
-    public SnapCard owner;
-    public List<SnapCard> targets;
-    public AbilityAmount amount;
-
-    public MoveCardGA(SnapCard owner, List<SnapCard> targets, AbilityAmount amount) {
-        this.owner = owner;
-        this.targets = targets;
-        this.amount = amount;
+public class DestroyCardGA : AbilityEffectGA, ILocationCardsUpdated {
+    public DestroyCardGA(Ability ability, List<SnapCard> targets, AbilityAmount amount) 
+        : base(ability, targets, amount) {
     }
 }
 
-public class StealPowerGA : GameAction, IPowerChangedEffect {
-    public SnapCard owner;
-    public List<SnapCard> targets;
-    public AbilityAmount amount;
-
-    public StealPowerGA(SnapCard owner, List<SnapCard> targets, AbilityAmount amount) {
-        this.owner = owner;
-        this.targets = targets;
-        this.amount = amount;
+public class MoveCardGA : AbilityEffectGA, ILocationCardsUpdated {
+    public MoveCardGA(Ability ability, List<SnapCard> targets, AbilityAmount amount) 
+        : base(ability, targets, amount) {
     }
 }
 
-public class CreateCardInLocationGA : GameAction, ILocationCardsUpdated {
-    public SnapCard owner;
-    public List<SnapCard> targets;
-    public AbilityAmount amount;
-
-    public CreateCardInLocationGA(SnapCard owner, List<SnapCard> targets, AbilityAmount amount) {
-        this.owner = owner;
-        this.targets = targets;
-        this.amount = amount;
+public class StealPowerGA : AbilityEffectGA, IPowerChangedEffect {
+    public StealPowerGA(Ability ability, List<SnapCard> targets, AbilityAmount amount) 
+        : base(ability, targets, amount) {
     }
 }
 
-public class CreateCardInHandGA : GameAction, IHandUpdated {
-    public SnapCard owner;
-    public AbilityAmount amount;
-    public List<SnapCard> targets;
-
-    public CreateCardInHandGA(SnapCard owner, AbilityAmount amount, List<SnapCard> targets) {
-        this.owner = owner;
-        this.amount = amount;
-        this.targets = targets;
+public class CreateCardGA : AbilityEffectGA
+{
+    public List<SnapCard> createdCards;
+    public CreateCardGA(Ability ability, List<SnapCard> targets, AbilityAmount amount) 
+        : base(ability, targets, amount) {
+        createdCards = new List<SnapCard>();
     }
 }
 
-public class CreateCardInDeckGA : GameAction, IDeckUpdated {
-    public SnapCard owner;
-    public AbilityAmount amount;
-   public List<SnapCard> targets;
+public class CreateCardInLocationGA : CreateCardGA, ILocationCardsUpdated {
 
-    public CreateCardInDeckGA(SnapCard owner, AbilityAmount amount, List<SnapCard> targets) {
-        this.owner = owner;
-        this.amount = amount;
-        this.targets = targets;
+    public CreateCardInLocationGA(Ability ability, List<SnapCard> targets, AbilityAmount amount) 
+        : base(ability, targets, amount) {
     }
 }
 
-public class AddPowerToLocationGA : GameAction, IPowerChangedEffect {
-    public SnapCard owner;
-    public List<SnapCard> targets;
-    public AbilityAmount amount;
-
-    public AddPowerToLocationGA(SnapCard owner, List<SnapCard> targets, AbilityAmount amount) {
-        this.owner = owner;
-        this.targets = targets;
-        this.amount = amount;
+public class CreateCardInHandGA : CreateCardGA, IHandUpdated {
+    public CreateCardInHandGA(Ability ability, AbilityAmount amount, List<SnapCard> targets) 
+        : base(ability, targets, amount) {
     }
 }
 
-//Reduce cost by setting amount as negative
-public class IncreaseCostGA : GameAction, ICostChangedEffect {
-    public SnapCard owner;
-    public List<SnapCard> targets;
-    public AbilityAmount amount;
-
-    public IncreaseCostGA(SnapCard owner, List<SnapCard> targets, AbilityAmount amount) {
-        this.owner = owner;
-        this.targets = targets;
-        this.amount = amount;
+public class CreateCardInDeckGA : CreateCardGA, IDeckUpdated {
+    public CreateCardInDeckGA(Ability ability, AbilityAmount amount, List<SnapCard> targets) 
+        : base(ability, targets, amount) {
     }
 }
 
-public class AddCardToHandGA : GameAction, IHandUpdated, ILocationCardsUpdated, IDeckUpdated {
-    public SnapCard owner;
-    public List<SnapCard> targets;
-
-    //Player
-    public AbilityAmount amount;
-
-    public AddCardToHandGA(SnapCard owner, List<SnapCard> targets, AbilityAmount amount) {
-        this.owner = owner;
-        this.targets = targets;
-        this.amount = amount;
+public class AddPowerToLocationGA : AbilityEffectGA, IPowerChangedEffect {
+    public AddPowerToLocationGA(Ability ability, List<SnapCard> targets, AbilityAmount amount) 
+        : base(ability, targets, amount) {
     }
 }
 
-public class AddCardToLocationGA : GameAction, IHandUpdated, ILocationCardsUpdated, IDeckUpdated  {
-    public SnapCard owner;
-    public List<SnapCard> targets;
-    public AbilityAmount amount;
-
-    public AddCardToLocationGA(SnapCard owner, List<SnapCard> targets, AbilityAmount amount) {
-        this.owner = owner;
-        this.targets = targets;
-        this.amount = amount;
+public class IncreaseCostGA : AbilityEffectGA, ICostChangedEffect {
+    public IncreaseCostGA(Ability ability, List<SnapCard> targets, AbilityAmount amount) 
+        : base(ability, targets, amount) {
     }
 }
 
-public class MergeCardsGA : GameAction, ILocationCardsUpdated, IPowerChangedEffect {
-    public SnapCard owner;
+public class AddCardToHandGA : AbilityEffectGA, IHandUpdated, ILocationCardsUpdated, IDeckUpdated {
+    public AddCardToHandGA(Ability ability, List<SnapCard> targets, AbilityAmount amount) 
+        : base(ability, targets, amount) {
+    }
+}
+
+public class AddCardToLocationGA : AbilityEffectGA, IHandUpdated, ILocationCardsUpdated, IDeckUpdated {
+    public AddCardToLocationGA(Ability ability, List<SnapCard> targets, AbilityAmount amount) 
+        : base(ability, targets, amount) {
+    }
+}
+
+public class SetPowerGA : AbilityEffectGA, IPowerChangedEffect {
+    public SetPowerGA(Ability ability, List<SnapCard> targets, AbilityAmount amount) 
+        : base(ability, targets, amount) {
+    }
+}
+
+public class MergeCardsGA : AbilityEffectGA, ILocationCardsUpdated, IPowerChangedEffect {
     public List<SnapCard> MergeTarget;
     public SnapCard RecieveTarget;
 
-    public MergeCardsGA(SnapCard owner, List<SnapCard> MergeTarget, SnapCard RecieveTarget) {
-        this.owner = owner;
+    public MergeCardsGA(Ability ability, List<SnapCard> MergeTarget, SnapCard RecieveTarget) 
+        : base(ability, MergeTarget, new AbilityAmount()) {
         this.MergeTarget = MergeTarget;
         this.RecieveTarget = RecieveTarget;
     }
 }
 
-public class ReturnCardGA : GameAction, IHandUpdated, ILocationCardsUpdated {
-    public SnapCard owner;
-    public List<SnapCard> targets;
-    public AbilityAmount amount;
-
-    public ReturnCardGA(SnapCard owner, List<SnapCard> targets, AbilityAmount amount) {
-        this.owner = owner;
-        this.targets = targets;
-        this.amount = amount;
+public class ReturnCardGA : AbilityEffectGA, IHandUpdated, ILocationCardsUpdated {
+    public ReturnCardGA(Ability ability, List<SnapCard> targets, AbilityAmount amount) 
+        : base(ability, targets, amount) {
     }
 }
 
-public class AddKeywordGA : GameAction {
-    public SnapCard owner;
-    public List<SnapCard> targets;
-    public AbilityAmount amount;
-
-    public AddKeywordGA(SnapCard owner, List<SnapCard> targets, AbilityAmount amount) {
-        this.owner = owner;
-        this.targets = targets;
-        this.amount = amount;
+public class AddKeywordGA : AbilityEffectGA {
+    public AddKeywordGA(Ability ability, List<SnapCard> targets, AbilityAmount amount) 
+        : base(ability, targets, amount) {
     }
 }
 
-public class AddTemporaryAbilityGA : GameAction {
-    public SnapCard owner;
-    public List<SnapCard> targets;
-    public AbilityAmount amount;
-
-    public AddTemporaryAbilityGA(SnapCard owner, List<SnapCard> targets, AbilityAmount amount) {
-        this.owner = owner;
-        this.targets = targets;
-        this.amount = amount;
+public class AddTemporaryAbilityGA : AbilityEffectGA {
+    public AddTemporaryAbilityGA(Ability ability, List<SnapCard> targets, AbilityAmount amount) 
+        : base(ability, targets, amount) {
     }
 }
 

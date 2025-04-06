@@ -10,32 +10,33 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8c47cb6cbd684c0d8329ed925e4fde1, type: 3}
-  m_Name: Captain_America_003
+  m_Name: Blade
   m_EditorClassIdentifier: 
   BackArt: {fileID: 0}
-  cost: 3
+  cost: 1
   power: 3
-  card_name: Captain America
-  series: 1
-  Art: {fileID: 770443925654411152, guid: 0f1feb8faee501648a55401c7e721386, type: 3}
+  card_name: Blade
+  series: 0
+  Art: {fileID: 4898635720451536882, guid: 37f5cdf11a76cde4f86de6dded441b34, type: 3}
   abilities:
-  - trigger: 1
-    effect: 0
+  - triggerDefinition:
+      trigger: 0
+      triggeredTarget:
+      - target: 2
+        targetRange: 0
+        targetSort: 0
+        targetRequirement: []
+        excludeSelf: 0
+    effect: 5
     amount:
       type: 0
-      value: 2
+      value: 
     targetDefinition:
-    - target: 3
-      targetRange: 5
+    - target: 1
+      targetRange: 2
       targetSort: 0
-      targetRequirement:
-      - ReqType: 7
-        ReqComparator: 0
-        ReqCondition: 0
-        ReqAmount:
-          type: 0
-          value: Ongoing
-      excludeSelf: 1
+      targetRequirement: []
+      excludeSelf: 0
     activationRequirements: []
     activationRequirementTargets:
       target: 0

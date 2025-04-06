@@ -10,25 +10,33 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8c47cb6cbd684c0d8329ed925e4fde1, type: 3}
-  m_Name: Lady_Deathstrike_007
+  m_Name: Captain_America
   m_EditorClassIdentifier: 
   BackArt: {fileID: 0}
-  cost: 5
-  power: 8
-  card_name: 
-  series: 0
-  Art: {fileID: 6808459088318349336, guid: 50ed53d55d6d7de4a84c676647e019fd, type: 3}
+  cost: 3
+  power: 3
+  card_name: Captain America
+  series: 1
+  Art: {fileID: 770443925654411152, guid: 0f1feb8faee501648a55401c7e721386, type: 3}
   abilities:
-  - trigger: 0
-    effect: 6
+  - triggerDefinition:
+      trigger: 1
+      triggeredTarget: []
+    effect: 0
     amount:
       type: 0
-      value: 
+      value: 2
     targetDefinition:
     - target: 3
-      targetRange: 3
+      targetRange: 5
       targetSort: 0
-      targetRequirement: []
+      targetRequirement:
+      - ReqType: 7
+        ReqComparator: 0
+        ReqCondition: 0
+        ReqAmount:
+          type: 0
+          value: Ongoing
       excludeSelf: 1
     activationRequirements: []
     activationRequirementTargets:

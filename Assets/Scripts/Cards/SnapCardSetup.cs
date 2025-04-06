@@ -17,13 +17,7 @@ public class SnapCardSetup : CardSetup {
             Image.sprite = snapCardDef.Art;
             NameLabel.text = snapCardDef.card_name;
 
-            List<AbilityDefinition> abilities = new List<AbilityDefinition>(snapCardDef.abilities);
-            abilities.ForEach(abilityDef => {
-                var ability = new Ability();
-                ability.SetOwner(card);
-                ability.SetUpDefinition(abilityDef);
-                AbilityManager.Instance.RegisterAbility(ability);
-            });
+            AbilityManager.Instance.SetUpAbilities(snapCardDef, card);
         }else{
             Debug.LogError("SnapCardSetup.Apply: CardDefinition is not SnapCardDefinition");
         }

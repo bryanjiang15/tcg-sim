@@ -1,6 +1,6 @@
 public enum AbilityTrigger
 {
-    OnReveal,
+    OnReveal, //When card is revealed - from any place to location
     Ongoing,
     GameStart,
     EndTurn,
@@ -13,9 +13,11 @@ public enum AbilityTrigger
     Banished,
     StartTurn,
     Activate,
+    // Card played only if it played from hand during preparation phase
     BeforeCardPlayed, //Triggered before OnrevealGA is performed
     AfterCardPlayed, //Triggered after OnrevealGA is performed
     AfterAbilityTriggered,
+    OnCreated, //Triggered when the card is created
     None
 }
 
@@ -86,6 +88,9 @@ public enum AbilityTarget {
     EnemyDeck,
     EnemyHand,
     NextPlayedCard,
+    TriggeredActionTargets, // Targets that the action that triggered this ability affected
+    TriggeredActionSource, // The source card of the action that triggered this ability
+    CreatedCard //Only activated when trigger is afterabilitytriggered is a create card ability
 }
 
 public enum AbilityTargetRange{

@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 [System.Serializable]
 public struct AbilityDefinition {
-    public AbilityTrigger trigger;
+    public AbilityTriggerDefinition triggerDefinition;
     public AbilityEffect effect;
     public AbilityAmount amount;
     public List<AbilityTargetDefinition> targetDefinition;
@@ -19,7 +19,7 @@ public struct AbilityDefinition {
 public struct AbilityAmount{
     public AbilityAmountType type;
     public string value;
-    public T GetValue<T>(SnapCard owner){
+    public T GetValue<T>(SnapCard owner, GameAction triggeredAction = null) {
         switch (type)
         {
             case AbilityAmountType.Constant:
@@ -33,24 +33,27 @@ public struct AbilityAmount{
             case AbilityAmountType.Boolean:
                 if (typeof(T) == typeof(bool)) return (T)System.Convert.ChangeType(value, typeof(bool));
                 return default(T);
+            case AbilityAmountType.Cardid:
+                if (typeof(T) == typeof(string)) return (T)System.Convert.ChangeType(value, typeof(string));
+                return default(T);
             default:
                 return default(T);
         }
     }
 
-    private int GetForEachTargetValue(SnapCard owner) {
+    private int GetForEachTargetValue(SnapCard owner, GameAction triggeredAction = null) {
         var targetValues = JsonConvert.DeserializeObject<Dictionary<string, object>>(value);
         AbilityTargetDefinition targetDefinition = JsonConvert.DeserializeObject<AbilityTargetDefinition>(targetValues["target"].ToString());
         int multiplierValue = int.Parse(targetValues["value"].ToString());
-        List<SnapCard> targets = TargetSystem.Instance.GetTargets(new List<AbilityTargetDefinition> { targetDefinition }, owner);
+        List<SnapCard> targets = TargetSystem.Instance.GetTargets(new List<AbilityTargetDefinition> { targetDefinition }, owner, triggeredAction: triggeredAction);
         return targets.Count * multiplierValue;
     }
-
-    private int GetTargetValue(SnapCard owner) {
+ 
+    private int GetTargetValue(SnapCard owner, GameAction triggeredAction = null) {
         var jsonValue = JsonConvert.DeserializeObject<Dictionary<string, object>>(value);
         AbilityRequirementType requirementType = (AbilityRequirementType)System.Enum.Parse(typeof(AbilityRequirementType), jsonValue["type"].ToString());
         AbilityTargetDefinition targetDef = JsonConvert.DeserializeObject<AbilityTargetDefinition>(jsonValue["target"].ToString());
-        List<SnapCard> targetCards = TargetSystem.Instance.GetTargets(new List<AbilityTargetDefinition> { targetDef }, owner);
+        List<SnapCard> targetCards = TargetSystem.Instance.GetTargets(new List<AbilityTargetDefinition> { targetDef }, owner, triggeredAction: triggeredAction);
         CalculationType calculationType = (CalculationType)System.Enum.Parse(typeof(CalculationType), jsonValue["calculation"].ToString());
         if (calculationType == CalculationType.MaxValue)
         {
@@ -58,7 +61,7 @@ public struct AbilityAmount{
             foreach (var targetCard in targetCards)
             {
                 AbilityAmount value = TargetSystem.Instance.GetTargetValue(requirementType, targetCard);
-                int cardValue = value.GetValue<int>(targetCard);
+                int cardValue = value.GetValue<int>(targetCard, triggeredAction);
                 if (cardValue > maxValue)
                 {
                     maxValue = cardValue;
@@ -71,7 +74,7 @@ public struct AbilityAmount{
             foreach (var targetCard in targetCards)
             {
                 AbilityAmount value = TargetSystem.Instance.GetTargetValue(requirementType, targetCard);
-                int cardValue = value.GetValue<int>(targetCard);
+                int cardValue = value.GetValue<int>(targetCard, triggeredAction);
                 if (cardValue < minValue)
                 {
                     minValue = cardValue;
@@ -84,7 +87,7 @@ public struct AbilityAmount{
             foreach (var targetCard in targetCards)
             {
                 AbilityAmount value = TargetSystem.Instance.GetTargetValue(requirementType, targetCard);
-                totalValue += value.GetValue<int>(targetCard);
+                totalValue += value.GetValue<int>(targetCard, triggeredAction);
             }
             return totalValue;
         }
@@ -117,4 +120,11 @@ public struct AbilityTargetDefinition {
     public AbilityTargetSort targetSort;
     public List<AbilityRequirement> targetRequirement;
     public bool excludeSelf;
+}
+
+[System.Serializable]
+public struct AbilityTriggerDefinition 
+{
+    public AbilityTrigger trigger;
+    public List<AbilityTargetDefinition> triggeredTarget;//Targets that can trigger the ability
 }

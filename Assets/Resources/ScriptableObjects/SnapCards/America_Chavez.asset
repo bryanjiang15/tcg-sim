@@ -10,28 +10,30 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8c47cb6cbd684c0d8329ed925e4fde1, type: 3}
-  m_Name: Dazzler_004
+  m_Name: America_Chavez
   m_EditorClassIdentifier: 
   BackArt: {fileID: 0}
-  cost: 2
+  cost: 1
   power: 2
-  card_name: Dazzler
-  series: 3
-  Art: {fileID: -5264264106846292154, guid: 9e0b3b2f8af9d5447955d160926c6383, type: 3}
+  card_name: America_Chavez
+  series: 1
+  Art: {fileID: -2667395916182224997, guid: 3939ff614a93b7f42958b9b9c0dee251, type: 3}
   abilities:
-  - trigger: 1
+  - triggerDefinition:
+      trigger: 0
+      triggeredTarget:
+      - target: 2
+        targetRange: 0
+        targetSort: 0
+        targetRequirement: []
+        excludeSelf: 0
     effect: 0
     amount:
-      type: 1
-      value: '{     "target": {         "target": "AllPlayerLocation",         "targetRange":
-        "AllRequirementsMet",         "targetSort": "None",         "excludeSelf":
-        false,         "targetRequirement": [{             "reqType": "LocationFull",            
-        "ReqComparator": "None",             "ReqCondition": "All",             "ReqAmount":
-        {                 "type": "Boolean",                 "value": true            
-        }         }]     },     "value": 2      }'
+      type: 0
+      value: 2
     targetDefinition:
-    - target: 2
-      targetRange: 0
+    - target: 0
+      targetRange: 2
       targetSort: 0
       targetRequirement: []
       excludeSelf: 0

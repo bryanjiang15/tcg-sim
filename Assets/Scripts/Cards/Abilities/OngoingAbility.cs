@@ -6,8 +6,6 @@ using UnityEngine.Events;
 
 public class OngoingAbility : Ability {
     private List<SnapCard> currentTargets = new();
-    private int currentAmount = 0;
-
     static List<Type> ignoredTypes = new() {
         typeof(RefillEnergyGA),
         typeof(AddTemporaryAbilityGA),
@@ -30,8 +28,8 @@ public class OngoingAbility : Ability {
         listenedTypes.AddRange(ConfigureTargetListeners(definition.targetDefinition));
 
         ActionSystem.SubscribeReaction<GameAction>(UpdateTargets, ReactionTiming.POST);
+        //Ongoing abilities does not have a triggered gameaction
         currentTargets = TargetSystem.Instance.GetTargets(definition.targetDefinition, owner);
-        currentAmount = definition.amount.GetValue<int>(owner);
         ActionSystem.Instance.AddReaction(getAbilityEffect(currentTargets));
     }
 
@@ -123,6 +121,7 @@ public class OngoingAbility : Ability {
         foreach (SnapCard target in targets) {
             Buff buffToRemove = target.buffs.Find(buff => buff.source == owner);
             if (buffToRemove != null) {
+                 // Remove the buff from the target
                 target.RemoveBuff(buffToRemove, replacingRemovedBuff: replacingBuff);
             }
         }

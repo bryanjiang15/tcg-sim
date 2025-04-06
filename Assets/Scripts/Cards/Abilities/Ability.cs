@@ -17,18 +17,14 @@ public class Ability
         this.owner = owner;
     }
 
-    private List<SnapCard> GetTargets() {
-        return TargetSystem.Instance.GetTargets(definition.targetDefinition, owner);
-    }
-
-    public GameAction getAbilityEffect(List<SnapCard> targets = null) {
+    public GameAction getAbilityEffect(List<SnapCard> targets = null, GameAction triggeredAction = null) {
         if (targets == null) {
-            targets = GetTargets();
+            targets = TargetSystem.Instance.GetTargets(definition.targetDefinition, owner, triggeredAction: triggeredAction);
         }
         if (definition.effect == AbilityEffect.Draw) {
-            return new DrawCardGA(definition.amount.GetValue<int>(owner), owner.ownedPlayer, source: owner);
+            return new DrawCardGA(definition.amount.GetValue<int>(owner, triggeredAction), owner.ownedPlayer, source: owner);
         }
-        return (GameAction)Activator.CreateInstance(abilityEffectType, owner, targets, definition.amount);
+        return (GameAction)Activator.CreateInstance(abilityEffectType, this, targets, definition.amount);
     }
 
     public static Dictionary<AbilityEffect, Type> AbilityEffectTypeMap = new Dictionary<AbilityEffect, Type>(){
@@ -49,6 +45,7 @@ public class Ability
         {AbilityEffect.Return, typeof(ReturnCardGA)},
         {AbilityEffect.AddCardToHand, typeof(AddCardToHandGA)},
         {AbilityEffect.AddCardToLocation, typeof(AddCardToLocationGA)},
+        {AbilityEffect.SetPower, typeof(SetPowerGA)},
         {AbilityEffect.AddKeyword, typeof(AddKeywordGA)},
         {AbilityEffect.AddTemporaryAbility, typeof(AddTemporaryAbilityGA)},
         // Add more cases as needed for additional AbilityEffect values
