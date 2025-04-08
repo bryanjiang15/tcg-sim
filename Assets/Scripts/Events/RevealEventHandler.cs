@@ -48,8 +48,10 @@ public class RevealEventHandler : MonoBehaviour {
 
     private IEnumerator ProcessCardEvents() {
         Player currentPlayer = Player.Player1;
-        foreach (SnapCard card in PlayedCards[currentPlayer]) {
-            while(ActionSystem.Instance.IsPerforming) yield return null;
+        while (PlayedCards[currentPlayer].Count > 0) {
+            while (ActionSystem.Instance.IsPerforming) yield return null;
+            SnapCard card = PlayedCards[currentPlayer][0];
+            PlayedCards[currentPlayer].RemoveAt(0);
             ActionSystem.Instance.Perform(new RevealCardGA(card));
         }
         PlayedCards[currentPlayer].Clear();
@@ -71,5 +73,13 @@ public class RevealEventHandler : MonoBehaviour {
         if (PlayedCards.ContainsKey(location.player)) {
             PlayedCards[location.player].Remove(card);
         }
+    }
+
+    public SnapCard GetNextPlayedCard(Player player) {
+        Debug.Log($"number of played cards: {PlayedCards[player].Count}");
+        if (PlayedCards.ContainsKey(player) && PlayedCards[player].Count > 0) {
+            return PlayedCards[player][0];
+        }
+        return null;
     }
 }

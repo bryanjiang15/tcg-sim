@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CardHouse;
+using Mono.Cecil;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -89,6 +90,9 @@ public class TargetSystem : MonoBehaviour {
                 targets = GetLocations().Select(location => location.cardRepresentation as SnapCard).Where(card => card != null).ToList();
                 break;
             case AbilityTarget.NextPlayedCard:
+                SnapCard nextPlayedCard = RevealEventHandler.Instance.GetNextPlayedCard(owner.ownedPlayer);
+                if (nextPlayedCard != null)  // Check if the next played card is not null
+                    targets.Add(nextPlayedCard);
                 break;
             case AbilityTarget.TriggeredActionTargets:
                 if (triggeredAction == null) {
