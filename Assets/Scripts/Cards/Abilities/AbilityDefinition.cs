@@ -120,6 +120,14 @@ public struct AbilityTargetDefinition {
     public AbilityTargetSort targetSort;
     public List<AbilityRequirement> targetRequirement;
     public bool excludeSelf;
+
+    public AbilityTargetDefinition(AbilityTarget target, AbilityTargetRange targetRange = AbilityTargetRange.None, AbilityTargetSort targetSort = AbilityTargetSort.None) {
+        this.target = target;
+        this.targetRange = targetRange;
+        this.targetSort = targetSort;
+        this.targetRequirement = new List<AbilityRequirement>();
+        this.excludeSelf = false;
+    }
 }
 
 [System.Serializable]

@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8c47cb6cbd684c0d8329ed925e4fde1, type: 3}
-  m_Name: Forge
+  m_Name: Silver_Surfer
   m_EditorClassIdentifier: 
   BackArt: {fileID: 0}
-  cost: 2
+  cost: 3
   power: 2
-  card_name: Forge
-  series: 2
-  Art: {fileID: 5255172851388152910, guid: c4a8a5ac56b39184a9fcd590dbce5dcf, type: 3}
+  card_name: Silver Surfer
+  series: 3
+  Art: {fileID: -283617380592561411, guid: 17035f76bfef2f44bba69c969ddcfca9, type: 3}
   abilities:
   - triggerDefinition:
       trigger: 0
@@ -32,11 +32,17 @@ MonoBehaviour:
       type: 0
       value: 2
     targetDefinition:
-    - target: 17
-      targetRange: 0
+    - target: 6
+      targetRange: 5
       targetSort: 0
-      targetRequirement: []
-      excludeSelf: 0
+      targetRequirement:
+      - ReqType: 2
+        ReqComparator: 1
+        ReqCondition: 0
+        ReqAmount:
+          type: 0
+          value: 3
+      excludeSelf: 1
     activationRequirements: []
     activationRequirementTargets:
       target: 0

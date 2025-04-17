@@ -90,18 +90,35 @@ public class AbilityManager : MonoBehaviour {
     }
 
     public void TriggerAbilityReaction(SnapCard owner, Ability ability, List<SnapCard> targets=null, GameAction triggeredAction = null) {
+        if (triggeredAction != null) {
+            //Check if the triggered target is valid for the ability
+            List<AbilityTargetDefinition> triggeredTargetDefinitions = ability.definition.triggerDefinition.triggeredTarget;
+            if (triggeredTargetDefinitions != null && triggeredTargetDefinitions.Count > 0) {
+                List<SnapCard> triggeredTargets = TargetSystem.Instance.GetTargets(triggeredTargetDefinitions, owner, triggeredAction: triggeredAction);
+                if (triggeredTargets.Count == 0) {
+                    Debug.Log($"Triggered action does not have valid targets for ability: {ability.owner.name}, {ability.definition.triggerDefinition.triggeredTarget[0].target}");
+
+                    return;
+                }
+            }
+        }
+
         if (ability.definition.activationRequirements != null && ability.definition.activationRequirements.Count > 0) {
             // Check if activation requirements are met
             List<AbilityTargetDefinition> activationTargetDefinitions = new List<AbilityTargetDefinition> { ability.definition.activationRequirementTargets };
             List<SnapCard> ActivationReqTargets = TargetSystem.Instance.GetTargets(activationTargetDefinitions, owner, triggeredAction: triggeredAction);
             foreach (var requirement in ability.definition.activationRequirements) {
                 if (!TargetSystem.Instance.IsRequirementMet(requirement, ActivationReqTargets)) {
-                    Debug.Log($"Activation requirements not met for ability: {ability.owner.name} - {ability.definition.description}");
+                    Debug.Log($"Activation requirements not met for ability: {ability.owner.stats.card_name} - {ability.definition.description}");
                     return; // Do not activate if requirements are not met
                 }
             }
-        }
+        }     
         ActionSystem.Instance.AddReaction(ability.getAbilityEffect(targets, triggeredAction));
+        HandleNextPlayedCardAbility(ability); // Handle things regarding next played card ability
+        if (ability.exhaust) {
+            ability.UnsubscribeActionCallback();
+        }
     }
 
     public bool IsAbilityActiveOnPlay(AbilityTrigger trigger) {
@@ -115,33 +132,63 @@ public class AbilityManager : MonoBehaviour {
                 // AbilityManager.Instance.ActivateOnRevealAbility(owner);
                 break;
             case AbilityTrigger.EndTurn:
-                ActionSystem.SubscribeReaction<EndPhaseGA>((endPhaseGA) =>{
-                    if(SnapPhaseManager.Instance.GetCurrentPhaseType() == SnapPhaseType.Reveal){
-                        TriggerAbilityReaction(ability.owner, ability);
+                Action<GameAction> endPhaseAction = (endPhaseGA) => {
+                    if (SnapPhaseManager.Instance.GetCurrentPhaseType() == SnapPhaseType.Reveal) {
+                        TriggerAbilityReaction(ability.owner, ability, triggeredAction: endPhaseGA);
                     }
-                }, ReactionTiming.PRE);
+                };
+                ActionSystem.SubscribeReaction<EndPhaseGA>(endPhaseAction, ReactionTiming.PRE);
+                ability.SetUnsubscribeActionCallback((endPhaseGA) => {
+                    ActionSystem.UnsubscribeReaction<EndPhaseGA>(endPhaseAction, ReactionTiming.PRE);
+                });
+                break;
+            case AbilityTrigger.Destroyed:
+                Action<GameAction> destroyCardAction = (destroyCardGA) => {
+                    TriggerAbilityReaction(ability.owner, ability, triggeredAction: destroyCardGA);
+                };
+                ActionSystem.SubscribeReaction<DestroyCardGA>(destroyCardAction, ReactionTiming.POST);
+                ability.SetUnsubscribeActionCallback((destroyCardGA) => {
+                    ActionSystem.UnsubscribeReaction<DestroyCardGA>(destroyCardAction, ReactionTiming.POST);
+                });
+                
                 break;
             case AbilityTrigger.BeforeCardPlayed:
-                ActionSystem.SubscribeReaction<RevealCardGA>((revealCardGA) =>{
-                    if(revealCardGA.card != ability.owner){
-                        TriggerAbilityReaction(ability.owner, ability);
-                    }
-                }, ReactionTiming.PRE);
+                Action<GameAction> beforeCardPlayedAction = (beforeCardPlayedGA) => {
+                    TriggerAbilityReaction(ability.owner, ability, triggeredAction: beforeCardPlayedGA);
+                };
+                ActionSystem.SubscribeReaction<RevealCardGA>(beforeCardPlayedAction, ReactionTiming.PRE);
+                ability.SetUnsubscribeActionCallback((beforeCardPlayedGA) => {
+                    ActionSystem.UnsubscribeReaction<RevealCardGA>(beforeCardPlayedAction, ReactionTiming.PRE);
+                });
                 break;
             case AbilityTrigger.AfterCardPlayed:
-                ActionSystem.SubscribeReaction<RevealCardGA>((revealCardGA) =>{
-                    if(revealCardGA.card != ability.owner){
-                        TriggerAbilityReaction(ability.owner, ability);
-                    }
-                }, ReactionTiming.POST);
+                Action<GameAction> afterCardPlayedAction = (afterCardPlayedGA) => {
+                    TriggerAbilityReaction(ability.owner, ability, triggeredAction: afterCardPlayedGA);
+                };
+                ActionSystem.SubscribeReaction<RevealCardGA>(afterCardPlayedAction, ReactionTiming.POST);
+                ability.SetUnsubscribeActionCallback((afterCardPlayedGA) => {
+                    ActionSystem.UnsubscribeReaction<RevealCardGA>(afterCardPlayedAction, ReactionTiming.POST);
+                });
                 break;
                 
         }
     }
 
     public void HandleNextPlayedCardAbility(Ability ability) {
+        if (!RuleSystem.Instance.checkAbilityTargetingNextCard(ability)) return;
+
+        //If nextPlayedCard is not played this turn
+        if (TargetSystem.Instance.GetTargets(new List<AbilityTargetDefinition> {
+            new AbilityTargetDefinition(AbilityTarget.NextPlayedCard) 
+        }, ability.owner).Count != 0) return;
+
         Ability temporaryAbility = ability;
-        temporaryAbility.definition.triggerDefinition.trigger = AbilityTrigger.AfterCardPlayed;
+        temporaryAbility.definition.triggerDefinition.trigger = AbilityTrigger.BeforeCardPlayed;
+        temporaryAbility.definition.triggerDefinition.triggeredTarget = new List<AbilityTargetDefinition> {
+            new AbilityTargetDefinition(AbilityTarget.AllPlayerCards)
+        };
+        var nextCardPlayedTarget = new AbilityTargetDefinition(AbilityTarget.TriggeredActionTargets, AbilityTargetRange.First);
+        temporaryAbility.definition.targetDefinition = new List<AbilityTargetDefinition> { nextCardPlayedTarget };
         temporaryAbility.exhaust = true;
         ActivateAbility(temporaryAbility);
     }

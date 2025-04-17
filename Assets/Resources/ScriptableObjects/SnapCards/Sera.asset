@@ -10,33 +10,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8c47cb6cbd684c0d8329ed925e4fde1, type: 3}
-  m_Name: Forge
+  m_Name: Sera
   m_EditorClassIdentifier: 
   BackArt: {fileID: 0}
-  cost: 2
-  power: 2
-  card_name: Forge
-  series: 2
-  Art: {fileID: 5255172851388152910, guid: c4a8a5ac56b39184a9fcd590dbce5dcf, type: 3}
+  cost: 5
+  power: 5
+  card_name: Sera
+  series: 3
+  Art: {fileID: 7922290322892019832, guid: d109b057d8fde51458171cde3fd510a8, type: 3}
   abilities:
   - triggerDefinition:
-      trigger: 0
-      triggeredTarget:
-      - target: 2
-        targetRange: 0
-        targetSort: 0
-        targetRequirement: []
-        excludeSelf: 0
-    effect: 0
+      trigger: 1
+      triggeredTarget: []
+    effect: 16
     amount:
       type: 0
-      value: 2
+      value: 1
     targetDefinition:
-    - target: 17
-      targetRange: 0
+    - target: 1
+      targetRange: 3
       targetSort: 0
       targetRequirement: []
-      excludeSelf: 0
+      excludeSelf: 1
     activationRequirements: []
     activationRequirementTargets:
       target: 0

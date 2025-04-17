@@ -78,7 +78,7 @@ public enum AbilityTarget {
     AllDirectLocationCards,
     AllPlayerCards,
     AllEnemyCards,
-    AllBoardCards,
+    AllPlayedCards,
     PlayerDirectLocation,
     AllPlayerLocation,
     EnemyDirectLocation,
@@ -90,7 +90,9 @@ public enum AbilityTarget {
     NextPlayedCard,
     TriggeredActionTargets, // Targets that the action that triggered this ability affected
     TriggeredActionSource, // The source card of the action that triggered this ability
-    CreatedCard //Only activated when trigger is afterabilitytriggered is a create card ability
+    CreatedCard, //Only activated when trigger is afterabilitytriggered is a create card ability
+    AllPlayerPlayedCards,
+    AllEnemyPlayedCards,
 }
 
 public enum AbilityTargetRange{
@@ -128,6 +130,7 @@ public enum AbilityRequirementType
     CardName, // New: Check for specific card names
     BuffPresent, // New: Check if a specific buff is present
     LocationFull, // New: Check if a location is occupied
+    CurrentCost,
 }
 
 public enum AbilityRequirementComparator

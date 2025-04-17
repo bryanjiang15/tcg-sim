@@ -98,10 +98,14 @@ public class OngoingAbility : Ability {
                     break;
                 case AbilityTarget.PlayerDirectLocationCards:
                 case AbilityTarget.EnemyDirectLocationCards:
+                case AbilityTarget.AllPlayerPlayedCards:
+                case AbilityTarget.AllEnemyPlayedCards:
+                case AbilityTarget.AllPlayedCards:
+                    typesToListenTo.Add(typeof(ILocationCardsUpdated));
+                    break;
                 case AbilityTarget.AllPlayerCards:
                 case AbilityTarget.AllEnemyCards:
-                case AbilityTarget.AllBoardCards:
-                    typesToListenTo.Add(typeof(ILocationCardsUpdated));
+                    typesToListenTo.Add(typeof(CreateCardGA));
                     break;
                 case AbilityTarget.PlayerDirectLocation:
                     typesToListenTo.Add(typeof(ILocationCardsUpdated));

@@ -43,9 +43,9 @@ public class Location : MonoBehaviour {
                 UpdatePowerLabel();
             }
             else{
-                snapCard.CardRevealed.AddListener(UpdatePowerLabel);
                 snapCard.CardRevealed.AddListener(() => {
                     AddPlayedCard(snapCard);
+                    UpdatePowerLabel();
                 });
             }
             Power power = snapCard.GetComponent<Power>();

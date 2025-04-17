@@ -5,6 +5,20 @@ using CardHouse;
 using UnityEngine;
 
 public class RuleSystem : Singleton<RuleSystem> {
+
+    //Effects that target cards on the board
+    static List<AbilityEffect> PlayedCardTargetingEffects = new List<AbilityEffect> {
+        AbilityEffect.AddKeyword,
+        AbilityEffect.Afflict,
+        AbilityEffect.GainPower,
+        AbilityEffect.LosePower,
+        AbilityEffect.Destroy,
+        AbilityEffect.Move,
+        //AbilityEffect.Discard,
+        AbilityEffect.Return,
+        AbilityEffect.Merge,
+        AbilityEffect.SetPower,
+    };
     
     public bool checkEffectAmount(AbilityAmount amount, AbilityEffect effect, SnapCard owner=null) {
         //Check for boolean restrictions
@@ -48,6 +62,17 @@ public class RuleSystem : Singleton<RuleSystem> {
             };
             if (!triggerableEffects.Contains(triggeredAction.GetType())) return false;
         }
+        return true;
+    }
+
+    //Queueing up ability targeting the next played card. Check if ability is allowed:
+    public bool checkAbilityTargetingNextCard(Ability ability) {
+        List<AbilityTarget> abilityTargets = new List<AbilityTarget>();
+        foreach (var targetDefinition in ability.definition.targetDefinition) {
+            abilityTargets.Add(targetDefinition.target);
+        }
+        if (!abilityTargets.Contains(AbilityTarget.NextPlayedCard)) return false;
+        if (!PlayedCardTargetingEffects.Contains(ability.definition.effect)) return false;
         return true;
     }
 }

@@ -50,3 +50,27 @@ MonoBehaviour:
       targetRequirement: []
       excludeSelf: 0
     description: 
+  - triggerDefinition:
+      trigger: 15
+      triggeredTarget: []
+    effect: 22
+    amount:
+      type: 4
+      value: '{     "target": {         "target": "Self",         "targetRange":
+        "None",         "targetSort": "None",         "excludeSelf": false,        
+        "targetRequirement": []     },     "type": "Power",     "calculation": "Total"     
+        }'
+    targetDefinition:
+    - target: 20
+      targetRange: 3
+      targetSort: 0
+      targetRequirement: []
+      excludeSelf: 0
+    activationRequirements: []
+    activationRequirementTargets:
+      target: 0
+      targetRange: 0
+      targetSort: 0
+      targetRequirement: []
+      excludeSelf: 0
+    description: 

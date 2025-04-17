@@ -52,20 +52,27 @@ public class TargetSystem : MonoBehaviour {
                 Location enemyLocation = GetEnemyLocation(ownerLocation);
                 targets = enemyLocation.cardGroup.MountedCards.OfType<SnapCard>().ToList();
                 break;
-            
             case AbilityTarget.AllPlayerCards:
+                targets = FindObjectsByType<SnapCard>(FindObjectsSortMode.None).Where(card => 
+                    card.ownedPlayer == owner.ownedPlayer && !(card is LocationCard)).ToList();
+                break;
+            case AbilityTarget.AllEnemyCards:
+                targets = FindObjectsByType<SnapCard>(FindObjectsSortMode.None).Where(card => 
+                    card.ownedPlayer == enemyPlayer && !(card is LocationCard)).ToList();
+                break;
+            case AbilityTarget.AllPlayerPlayedCards:
                 List<Location> playerLocations = GetLocations(owner.ownedPlayer);
                 foreach (Location location in playerLocations) {
                     targets.AddRange(location.cardGroup.MountedCards.OfType<SnapCard>());
                 }
                 break;
-            case AbilityTarget.AllEnemyCards:
+            case AbilityTarget.AllEnemyPlayedCards:
                 List<Location> enemyLocations = GetLocations(enemyPlayer);
                 foreach (Location location in enemyLocations) {
                     targets.AddRange(location.cardGroup.MountedCards.OfType<SnapCard>());
                 }
                 break;
-            case AbilityTarget.AllBoardCards:
+            case AbilityTarget.AllPlayedCards:
                 List<Location> allLocations = GetLocations();
                 foreach (Location location in allLocations) {
                     targets.AddRange(location.cardGroup.MountedCards.OfType<SnapCard>());
@@ -101,6 +108,9 @@ public class TargetSystem : MonoBehaviour {
                 else if (triggeredAction is AbilityEffectGA){
                     AbilityEffectGA abilityEffectGA = (AbilityEffectGA)triggeredAction;
                     targets = abilityEffectGA.targets; // Use the targets from the triggered action if available
+                }
+                else if (triggeredAction is RevealCardGA revealCardGA){
+                    targets = new List<SnapCard> { revealCardGA.card };
                 }
                 break;
                 // Add more cases as needed
@@ -139,6 +149,9 @@ public class TargetSystem : MonoBehaviour {
     }
 
     private List<SnapCard> ApplyRangeFilter(List<SnapCard> targets, AbilityTargetDefinition targetDefinition, GameAction triggeredAction = null) {
+        if (targets.Count == 0) {
+            return targets;
+        }
         targets = ApplySortFilter(targets, targetDefinition.targetSort);
         AbilityTargetRange range = targetDefinition.targetRange;
         switch (range) {
@@ -300,6 +313,8 @@ public class TargetSystem : MonoBehaviour {
                     return new AbilityAmount { type = AbilityAmountType.Boolean, value = locationCard.IsFull().ToString() };
                 }
                 return new AbilityAmount { type = AbilityAmountType.Constant, value = "false" };
+            case AbilityRequirementType.CurrentCost:
+                return new AbilityAmount { type = AbilityAmountType.Constant, value = target.GetCurrentCost().ToString() };
             default:
                 return new AbilityAmount { type = AbilityAmountType.Constant, value = "0" };
         }

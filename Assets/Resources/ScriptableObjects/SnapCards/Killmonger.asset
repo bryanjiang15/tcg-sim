@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8c47cb6cbd684c0d8329ed925e4fde1, type: 3}
-  m_Name: Forge
+  m_Name: Killmonger
   m_EditorClassIdentifier: 
   BackArt: {fileID: 0}
-  cost: 2
-  power: 2
-  card_name: Forge
-  series: 2
-  Art: {fileID: 5255172851388152910, guid: c4a8a5ac56b39184a9fcd590dbce5dcf, type: 3}
+  cost: 3
+  power: 3
+  card_name: Killmonger
+  series: 3
+  Art: {fileID: -129652265775552409, guid: 818e00601098fa14f91981e762360ac3, type: 3}
   abilities:
   - triggerDefinition:
       trigger: 0
@@ -27,15 +27,21 @@ MonoBehaviour:
         targetSort: 0
         targetRequirement: []
         excludeSelf: 0
-    effect: 0
+    effect: 6
     amount:
       type: 0
-      value: 2
+      value: 
     targetDefinition:
-    - target: 17
-      targetRange: 0
+    - target: 8
+      targetRange: 5
       targetSort: 0
-      targetRequirement: []
+      targetRequirement:
+      - ReqType: 2
+        ReqComparator: 1
+        ReqCondition: 0
+        ReqAmount:
+          type: 0
+          value: 1
       excludeSelf: 0
     activationRequirements: []
     activationRequirementTargets:

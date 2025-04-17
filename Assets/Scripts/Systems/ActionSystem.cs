@@ -25,6 +25,7 @@ public class ActionSystem : Singleton<ActionSystem>
     }
 
     public void AddReaction(GameAction gameAction){
+        if (gameAction == null) return;
         reactions?.Add(gameAction);
     }
 

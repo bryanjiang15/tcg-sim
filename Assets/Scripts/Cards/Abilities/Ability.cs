@@ -13,6 +13,8 @@ public class Ability
     public SnapCard owner { get; private set; }
     public bool exhaust = false;
 
+    private Action<GameAction> unsubscribeActionCallback;
+
     public void SetOwner(SnapCard owner){
         this.owner = owner;
     }
@@ -24,6 +26,7 @@ public class Ability
         if (definition.effect == AbilityEffect.Draw) {
             return new DrawCardGA(definition.amount.GetValue<int>(owner, triggeredAction), owner.ownedPlayer, source: owner);
         }
+        if (targets.Count == 0) return null;
         return (GameAction)Activator.CreateInstance(abilityEffectType, this, targets, definition.amount);
     }
 
@@ -55,5 +58,17 @@ public class Ability
     {
         definition = abilityDefinition;
         abilityEffectType = AbilityEffectTypeMap[abilityDefinition.effect];
+    }
+
+    public void SetUnsubscribeActionCallback(Action<GameAction> callback) {
+        unsubscribeActionCallback = callback;
+    }
+
+    public void UnsubscribeActionCallback() {
+        //activate the callback if it is not null
+        if (unsubscribeActionCallback != null) {
+            unsubscribeActionCallback.Invoke(null);
+            unsubscribeActionCallback = null;
+        }
     }
 }

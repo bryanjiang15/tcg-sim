@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8c47cb6cbd684c0d8329ed925e4fde1, type: 3}
-  m_Name: Forge
+  m_Name: Nova
   m_EditorClassIdentifier: 
   BackArt: {fileID: 0}
-  cost: 2
-  power: 2
-  card_name: Forge
-  series: 2
-  Art: {fileID: 5255172851388152910, guid: c4a8a5ac56b39184a9fcd590dbce5dcf, type: 3}
+  cost: 1
+  power: 1
+  card_name: Nova
+  series: 3
+  Art: {fileID: 7503997118918454874, guid: 6a19f4ad28af6e04796329846958decb, type: 3}
   abilities:
   - triggerDefinition:
-      trigger: 0
+      trigger: 7
       triggeredTarget:
       - target: 2
         targetRange: 0
@@ -30,10 +30,10 @@ MonoBehaviour:
     effect: 0
     amount:
       type: 0
-      value: 2
+      value: 1
     targetDefinition:
-    - target: 17
-      targetRange: 0
+    - target: 21
+      targetRange: 3
       targetSort: 0
       targetRequirement: []
       excludeSelf: 0

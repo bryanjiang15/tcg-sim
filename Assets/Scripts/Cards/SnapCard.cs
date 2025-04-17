@@ -19,7 +19,7 @@ public struct SnapCardStats {
     }
 }
 
-public class SnapCard : Card, IBuffObtainable {
+public class SnapCard : Card, IBuffObtainable { 
     public SnapCardStats stats { get ; private set; }
     public int PlayedOrder { get; private set; }
 
@@ -30,7 +30,7 @@ public class SnapCard : Card, IBuffObtainable {
     public UnityEvent BuffChanged = new UnityEvent();
     public List<Buff> buffs = new List<Buff>();
     public Location PlayedLocation { get; private set; }
-    public virtual Player ownedPlayer => PlayedLocation.player;
+    public virtual Player ownedPlayer => GroupRegistry.Instance.GetOwnerIndex(Group) == 0 ? Player.Player1 : Player.Player2;
 
     Vector3 originalScale; // Original scale of the card for resizing during drag
     private void Start() {

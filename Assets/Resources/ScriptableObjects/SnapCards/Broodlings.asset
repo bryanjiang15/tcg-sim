@@ -14,37 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BackArt: {fileID: 0}
   cost: 3
-  power: 0
+  power: 2
   card_name: Broodlings
   series: 0
   Art: {fileID: 6463726566717575322, guid: f6eca4590ce159a468931cbf7cabd209, type: 3}
-  abilities:
-  - triggerDefinition:
-      trigger: 16
-      triggeredTarget:
-      - target: 2
-        targetRange: 0
-        targetSort: 0
-        targetRequirement: []
-        excludeSelf: 0
-    effect: 22
-    amount:
-      type: 4
-      value: '{     "target": {         "target": "TriggeredActionSource",        
-        "targetRange": "None",         "targetSort": "None",         "excludeSelf":
-        false,         "targetRequirement": []     },     "type": "Power",     "calculation":
-        "Total"      }'
-    targetDefinition:
-    - target: 2
-      targetRange: 0
-      targetSort: 0
-      targetRequirement: []
-      excludeSelf: 0
-    activationRequirements: []
-    activationRequirementTargets:
-      target: 0
-      targetRange: 0
-      targetSort: 0
-      targetRequirement: []
-      excludeSelf: 0
-    description: 
+  abilities: []
