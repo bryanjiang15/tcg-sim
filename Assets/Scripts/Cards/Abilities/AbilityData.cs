@@ -1,6 +1,6 @@
 public enum AbilityTrigger
 {
-    OnReveal, //When card is revealed - from any place to location
+    OnReveal, //When card is revealed - from any place (hand,deck,created,played) to location
     Ongoing,
     GameStart,
     EndTurn,

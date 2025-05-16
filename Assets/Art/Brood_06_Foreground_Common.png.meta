@@ -184,7 +184,10 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Brood_06_Foreground_Common_0: 2199826961445352002
+      Brood_06_Foreground_Common_1: 6463726566717575322
+      Brood_06_Foreground_Common_2: -8302716875825524495
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

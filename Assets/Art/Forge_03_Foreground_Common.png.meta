@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Forge_03_Foreground_Common_0: 5255172851388152910
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
