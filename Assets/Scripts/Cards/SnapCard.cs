@@ -149,6 +149,53 @@ public class SnapCard : Card, IBuffObtainable {
         }
     }
 
+    /*  Public Actions */
+
+    public void GainPower(int power, SnapCard source) {
+        StatBuff powerBuff = new StatBuff(BuffType.AdditionalPower, source, power);
+        ApplyBuff(powerBuff);
+    }
+
+    public void GainCost(int cost, SnapCard source) {
+        StatBuff costBuff = new StatBuff(BuffType.AdditionalCost, source, cost);
+        ApplyBuff(costBuff);
+    }
+
+    public void SetPower(int power, SnapCard source) {
+        StatBuff powerBuff = new StatBuff(BuffType.SetPower, source, power);
+        ApplyBuff(powerBuff);
+    }
+
+    public void SetCost(int cost, SnapCard source) {
+        StatBuff costBuff = new StatBuff(BuffType.SetCost, source, cost);
+        ApplyBuff(costBuff);
+    }
+
+    public void DestroyCard(SnapCard source) {
+        if (PlayedLocation != null) {
+            GetComponent<DestroyCardOperator>().Activate();
+        }
+    }
+
+    public void DiscardCard(SnapCard source) {
+        //if (PlayedLocation == null) { // If the card is in hand, discard it
+        GetComponent<DiscardCardOperator>().Activate();
+        //}
+    }
+
+    public void MoveCard(SnapCard source, LocationPosition locationPosition) {
+        if (PlayedLocation != null) {
+            PlayedLocation.cardGroup.UnMount(this);
+            Location newLocation = TargetSystem.Instance.GetLocation(locationPosition, ownedPlayer);
+            newLocation.cardGroup.Mount(this);
+            PlayedLocation = newLocation;
+        }
+    }
+
+    
+    
+    
+
 #if UNITY_EDITOR
     private void OnDrawGizmosSelected() {
         Debug.Log($"Card Name: {stats.card_name}, Power: {stats.power}, Cost: {stats.cost}, Series: {stats.series}");

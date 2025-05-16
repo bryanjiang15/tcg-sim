@@ -236,8 +236,7 @@ public class AbilityManager : MonoBehaviour {
     private IEnumerator GainPowerPerformer(GainPowerGA action) {
         List<SnapCard> targets = action.targets;
         foreach (SnapCard target in targets) {
-            Buff powerBuff = new StatBuff(BuffType.AdditionalPower, action.owner, action.amount.GetValue<int>(action.owner, triggeredAction: action));
-            target.ApplyBuff(powerBuff);   
+            target.GainPower(action.amount.GetValue<int>(action.owner, triggeredAction: action), action.owner);
         }
         yield return null;
     }
@@ -246,7 +245,7 @@ public class AbilityManager : MonoBehaviour {
         List<SnapCard> targets = action.targets;
         foreach (SnapCard target in targets) {
             if (target.PlayedLocation != null) {
-                target.GetComponent<DestroyCardOperator>().Activate();
+                target.DestroyCard(action.owner);
             }
            
         }
@@ -259,7 +258,7 @@ public class AbilityManager : MonoBehaviour {
         cardsInHand.AddRange(GroupRegistry.Instance.Get(GroupName.Hand, 1).MountedCards.Cast<SnapCard>().ToList());
         foreach (SnapCard target in targets) {
             if (cardsInHand.Contains(target)) {
-                target.GetComponent<DiscardCardOperator>().Activate();
+                target.DiscardCard(action.owner);
             }
         }
         yield return null;
@@ -292,8 +291,7 @@ public class AbilityManager : MonoBehaviour {
     private IEnumerator GainCostPerformer(IncreaseCostGA action) {
         List<SnapCard> targets = action.targets;
         foreach (SnapCard target in targets) {
-            Buff costBuff = new StatBuff(BuffType.AdditionalCost, action.owner, action.amount.GetValue<int>(action.owner, triggeredAction: action));
-            target.ApplyBuff(costBuff);   
+            target.GainCost(action.amount.GetValue<int>(action.owner, triggeredAction: action), action.owner);
         }
         yield return null;
     }
@@ -301,9 +299,7 @@ public class AbilityManager : MonoBehaviour {
     private IEnumerator SetPowerPerformer(SetPowerGA action) {
         List<SnapCard> targets = action.targets;
         foreach (SnapCard target in targets) {
-            StatBuff powerBuff = new StatBuff(BuffType.SetPower, action.owner, action.amount.GetValue<int>(action.owner, triggeredAction: action));
-            Debug.Log($"Setting power of {target.name} to {powerBuff.amount}");
-            target.ApplyBuff(powerBuff);   
+            target.SetPower(action.amount.GetValue<int>(action.owner, triggeredAction: action), action.owner);
         }
         yield return null;
     }

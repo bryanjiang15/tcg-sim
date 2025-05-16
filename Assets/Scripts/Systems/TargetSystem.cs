@@ -336,4 +336,8 @@ public class TargetSystem : MonoBehaviour {
     public List<Location> GetLocations(LocationPosition position) {
         return FindObjectsByType<Location>(FindObjectsSortMode.None).Where(location => location.position == position).ToList();
     }
+
+    public Location GetLocation(LocationPosition position, Player player) {
+        return FindObjectsByType<Location>(FindObjectsSortMode.None).First(location => location.position == position && location.player == player);
+    }
 }
