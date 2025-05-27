@@ -8,8 +8,7 @@ using CardHouse;
 using Unity.Mathematics;
 using UnityEditor;
 
-public class AbilityManager : MonoBehaviour {
-    public static AbilityManager Instance;
+public class AbilityManager : Singleton<AbilityManager> {
 
     //AbilityManager: sets up reactions for all abilities in game.
     //When reacting to game action, make sure any reactions are added in order of Owner, same player, enemy player
@@ -18,9 +17,6 @@ public class AbilityManager : MonoBehaviour {
     //Active abilities: abilities that are currently active on the field: Ongoing abilities, triggered abilities of cards in play, some from hand/deck abilities
     //Non activate abilities: abilities not activatd in hand/deck that are not on the field
     private List<Ability> activeAbilities = new List<Ability>();
-    private void Awake() {
-        Instance = this;
-    }
 
     private void Start() {
         List<Location> locations = new List<Location>(FindObjectsByType<Location>(FindObjectsSortMode.None));
@@ -29,7 +25,10 @@ public class AbilityManager : MonoBehaviour {
         ActionSystem.AttachPerformer<DiscardCardGA>(DiscardCardPerformer);
         ActionSystem.AttachPerformer<IncreaseCostGA>(GainCostPerformer);
         ActionSystem.AttachPerformer<CreateCardInLocationGA>(CreateCardInLocationPerformer);
+        ActionSystem.AttachPerformer<CreateCardInHandGA>(CreateCardInHandPerformer);
+        ActionSystem.AttachPerformer<CreateCardInDeckGA>(CreateCardInDeckPerformer);
         ActionSystem.AttachPerformer<SetPowerGA>(SetPowerPerformer);
+        ActionSystem.AttachPerformer<GainMaxEnergyGA>(GainMaxEnergyPerformer);
     }
 
     public Dictionary<SnapCard, List<Ability>> GetAbilities() {
@@ -89,12 +88,12 @@ public class AbilityManager : MonoBehaviour {
         }
     }
 
-    public void TriggerAbilityReaction(SnapCard owner, Ability ability, List<SnapCard> targets=null, GameAction triggeredAction = null) {
+    public void TriggerAbilityReaction(SnapCard owner, Ability ability, List<ITargetable> targets=null, GameAction triggeredAction = null) {
         if (triggeredAction != null) {
             //Check if the triggered target is valid for the ability
             List<AbilityTargetDefinition> triggeredTargetDefinitions = ability.definition.triggerDefinition.triggeredTarget;
             if (triggeredTargetDefinitions != null && triggeredTargetDefinitions.Count > 0) {
-                List<SnapCard> triggeredTargets = TargetSystem.Instance.GetTargets(triggeredTargetDefinitions, owner, triggeredAction: triggeredAction);
+                List<ITargetable> triggeredTargets = TargetSystem.Instance.GetTargets(triggeredTargetDefinitions, owner, triggeredAction: triggeredAction);
                 if (triggeredTargets.Count == 0) {
                     Debug.Log($"Triggered action does not have valid targets for ability: {ability.owner.name}, {ability.definition.triggerDefinition.triggeredTarget[0].target}");
 
@@ -106,7 +105,7 @@ public class AbilityManager : MonoBehaviour {
         if (ability.definition.activationRequirements != null && ability.definition.activationRequirements.Count > 0) {
             // Check if activation requirements are met
             List<AbilityTargetDefinition> activationTargetDefinitions = new List<AbilityTargetDefinition> { ability.definition.activationRequirementTargets };
-            List<SnapCard> ActivationReqTargets = TargetSystem.Instance.GetTargets(activationTargetDefinitions, owner, triggeredAction: triggeredAction);
+            List<ITargetable> ActivationReqTargets = TargetSystem.Instance.GetTargets(activationTargetDefinitions, owner, triggeredAction: triggeredAction);
             foreach (var requirement in ability.definition.activationRequirements) {
                 if (!TargetSystem.Instance.IsRequirementMet(requirement, ActivationReqTargets)) {
                     Debug.Log($"Activation requirements not met for ability: {ability.owner.stats.card_name} - {ability.definition.description}");
@@ -234,18 +233,20 @@ public class AbilityManager : MonoBehaviour {
     //GAMEACTION PERFORMER
 
     private IEnumerator GainPowerPerformer(GainPowerGA action) {
-        List<SnapCard> targets = action.targets;
-        foreach (SnapCard target in targets) {
-            target.GainPower(action.amount.GetValue<int>(action.owner, triggeredAction: action), action.owner);
+        List<ITargetable> targets = action.targets.Cast<ITargetable>().ToList();
+        foreach (ITargetable target in targets) {
+            if (target is IBuffObtainable buffObtainable) {
+                buffObtainable.GainPower(action.amount.GetValue<int>(action.owner, triggeredAction: action), action.owner);
+            }
         }
         yield return null;
     }
 
     private IEnumerator DestroyCardPerformer(DestroyCardGA action) {
-        List<SnapCard> targets = action.targets;
-        foreach (SnapCard target in targets) {
-            if (target.PlayedLocation != null) {
-                target.DestroyCard(action.owner);
+        List<ITargetable> targets = action.targets.Cast<ITargetable>().ToList();
+        foreach (ITargetable target in targets) {
+            if (target is IDestructible destructible && destructible.canBeDestroyed()) {
+                destructible.DestroyCard(action.owner);
             }
            
         }
@@ -253,53 +254,114 @@ public class AbilityManager : MonoBehaviour {
     }
 
     private IEnumerator DiscardCardPerformer(DiscardCardGA action) {
-        List<SnapCard> targets = action.targets;
+        List<ITargetable> targets = action.targets;
         List<SnapCard> cardsInHand = GroupRegistry.Instance.Get(GroupName.Hand, 0).MountedCards.Cast<SnapCard>().ToList();
         cardsInHand.AddRange(GroupRegistry.Instance.Get(GroupName.Hand, 1).MountedCards.Cast<SnapCard>().ToList());
-        foreach (SnapCard target in targets) {
-            if (cardsInHand.Contains(target)) {
-                target.DiscardCard(action.owner);
+        foreach (ITargetable target in targets) {
+            if (target is SnapCard card && cardsInHand.Contains(card))
+            {
+                card.DiscardCard(action.owner);
             }
         }
         yield return null;
     }
+    
+    private IEnumerator GainMaxEnergyPerformer(GainMaxEnergyGA action) {
+        int playerIndex = (int)action.player;
+        EnergySystem.Instance.IncreaseMaxEnergy(action.player, action.amount.GetValue<int>(action.owner, triggeredAction: action));
+        yield return null;
+    }
 
-    private IEnumerator CreateCardInLocationPerformer(CreateCardInLocationGA action) {
-        List<SnapCard> targets = action.targets;
-        foreach (SnapCard target in targets) {
-            if (!(target is LocationCard)) {
-                continue;
-            }
-            LocationCard locationCard = target as LocationCard;
+    private IEnumerator CreateCardInLocationPerformer(CreateCardInLocationGA action)
+    {
+        List<ITargetable> targets = action.targets;
+        foreach (ITargetable target in targets)
+        {
+            if (!(target is LocationCard locationCard)) continue;
             // Create a new card in the location
-            if (!locationCard.IsFull()) {
+            if (!locationCard.IsFull())
+            {
                 SnapCard newCard = GetCard(action.amount.GetValue<string>(action.owner, triggeredAction: action));
-                if (newCard == null) {
+                if (newCard == null)
+                {
                     Debug.LogError($"Failed to create card: {action.amount.GetValue<string>(action.owner, triggeredAction: action)}");
                     continue;
                 }
-                
+
                 locationCard.location.cardGroup.Mount(newCard);
                 action.createdCards.Add(newCard);
                 ActionSystem.Instance.AddReaction(new RevealCardGA(newCard, IsCardPlayed: false));
             }
-            
+
+        }
+        yield return null;
+    }
+    
+    private IEnumerator CreateCardInHandPerformer(CreateCardInHandGA action) {
+        List<ITargetable> targets = action.targets;
+        foreach (ITargetable target in targets)
+        {
+            if (!(target is Hand hand)) continue;
+            SnapCard newCard = GetCard(action.amount.GetValue<string>(action.owner, triggeredAction: action));
+            if (newCard == null)
+            {
+                Debug.LogError($"Failed to create card: {action.amount.GetValue<string>(action.owner, triggeredAction: action)}");
+                continue;
+            }
+            if (hand.ownedPlayer == Player.Player1)
+            {
+                GroupRegistry.Instance.Get(GroupName.Hand, 0).Mount(newCard);
+            }
+            else
+            {
+                GroupRegistry.Instance.Get(GroupName.Hand, 1).Mount(newCard);
+            }
+            action.createdCards.Add(newCard);
         }
         yield return null;
     }
 
-    private IEnumerator GainCostPerformer(IncreaseCostGA action) {
-        List<SnapCard> targets = action.targets;
-        foreach (SnapCard target in targets) {
-            target.GainCost(action.amount.GetValue<int>(action.owner, triggeredAction: action), action.owner);
+    private IEnumerator CreateCardInDeckPerformer(CreateCardInDeckGA action) {
+        List<ITargetable> targets = action.targets;
+        foreach (ITargetable target in targets)
+        {
+            if (!(target is Deck deck)) continue;
+            SnapCard newCard = GetCard(action.amount.GetValue<string>(action.owner, triggeredAction: action));
+            if (newCard == null)
+            {
+                Debug.LogError($"Failed to create card: {action.amount.GetValue<string>(action.owner, triggeredAction: action)}");
+                continue;
+            }
+            if (deck.ownedPlayer == Player.Player1)
+            {
+                GroupRegistry.Instance.Get(GroupName.Deck, 0).Mount(newCard);
+            }
+            else
+            {
+                GroupRegistry.Instance.Get(GroupName.Deck, 1).Mount(newCard);
+            }
+            action.createdCards.Add(newCard);
+        }
+        yield return null;
+    }
+
+    private IEnumerator GainCostPerformer(IncreaseCostGA action)
+    {
+        List<ITargetable> targets = action.targets;
+        foreach (ITargetable target in targets)
+        {
+            if (!(target is SnapCard card)) continue;
+            card.GainCost(action.amount.GetValue<int>(action.owner, triggeredAction: action), action.owner);
         }
         yield return null;
     }
 
     private IEnumerator SetPowerPerformer(SetPowerGA action) {
-        List<SnapCard> targets = action.targets;
-        foreach (SnapCard target in targets) {
-            target.SetPower(action.amount.GetValue<int>(action.owner, triggeredAction: action), action.owner);
+        List<ITargetable> targets = action.targets;
+        foreach (ITargetable target in targets)
+        {
+            if (!(target is SnapCard card)) continue;
+            card.SetPower(action.amount.GetValue<int>(action.owner, triggeredAction: action), action.owner);
         }
         yield return null;
     }

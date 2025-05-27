@@ -49,6 +49,7 @@ public enum AbilityEffect
     SetCost,
     CopyAndActivate,
     AddKeyword,
+    CopyCard,
     AddTemporaryAbility,
 }
 
@@ -69,7 +70,8 @@ public enum CalculationType
     MinValue
 }
 
-public enum AbilityTarget {
+public enum AbilityTarget
+{
     Deck,
     Hand,
     Self,
@@ -93,6 +95,8 @@ public enum AbilityTarget {
     CreatedCard, //Only activated when trigger is afterabilitytriggered is a create card ability
     AllPlayerPlayedCards,
     AllEnemyPlayedCards,
+    OwnedPlayer,
+    EnemyPlayer,
 }
 
 public enum AbilityTargetRange{

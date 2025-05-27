@@ -17,121 +17,132 @@ public class TargetSystem : MonoBehaviour {
         }
     }
 
-    public List<SnapCard> GetTargets(List<AbilityTargetDefinition> targetDefinitions, SnapCard owner, GameAction triggeredAction = null) {
-        List<SnapCard> targets = new List<SnapCard>();
+    public List<ITargetable> GetTargets(List<AbilityTargetDefinition> targetDefinitions, SnapCard owner, GameAction triggeredAction = null) {
+        List<ITargetable> targets = new List<ITargetable>();
         foreach (AbilityTargetDefinition targetDefinition in targetDefinitions) {
             targets.AddRange(GetTargets(targetDefinition, owner, triggeredAction));
         }
         return targets;
     }
 
-    public List<SnapCard> GetTargets(AbilityTargetDefinition targetDefinition, SnapCard owner, GameAction triggeredAction = null) {
-        List<SnapCard> targets = new List<SnapCard>();
+    public List<ITargetable> GetTargets(AbilityTargetDefinition targetDefinition, SnapCard owner, GameAction triggeredAction = null) {
+        List<ITargetable> targets = new List<ITargetable>();
         Location ownerLocation = owner.PlayedLocation;
         Player enemyPlayer = owner.ownedPlayer == Player.Player1 ? Player.Player2 : Player.Player1;
-        switch (targetDefinition.target) {
+        switch (targetDefinition.target)
+        {
             case AbilityTarget.Self:
                 targets.Add(owner);
                 break;
             case AbilityTarget.Deck:
-                targets = GroupRegistry.Instance.Get(GroupName.Deck, (int)owner.ownedPlayer).MountedCards.OfType<SnapCard>().ToList();
+                targets = GroupRegistry.Instance.Get(GroupName.Deck, (int)owner.ownedPlayer).MountedCards.OfType<ITargetable>().ToList();
                 break;
             case AbilityTarget.Hand:
-                targets = GroupRegistry.Instance.Get(GroupName.Hand, (int)owner.ownedPlayer).MountedCards.OfType<SnapCard>().ToList();
+                targets = GroupRegistry.Instance.Get(GroupName.Hand, (int)owner.ownedPlayer).MountedCards.OfType<ITargetable>().ToList();
                 break;
             case AbilityTarget.EnemyDeck:
-                targets = GroupRegistry.Instance.Get(GroupName.Deck, (int)enemyPlayer).MountedCards.OfType<SnapCard>().ToList();
+                targets = GroupRegistry.Instance.Get(GroupName.Deck, (int)enemyPlayer).MountedCards.OfType<ITargetable>().ToList();
                 break;
             case AbilityTarget.EnemyHand:
-                targets = GroupRegistry.Instance.Get(GroupName.Hand, (int)enemyPlayer).MountedCards.OfType<SnapCard>().ToList();
+                targets = GroupRegistry.Instance.Get(GroupName.Hand, (int)enemyPlayer).MountedCards.OfType<ITargetable>().ToList();
                 break;
             case AbilityTarget.PlayerDirectLocationCards:
-                targets = ownerLocation.cardGroup.MountedCards.OfType<SnapCard>().ToList();
+                targets = ownerLocation.cardGroup.MountedCards.OfType<ITargetable>().ToList();
                 break;
             case AbilityTarget.EnemyDirectLocationCards:
                 Location enemyLocation = GetEnemyLocation(ownerLocation);
-                targets = enemyLocation.cardGroup.MountedCards.OfType<SnapCard>().ToList();
+                targets = enemyLocation.cardGroup.MountedCards.OfType<ITargetable>().ToList();
                 break;
             case AbilityTarget.AllPlayerCards:
-                targets = FindObjectsByType<SnapCard>(FindObjectsSortMode.None).Where(card => 
-                    card.ownedPlayer == owner.ownedPlayer && !(card is LocationCard)).ToList();
+                targets = FindObjectsByType<SnapCard>(FindObjectsSortMode.None).Where(card =>
+                    card.ownedPlayer == owner.ownedPlayer && !(card is LocationCard)).Cast<ITargetable>().ToList();
                 break;
             case AbilityTarget.AllEnemyCards:
-                targets = FindObjectsByType<SnapCard>(FindObjectsSortMode.None).Where(card => 
-                    card.ownedPlayer == enemyPlayer && !(card is LocationCard)).ToList();
+                targets = FindObjectsByType<SnapCard>(FindObjectsSortMode.None).Where(card =>
+                    card.ownedPlayer == enemyPlayer && !(card is LocationCard)).Cast<ITargetable>().ToList();
                 break;
             case AbilityTarget.AllPlayerPlayedCards:
                 List<Location> playerLocations = GetLocations(owner.ownedPlayer);
-                foreach (Location location in playerLocations) {
-                    targets.AddRange(location.cardGroup.MountedCards.OfType<SnapCard>());
+                foreach (Location location in playerLocations)
+                {
+                    targets.AddRange(location.cardGroup.MountedCards.OfType<ITargetable>());
                 }
                 break;
             case AbilityTarget.AllEnemyPlayedCards:
                 List<Location> enemyLocations = GetLocations(enemyPlayer);
-                foreach (Location location in enemyLocations) {
-                    targets.AddRange(location.cardGroup.MountedCards.OfType<SnapCard>());
+                foreach (Location location in enemyLocations)
+                {
+                    targets.AddRange(location.cardGroup.MountedCards.OfType<ITargetable>());
                 }
                 break;
             case AbilityTarget.AllPlayedCards:
                 List<Location> allLocations = GetLocations();
-                foreach (Location location in allLocations) {
-                    targets.AddRange(location.cardGroup.MountedCards.OfType<SnapCard>());
+                foreach (Location location in allLocations)
+                {
+                    targets.AddRange(location.cardGroup.MountedCards.OfType<ITargetable>());
                 }
                 break;
             case AbilityTarget.PlayerDirectLocation:
-                targets = new List<SnapCard> { ownerLocation.cardRepresentation };
+                targets = new List<ITargetable> { ownerLocation.cardRepresentation as ITargetable };
                 break;
             case AbilityTarget.AllPlayerLocation:
-                targets = GetLocations(owner.ownedPlayer).Select(location => location.cardRepresentation as SnapCard).Where(card => card != null).ToList();
+                targets = GetLocations(owner.ownedPlayer).Select(location => location.cardRepresentation as ITargetable).Where(card => card != null).ToList();
                 break;
             case AbilityTarget.EnemyDirectLocation:
-                targets = GetLocations(enemyPlayer).Select(location => location.cardRepresentation as SnapCard).Where(card => card != null).ToList();
+                targets = GetLocations(enemyPlayer).Select(location => location.cardRepresentation as ITargetable).Where(card => card != null).ToList();
                 break;
             case AbilityTarget.AllEnemyLocation:
-                targets = GetLocations(enemyPlayer).Select(location => location.cardRepresentation as SnapCard).Where(card => card != null).ToList();
+                targets = GetLocations(enemyPlayer).Select(location => location.cardRepresentation as ITargetable).Where(card => card != null).ToList();
                 break;
             case AbilityTarget.DirectLocation:
-                targets = GetLocations(ownerLocation.position).Select(location => location.cardRepresentation as SnapCard).Where(card => card != null).ToList();
+                targets = GetLocations(ownerLocation.position).Select(location => location.cardRepresentation as ITargetable).Where(card => card != null).ToList();
                 break;
             case AbilityTarget.AllLocation:
-                targets = GetLocations().Select(location => location.cardRepresentation as SnapCard).Where(card => card != null).ToList();
+                targets = GetLocations().Select(location => location.cardRepresentation as ITargetable).Where(card => card != null).ToList();
                 break;
             case AbilityTarget.NextPlayedCard:
                 SnapCard nextPlayedCard = RevealEventHandler.Instance.GetNextPlayedCard(owner.ownedPlayer);
-                if (nextPlayedCard != null)  // Check if the next played card is not null
+                if (nextPlayedCard != null)
                     targets.Add(nextPlayedCard);
                 break;
             case AbilityTarget.TriggeredActionTargets:
-                if (triggeredAction == null) {
-                    targets = new List<SnapCard>();
+                if (triggeredAction == null)
+                {
+                    targets = new List<ITargetable>();
                 }
-                else if (triggeredAction is AbilityEffectGA){
+                else if (triggeredAction is AbilityEffectGA)
+                {
                     AbilityEffectGA abilityEffectGA = (AbilityEffectGA)triggeredAction;
-                    targets = abilityEffectGA.targets; // Use the targets from the triggered action if available
+                    targets = abilityEffectGA.targets;
                 }
-                else if (triggeredAction is RevealCardGA revealCardGA){
-                    targets = new List<SnapCard> { revealCardGA.card };
+                else if (triggeredAction is RevealCardGA revealCardGA)
+                {
+                    targets = new List<ITargetable> { revealCardGA.card };
                 }
                 break;
-                // Add more cases as needed
             case AbilityTarget.TriggeredActionSource:
-                if (triggeredAction == null) {
-                    targets = new List<SnapCard>();
+                if (triggeredAction == null)
+                {
+                    targets = new List<ITargetable>();
                 }
-                else if (triggeredAction is AbilityEffectGA){
+                else if (triggeredAction is AbilityEffectGA)
+                {
                     AbilityEffectGA abilityEffectGA = (AbilityEffectGA)triggeredAction;
-                    targets = new List<SnapCard> { abilityEffectGA.owner }; // Use the owner from the triggered action if available
+                    targets = new List<ITargetable> { abilityEffectGA.owner };
                 }
                 break;
             case AbilityTarget.CreatedCard:
-                if (triggeredAction == null) {
-                    targets = new List<SnapCard>();
-                }
-                else if (triggeredAction is CreateCardGA createCardGA){
-                    targets = createCardGA.createdCards; // Use the created cards from the triggered action if available
-                }else
+                if (triggeredAction == null)
                 {
-                    targets = new List<SnapCard>();
+                    targets = new List<ITargetable>();
+                }
+                else if (triggeredAction is CreateCardGA createCardGA)
+                {
+                    targets = createCardGA.createdCards.Cast<ITargetable>().ToList();
+                }
+                else
+                {
+                    targets = new List<ITargetable>();
                 }
                 break;
         }
@@ -143,12 +154,12 @@ public class TargetSystem : MonoBehaviour {
         return targets;
     }
 
-    public bool IsCardATarget(List<AbilityTargetDefinition> targetDefinitions, SnapCard cardToCheck, SnapCard owner, GameAction triggeredAction = null) {
+    public bool IsCardATarget(List<AbilityTargetDefinition> targetDefinitions, ITargetable cardToCheck, SnapCard owner, GameAction triggeredAction = null) {
         var targets = GetTargets(targetDefinitions, owner, triggeredAction);
-        return false;
+        return targets.Contains(cardToCheck);
     }
 
-    private List<SnapCard> ApplyRangeFilter(List<SnapCard> targets, AbilityTargetDefinition targetDefinition, GameAction triggeredAction = null) {
+    private List<ITargetable> ApplyRangeFilter(List<ITargetable> targets, AbilityTargetDefinition targetDefinition, GameAction triggeredAction = null) {
         if (targets.Count == 0) {
             return targets;
         }
@@ -158,39 +169,39 @@ public class TargetSystem : MonoBehaviour {
             case AbilityTargetRange.All:
                 return targets;
             case AbilityTargetRange.First:
-                return targets[0] != null ? new List<SnapCard> { targets[0] } : new List<SnapCard>();
+                return targets[0] != null ? new List<ITargetable> { targets[0] } : new List<ITargetable>();
             case AbilityTargetRange.Last:
-                return targets.Count > 0 && targets[targets.Count - 1] != null ? new List<SnapCard> { targets[targets.Count - 1] } : new List<SnapCard>();
+                return targets.Count > 0 && targets[targets.Count - 1] != null ? new List<ITargetable> { targets[targets.Count - 1] } : new List<ITargetable>();
             case AbilityTargetRange.AllRequirementsMet:
                 return ApplyRequirementFilter(targets, targetDefinition.targetRequirement, triggeredAction);
             case AbilityTargetRange.Random:
                 Shuffle(targets);
                 if (targets.Count > 0) {
-                    return new List<SnapCard> { targets[0] };
+                    return new List<ITargetable> { targets[0] };
                 }
-                return new List<SnapCard>();
+                return new List<ITargetable>();
             case AbilityTargetRange.RandomRequirementsMet:
                 targets = ApplyRequirementFilter(targets, targetDefinition.targetRequirement, triggeredAction);
                 Shuffle(targets);
                 if (targets.Count > 0) {
-                    return new List<SnapCard> { targets[0] };
+                    return new List<ITargetable> { targets[0] };
                 }
-                return new List<SnapCard>();
+                return new List<ITargetable>();
             default:
                 return targets;
         }
     }
 
-    private List<SnapCard> ApplySortFilter(List<SnapCard> targets, AbilityTargetSort sort) {
+    private List<ITargetable> ApplySortFilter(List<ITargetable> targets, AbilityTargetSort sort) {
         if (sort == AbilityTargetSort.None) {
             return targets;
         }
 
         var groupedTargets = targets.GroupBy(card => GetSortValue(card, sort)).OrderBy(group => group.Key);
-        List<SnapCard> sortedTargets = new List<SnapCard>();
+        List<ITargetable> sortedTargets = new List<ITargetable>();
 
         foreach (var group in groupedTargets) {
-            List<SnapCard> shuffledGroup = group.ToList();
+            List<ITargetable> shuffledGroup = group.ToList();
             Shuffle(shuffledGroup);
             sortedTargets.AddRange(shuffledGroup);
         }
@@ -198,22 +209,25 @@ public class TargetSystem : MonoBehaviour {
         return sortedTargets;
     }
 
-    private int GetSortValue(SnapCard card, AbilityTargetSort sort) {
-        switch (sort) {
-            case AbilityTargetSort.Power:
-                return card.GetPower();
-            case AbilityTargetSort.BaseCost:
-                return card.GetBaseCost();
-            case AbilityTargetSort.CurrentCost:
-                return card.GetCurrentCost();
-            case AbilityTargetSort.PlayedOrder:
-                return card.PlayedOrder;
-            case AbilityTargetSort.LocationOrder:
-                Location location = card.PlayedLocation;
-                return location != null ? location.cardGroup.MountedCards.IndexOf(card) : 0;
-            default:
-                return 0;
+    private int GetSortValue(ITargetable card, AbilityTargetSort sort) {
+        if (card is SnapCard snapCard) {
+            switch (sort) {
+                case AbilityTargetSort.Power:
+                    return snapCard.GetPower();
+                case AbilityTargetSort.BaseCost:
+                    return snapCard.GetBaseCost();
+                case AbilityTargetSort.CurrentCost:
+                    return snapCard.GetCurrentCost();
+                case AbilityTargetSort.PlayedOrder:
+                    return snapCard.PlayedOrder;
+                case AbilityTargetSort.LocationOrder:
+                    Location location = snapCard.PlayedLocation;
+                    return location != null ? location.cardGroup.MountedCards.IndexOf(snapCard) : 0;
+                default:
+                    return 0;
+            }
         }
+        return 0;
     }
 
     private void Shuffle<T>(IList<T> list) {
@@ -228,30 +242,31 @@ public class TargetSystem : MonoBehaviour {
         }
     }
 
-    private List<SnapCard> ApplyRequirementFilter(List<SnapCard> targets, List<AbilityRequirement> requirements, GameAction triggeredAction = null) {
-        // Implement logic to filter targets based on requirements
+    private List<ITargetable> ApplyRequirementFilter(List<ITargetable> targets, List<AbilityRequirement> requirements, GameAction triggeredAction = null) {
         foreach (AbilityRequirement requirement in requirements) {
-            targets = targets.Where(target => IsRequirementMet(requirement, new List<SnapCard> { target }, triggeredAction)).ToList();
+            targets = targets.Where(target => IsRequirementMet(requirement, new List<ITargetable> { target }, triggeredAction)).ToList();
         }
         return targets;
     }
 
-    public bool IsRequirementMet(AbilityRequirement requirement, List<SnapCard> target, GameAction triggeredAction = null) {
+    public bool IsRequirementMet(AbilityRequirement requirement, List<ITargetable> target, GameAction triggeredAction = null) {
         AbilityRequirementType reqType = requirement.ReqType;
         AbilityRequirementComparator reqComparator = requirement.ReqComparator;
         AbilityAmount reqAmount = requirement.ReqAmount;
         int satisfiedCount = 0;
-        foreach (SnapCard snapCard in target) {
-            AbilityAmount targetValue = GetTargetValue(reqType, snapCard);
-            if(targetValue.type == AbilityAmountType.Boolean){
-                return targetValue.GetValue<bool>(snapCard, triggeredAction) == reqAmount.GetValue<bool>(snapCard, triggeredAction);
-            }
-            if (reqType==AbilityRequirementType.HasKeyword) {
-                if (snapCard.HasKeyword(reqAmount.value))  // Assuming reqAmount.value is a string representing the keyword
+        foreach (ITargetable snapCard in target) {
+            if (snapCard is SnapCard card) {
+                AbilityAmount targetValue = GetTargetValue(reqType, card);
+                if(targetValue.type == AbilityAmountType.Boolean){
+                    return targetValue.GetValue<bool>(card, triggeredAction) == reqAmount.GetValue<bool>(card, triggeredAction);
+                }
+                if (reqType==AbilityRequirementType.HasKeyword) {
+                    if (card.HasKeyword(reqAmount.value))
+                        satisfiedCount++;
+                }
+                else if (CompareRequirementValue(card, targetValue, reqAmount, reqComparator, triggeredAction)) {
                     satisfiedCount++;
-            }
-            else if (CompareRequirementValue(snapCard, targetValue, reqAmount, reqComparator, triggeredAction)) {
-                satisfiedCount++;
+                }
             }
         }
         if (requirement.ReqCondition == AbilityRequirementCondition.All) {
@@ -281,43 +296,13 @@ public class TargetSystem : MonoBehaviour {
                 return targetValue.value.Contains(reqAmount.value);
             case AbilityRequirementComparator.DoesNotContain:
                 return !targetValue.value.Contains(reqAmount.value);
-            
             default:
                 return true;
         }
     }
 
-    public AbilityAmount GetTargetValue(AbilityRequirementType reqType, SnapCard target) {
-        switch (reqType) {
-            case AbilityRequirementType.Power:
-                return new AbilityAmount { type = AbilityAmountType.Constant, value = target.GetPower().ToString() };
-            case AbilityRequirementType.Cost:
-                return new AbilityAmount { type = AbilityAmountType.Constant, value = target.GetBaseCost().ToString() };
-            // case AbilityRequirementType.NumberOfCards:
-            //     return new AbilityAmount { type = AbilityAmountType.Constant, value = targets.Count.ToString() };
-            // case AbilityRequirementType.CurrentTurn:
-            //     return new AbilityAmount { type = AbilityAmountType.Constant, value = TurnManager.Instance.CurrentTurn.ToString() };
-            // case AbilityRequirementType.CurrentMaxEnergy:
-            //     return new AbilityAmount { type = AbilityAmountType.Constant, value = targets.GetCurrentMaxEnergy().ToString() };
-            // case AbilityRequirementType.LocationPowerDifference:
-            //     return new AbilityAmount { type = AbilityAmountType.Constant, value = targets.GetPowerDifference().ToString() };
-            // case AbilityRequirementType.HasKeyword:
-            //     return new AbilityAmount { type = AbilityAmountType.Constant, value = targets.HasKeyword().ToString() };
-            // case AbilityRequirementType.IsCreated:
-            //     return new AbilityAmount { type = AbilityAmountType.Constant, value = targets.IsCreated().ToString() };
-            // case AbilityRequirementType.CardName:
-            //     return new AbilityAmount { type = AbilityAmountType.Constant, value = targets.GetCardName().ToString() };
-            // case AbilityRequirementType.BuffPresent:
-            case AbilityRequirementType.LocationFull:
-                if (target is LocationCard locationCard) {
-                    return new AbilityAmount { type = AbilityAmountType.Boolean, value = locationCard.IsFull().ToString() };
-                }
-                return new AbilityAmount { type = AbilityAmountType.Constant, value = "false" };
-            case AbilityRequirementType.CurrentCost:
-                return new AbilityAmount { type = AbilityAmountType.Constant, value = target.GetCurrentCost().ToString() };
-            default:
-                return new AbilityAmount { type = AbilityAmountType.Constant, value = "0" };
-        }
+    public AbilityAmount GetTargetValue(AbilityRequirementType reqType, ITargetable target) {
+        return target.GetTargetValue(reqType);
     }
 
     public Location GetEnemyLocation(Location location) {

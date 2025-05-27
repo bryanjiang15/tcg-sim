@@ -19,7 +19,7 @@ public struct SnapCardStats {
     }
 }
 
-public class SnapCard : Card, IBuffObtainable { 
+public class SnapCard : Card, IBuffObtainable, IDestructible, IDiscardable, IMoveable { 
     public SnapCardStats stats { get ; private set; }
     public int PlayedOrder { get; private set; }
 
@@ -176,15 +176,26 @@ public class SnapCard : Card, IBuffObtainable {
             GetComponent<DestroyCardOperator>().Activate();
         }
     }
+    
+    public bool canBeDestroyed() {
+        return PlayedLocation != null;
+    }
 
-    public void DiscardCard(SnapCard source) {
+    public void DiscardCard(SnapCard source)
+    {
         //if (PlayedLocation == null) { // If the card is in hand, discard it
         GetComponent<DiscardCardOperator>().Activate();
         //}
     }
 
-    public void MoveCard(SnapCard source, LocationPosition locationPosition) {
-        if (PlayedLocation != null) {
+    public bool canBeDiscarded() {
+        return PlayedLocation == null;
+    }
+
+    public void MoveCard(SnapCard source, LocationPosition locationPosition)
+    {
+        if (PlayedLocation != null)
+        {
             PlayedLocation.cardGroup.UnMount(this);
             Location newLocation = TargetSystem.Instance.GetLocation(locationPosition, ownedPlayer);
             newLocation.cardGroup.Mount(this);
@@ -192,9 +203,36 @@ public class SnapCard : Card, IBuffObtainable {
         }
     }
 
-    
-    
-    
+    public bool canBeMoved() {
+        return PlayedLocation != null;
+    }
+
+    public virtual AbilityAmount GetTargetValue(AbilityRequirementType reqType)
+    {
+        switch (reqType)
+        {
+            case AbilityRequirementType.Power:
+                return new AbilityAmount { type = AbilityAmountType.Constant, value = GetPower().ToString() };
+            case AbilityRequirementType.Cost:
+                return new AbilityAmount { type = AbilityAmountType.Constant, value = GetBaseCost().ToString() };
+            case AbilityRequirementType.CurrentCost:
+                return new AbilityAmount { type = AbilityAmountType.Constant, value = GetCurrentCost().ToString() };
+            case AbilityRequirementType.HasKeyword:
+                return new AbilityAmount { type = AbilityAmountType.Boolean, value = "false" };
+            case AbilityRequirementType.IsCreated:
+                return new AbilityAmount { type = AbilityAmountType.Boolean, value = "false" };
+            case AbilityRequirementType.CardName:
+                return new AbilityAmount { type = AbilityAmountType.Constant, value = stats.card_name };
+            case AbilityRequirementType.BuffPresent:
+                return new AbilityAmount { type = AbilityAmountType.Boolean, value = "false" };
+            case AbilityRequirementType.LocationFull:
+                if (PlayedLocation != null)
+                    return new AbilityAmount { type = AbilityAmountType.Boolean, value = PlayedLocation.isFull().ToString() };
+                return new AbilityAmount { type = AbilityAmountType.Boolean, value = "false" };
+            default:
+                return new AbilityAmount { type = AbilityAmountType.Constant, value = "0" };
+        }
+    }
 
 #if UNITY_EDITOR
     private void OnDrawGizmosSelected() {

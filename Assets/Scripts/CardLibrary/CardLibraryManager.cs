@@ -11,6 +11,8 @@ public class CardLibraryManager : MonoBehaviour
     [SerializeField] private GameObject cardLibraryGrid;
     [SerializeField] private GameObject cardUIPrefab;
 
+    private CardGenerator cardGenerator;
+
     [Serializable]
     public class CardLibraryData
     {
@@ -40,6 +42,7 @@ public class CardLibraryManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
             InitializeLibrary();
+            cardGenerator = new CardGenerator();
         }
         else
         {
@@ -171,5 +174,10 @@ public class CardLibraryManager : MonoBehaviour
     public Dictionary<string, int> GetCardStats(string cardId)
     {
         return libraryData.cards.ContainsKey(cardId) ? libraryData.cards[cardId].stats : new Dictionary<string, int>();
+    }
+
+    public CardGenerator GetCardGenerator()
+    {
+        return cardGenerator;
     }
 } 

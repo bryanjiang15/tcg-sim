@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using CardHouse;
 using UnityEngine;
 using UnityEngine.Events;
@@ -29,15 +30,15 @@ public class OngoingAbility : Ability {
 
         ActionSystem.SubscribeReaction<GameAction>(UpdateTargets, ReactionTiming.POST);
         //Ongoing abilities does not have a triggered gameaction
-        currentTargets = TargetSystem.Instance.GetTargets(definition.targetDefinition, owner);
-        ActionSystem.Instance.AddReaction(getAbilityEffect(currentTargets));
+        currentTargets = TargetSystem.Instance.GetTargets(definition.targetDefinition, owner).Cast<SnapCard>().ToList();
+        ActionSystem.Instance.AddReaction(getAbilityEffect(currentTargets.Cast<ITargetable>().ToList()));
     }
 
     private void UpdateTargets(GameAction action) {
         if (!listenedTypes.Contains(action.GetType()) && 
             !listenedTypes.Exists(type => type.IsAssignableFrom(action.GetType()))) return;
 
-        List<SnapCard> newTargets = TargetSystem.Instance.GetTargets(definition.targetDefinition, owner);
+        List<SnapCard> newTargets = TargetSystem.Instance.GetTargets(definition.targetDefinition, owner).Cast<SnapCard>().ToList();
         List<SnapCard> unaffectedTargets = newTargets.FindAll(target => !currentTargets.Contains(target));
         List<SnapCard> affectedTargets = currentTargets.FindAll(target => !newTargets.Contains(target));
         if (definition.amount.type == AbilityAmountType.ForEachTarget) {
@@ -52,7 +53,7 @@ public class OngoingAbility : Ability {
             
         }
         if (affectedTargets.Count > 0) RemoveAbilityEffect(affectedTargets);
-        if (unaffectedTargets.Count > 0) ActionSystem.Instance.AddReaction(getAbilityEffect(unaffectedTargets));
+        if (unaffectedTargets.Count > 0) ActionSystem.Instance.AddReaction(getAbilityEffect(unaffectedTargets.Cast<ITargetable>().ToList()));
         
         currentTargets = newTargets;
         

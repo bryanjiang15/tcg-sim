@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using CardHouse;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -19,12 +20,15 @@ public class Ability
         this.owner = owner;
     }
 
-    public GameAction getAbilityEffect(List<SnapCard> targets = null, GameAction triggeredAction = null) {
+    public GameAction getAbilityEffect(List<ITargetable> targets = null, GameAction triggeredAction = null) {
         if (targets == null) {
             targets = TargetSystem.Instance.GetTargets(definition.targetDefinition, owner, triggeredAction: triggeredAction);
         }
         if (definition.effect == AbilityEffect.Draw) {
             return new DrawCardGA(definition.amount.GetValue<int>(owner, triggeredAction), owner.ownedPlayer, source: owner);
+        }
+        if (definition.effect == AbilityEffect.GainMaxEnergy) {
+            return new GainMaxEnergyGA(this, owner.ownedPlayer, definition.amount);
         }
         if (targets.Count == 0) return null;
         return (GameAction)Activator.CreateInstance(abilityEffectType, this, targets, definition.amount);

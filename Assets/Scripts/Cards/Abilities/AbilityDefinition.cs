@@ -3,6 +3,7 @@ using System.IO;
 using UnityEditor.ShaderGraph.Serialization;
 using UnityEngine;
 using Newtonsoft.Json;
+using System.Linq;
 
 [System.Serializable]
 public struct AbilityDefinition {
@@ -19,7 +20,8 @@ public struct AbilityDefinition {
 public struct AbilityAmount{
     public AbilityAmountType type;
     public string value;
-    public T GetValue<T>(SnapCard owner, GameAction triggeredAction = null) {
+    public T GetValue<T>(ITargetable owner, GameAction triggeredAction = null) {
+        SnapCard snapCard = owner as SnapCard;
         switch (type)
         {
             case AbilityAmountType.Constant:
@@ -27,9 +29,11 @@ public struct AbilityAmount{
                 else if (typeof(T) == typeof(float)) return (T)System.Convert.ChangeType(value, typeof(float));
                 else return default(T);
             case AbilityAmountType.ForEachTarget:
-                return (T)System.Convert.ChangeType(GetForEachTargetValue(owner), typeof(T));
+                if (snapCard != null) return (T)System.Convert.ChangeType(GetForEachTargetValue(snapCard, triggeredAction), typeof(T));
+                else return default(T);
             case AbilityAmountType.TargetValue:
-                return (T)System.Convert.ChangeType(GetTargetValue(owner), typeof(T));
+                if (snapCard != null) return (T)System.Convert.ChangeType(GetTargetValue(snapCard, triggeredAction), typeof(T));
+                else return default(T);
             case AbilityAmountType.Boolean:
                 if (typeof(T) == typeof(bool)) return (T)System.Convert.ChangeType(value, typeof(bool));
                 return default(T);
@@ -45,7 +49,7 @@ public struct AbilityAmount{
         var targetValues = JsonConvert.DeserializeObject<Dictionary<string, object>>(value);
         AbilityTargetDefinition targetDefinition = JsonConvert.DeserializeObject<AbilityTargetDefinition>(targetValues["target"].ToString());
         int multiplierValue = int.Parse(targetValues["value"].ToString());
-        List<SnapCard> targets = TargetSystem.Instance.GetTargets(new List<AbilityTargetDefinition> { targetDefinition }, owner, triggeredAction: triggeredAction);
+        List<ITargetable> targets = TargetSystem.Instance.GetTargets(new List<AbilityTargetDefinition> { targetDefinition }, owner, triggeredAction: triggeredAction);
         return targets.Count * multiplierValue;
     }
  
@@ -53,14 +57,14 @@ public struct AbilityAmount{
         var jsonValue = JsonConvert.DeserializeObject<Dictionary<string, object>>(value);
         AbilityRequirementType requirementType = (AbilityRequirementType)System.Enum.Parse(typeof(AbilityRequirementType), jsonValue["type"].ToString());
         AbilityTargetDefinition targetDef = JsonConvert.DeserializeObject<AbilityTargetDefinition>(jsonValue["target"].ToString());
-        List<SnapCard> targetCards = TargetSystem.Instance.GetTargets(new List<AbilityTargetDefinition> { targetDef }, owner, triggeredAction: triggeredAction);
+        List<ITargetable> targetCards = TargetSystem.Instance.GetTargets(new List<AbilityTargetDefinition> { targetDef }, owner, triggeredAction: triggeredAction);
         CalculationType calculationType = (CalculationType)System.Enum.Parse(typeof(CalculationType), jsonValue["calculation"].ToString());
         if (calculationType == CalculationType.MaxValue)
         {
             int maxValue = 0;
             foreach (var targetCard in targetCards)
             {
-                AbilityAmount value = TargetSystem.Instance.GetTargetValue(requirementType, targetCard);
+                AbilityAmount value = targetCard.GetTargetValue(requirementType);
                 int cardValue = value.GetValue<int>(targetCard, triggeredAction);
                 if (cardValue > maxValue)
                 {
