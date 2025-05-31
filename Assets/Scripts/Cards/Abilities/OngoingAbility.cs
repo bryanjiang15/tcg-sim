@@ -41,7 +41,7 @@ public class OngoingAbility : Ability {
         List<SnapCard> newTargets = TargetSystem.Instance.GetTargets(definition.targetDefinition, owner).Cast<SnapCard>().ToList();
         List<SnapCard> unaffectedTargets = newTargets.FindAll(target => !currentTargets.Contains(target));
         List<SnapCard> affectedTargets = currentTargets.FindAll(target => !newTargets.Contains(target));
-        if (definition.amount.type == AbilityAmountType.ForEachTarget) {
+        if (definition.amount.amountType == AbilityAmountType.ForEachTarget) {
             foreach(SnapCard target in newTargets) {
                 int newAmount = definition.amount.GetValue<int>(target); 
                 if (newAmount != GetTargetCurrentBuffAmount(target)) {
@@ -67,7 +67,7 @@ public class OngoingAbility : Ability {
 
     private List<Type> ConfigureAmountListeners(AbilityAmount amount) {
         List<Type> typesToListenTo = new();
-        switch (amount.type) {
+        switch (amount.amountType) {
             case AbilityAmountType.ForEachTarget:
                 AbilityTargetDefinition targetDefinition = amount.GetDependentTargetDefinition(owner);
                 return GetListenedTypesFromTargetDefinitions(new List<AbilityTargetDefinition> { targetDefinition });
@@ -75,7 +75,7 @@ public class OngoingAbility : Ability {
                 // Do not listen to any GameAction
                 break;
             default:
-                Debug.LogWarning($"Unhandled AbilityAmountType: {amount.type}");
+                Debug.LogWarning($"Unhandled AbilityAmountType: {amount.amountType}");
                 break;
         }
         return typesToListenTo;
@@ -84,35 +84,35 @@ public class OngoingAbility : Ability {
     public static List<Type> GetListenedTypesFromTargetDefinitions(List<AbilityTargetDefinition> targetDefinitions) {
         List<Type> typesToListenTo = new();
         foreach (var targetDefinition in targetDefinitions) {
-            switch (targetDefinition.target) {
-                case AbilityTarget.Deck:
+            switch (targetDefinition.targetType) {
+                case AbilityTargetType.Deck:
                     typesToListenTo.Add(typeof(IDeckUpdated));
                     break;
-                case AbilityTarget.Hand:
+                case AbilityTargetType.Hand:
                     typesToListenTo.Add(typeof(IHandUpdated));
                     break;
-                case AbilityTarget.EnemyDeck:
+                case AbilityTargetType.EnemyDeck:
                     typesToListenTo.Add(typeof(IDeckUpdated));
                     break;
-                case AbilityTarget.EnemyHand:
+                case AbilityTargetType.EnemyHand:
                     typesToListenTo.Add(typeof(IHandUpdated));
                     break;
-                case AbilityTarget.PlayerDirectLocationCards:
-                case AbilityTarget.EnemyDirectLocationCards:
-                case AbilityTarget.AllPlayerPlayedCards:
-                case AbilityTarget.AllEnemyPlayedCards:
-                case AbilityTarget.AllPlayedCards:
+                case AbilityTargetType.PlayerDirectLocationCards:
+                case AbilityTargetType.EnemyDirectLocationCards:
+                case AbilityTargetType.AllPlayerPlayedCards:
+                case AbilityTargetType.AllEnemyPlayedCards:
+                case AbilityTargetType.AllPlayedCards:
                     typesToListenTo.Add(typeof(ILocationCardsUpdated));
                     break;
-                case AbilityTarget.AllPlayerCards:
-                case AbilityTarget.AllEnemyCards:
+                case AbilityTargetType.AllPlayerCards:
+                case AbilityTargetType.AllEnemyCards:
                     typesToListenTo.Add(typeof(CreateCardGA));
                     break;
-                case AbilityTarget.PlayerDirectLocation:
+                case AbilityTargetType.PlayerDirectLocation:
                     typesToListenTo.Add(typeof(ILocationCardsUpdated));
                     typesToListenTo.Add(typeof(AddPowerToLocationGA));
                     break;
-                case AbilityTarget.AllPlayerLocation:
+                case AbilityTargetType.AllPlayerLocation:
                     typesToListenTo.Add(typeof(ILocationCardsUpdated));
                     typesToListenTo.Add(typeof(AddPowerToLocationGA));
                     break;

@@ -7,54 +7,54 @@ using UnityEngine;
 public class RuleSystem : Singleton<RuleSystem> {
 
     //Effects that target cards on the board
-    static List<AbilityEffect> PlayedCardTargetingEffects = new List<AbilityEffect> {
-        AbilityEffect.AddKeyword,
-        AbilityEffect.Afflict,
-        AbilityEffect.GainPower,
-        AbilityEffect.LosePower,
-        AbilityEffect.Destroy,
-        AbilityEffect.Move,
+    static List<AbilityEffectType> PlayedCardTargetingEffects = new List<AbilityEffectType> {
+        AbilityEffectType.AddKeyword,
+        AbilityEffectType.Afflict,
+        AbilityEffectType.GainPower,
+        AbilityEffectType.LosePower,
+        AbilityEffectType.Destroy,
+        AbilityEffectType.Move,
         //AbilityEffect.Discard,
-        AbilityEffect.Return,
-        AbilityEffect.Merge,
-        AbilityEffect.SetPower,
+        AbilityEffectType.Return,
+        AbilityEffectType.Merge,
+        AbilityEffectType.SetPower,
     };
     
-    public bool checkEffectAmount(AbilityAmount amount, AbilityEffect effect, SnapCard owner=null) {
+    public bool checkEffectAmount(AbilityAmount amount, AbilityEffectType effect, SnapCard owner=null) {
         //Check for boolean restrictions
-        if (amount.type == AbilityAmountType.Boolean)
+        if (amount.amountType == AbilityAmountType.Boolean)
         {
-            List<AbilityEffect> UnrestrictedEffects = new List<AbilityEffect> {
-                AbilityEffect.Discard,
-                AbilityEffect.Destroy,
-                AbilityEffect.AddCardToLocation,
-                AbilityEffect.AddCardToHand,
-                AbilityEffect.CopyAndActivate,
+            List<AbilityEffectType> UnrestrictedEffects = new List<AbilityEffectType> {
+                AbilityEffectType.Discard,
+                AbilityEffectType.Destroy,
+                AbilityEffectType.AddCardToLocation,
+                AbilityEffectType.AddCardToHand,
+                AbilityEffectType.CopyAndActivate,
             };
             if(!UnrestrictedEffects.Contains(effect)) return false;
-        }else if (amount.type == AbilityAmountType.Cardid)
+        }else if (amount.amountType == AbilityAmountType.Cardid)
         {
-            List<AbilityEffect> UnrestrictedEffects = new List<AbilityEffect> {
-                AbilityEffect.CreateCardInDeck,
-                AbilityEffect.CreateCardInHand,
-                AbilityEffect.CreateCardInLocation,
+            List<AbilityEffectType> UnrestrictedEffects = new List<AbilityEffectType> {
+                AbilityEffectType.CreateCardInDeck,
+                AbilityEffectType.CreateCardInHand,
+                AbilityEffectType.CreateCardInLocation,
             };
             if(!UnrestrictedEffects.Contains(effect)) return false;
         }else 
         {
-            List<AbilityEffect> RestrictedEffects = new List<AbilityEffect> {
-                AbilityEffect.CreateCardInHand,
-                AbilityEffect.CreateCardInDeck,
-                AbilityEffect.CreateCardInLocation,
+            List<AbilityEffectType> RestrictedEffects = new List<AbilityEffectType> {
+                AbilityEffectType.CreateCardInHand,
+                AbilityEffectType.CreateCardInDeck,
+                AbilityEffectType.CreateCardInLocation,
             };
             if(RestrictedEffects.Contains(effect)) return false;
         }
         return true;
     }
 
-    public bool checkAbilityTarget(AbilityTargetDefinition target, AbilityEffect effect, AbilityTriggerDefinition trigger, GameAction triggeredAction = null) {
-        if (target.target == AbilityTarget.CreatedCard){
-            if (trigger.trigger != AbilityTrigger.AfterAbilityTriggered) return false;
+    public bool checkAbilityTarget(AbilityTargetDefinition target, AbilityEffectType effect, AbilityTriggerDefinition trigger, GameAction triggeredAction = null) {
+        if (target.targetType == AbilityTargetType.CreatedCard){
+            if (trigger.triggerType != AbilityTriggerType.AfterAbilityTriggered) return false;
             List<Type> triggerableEffects = new List<Type> {
                 typeof(CreateCardInHandGA),
                 typeof(CreateCardInDeckGA),
@@ -67,11 +67,11 @@ public class RuleSystem : Singleton<RuleSystem> {
 
     //Queueing up ability targeting the next played card. Check if ability is allowed:
     public bool checkAbilityTargetingNextCard(Ability ability) {
-        List<AbilityTarget> abilityTargets = new List<AbilityTarget>();
+        List<AbilityTargetType> abilityTargets = new List<AbilityTargetType>();
         foreach (var targetDefinition in ability.definition.targetDefinition) {
-            abilityTargets.Add(targetDefinition.target);
+            abilityTargets.Add(targetDefinition.targetType);
         }
-        if (!abilityTargets.Contains(AbilityTarget.NextPlayedCard)) return false;
+        if (!abilityTargets.Contains(AbilityTargetType.NextPlayedCard)) return false;
         if (!PlayedCardTargetingEffects.Contains(ability.definition.effect)) return false;
         return true;
     }

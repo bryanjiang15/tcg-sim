@@ -128,7 +128,7 @@ public class SnapCard : Card, IBuffObtainable, IDestructible, IDiscardable, IMov
     public bool HasKeyword(string keyword)
     {
         if (keyword=="OnReveal" || keyword=="Ongoing")
-            return AbilityManager.Instance.GetAbilities()[this].Any(ability => ability.definition.triggerDefinition.trigger.ToString() == keyword);
+            return AbilityManager.Instance.GetAbilities()[this].Any(ability => ability.definition.triggerDefinition.triggerType.ToString() == keyword);
         else{
             return buffs.Any(buff => buff.type.ToString() == keyword);
         }
@@ -212,25 +212,25 @@ public class SnapCard : Card, IBuffObtainable, IDestructible, IDiscardable, IMov
         switch (reqType)
         {
             case AbilityRequirementType.Power:
-                return new AbilityAmount { type = AbilityAmountType.Constant, value = GetPower().ToString() };
+                return new AbilityAmount { amountType = AbilityAmountType.Constant, value = GetPower().ToString() };
             case AbilityRequirementType.Cost:
-                return new AbilityAmount { type = AbilityAmountType.Constant, value = GetBaseCost().ToString() };
+                return new AbilityAmount { amountType = AbilityAmountType.Constant, value = GetBaseCost().ToString() };
             case AbilityRequirementType.CurrentCost:
-                return new AbilityAmount { type = AbilityAmountType.Constant, value = GetCurrentCost().ToString() };
+                return new AbilityAmount { amountType = AbilityAmountType.Constant, value = GetCurrentCost().ToString() };
             case AbilityRequirementType.HasKeyword:
-                return new AbilityAmount { type = AbilityAmountType.Boolean, value = "false" };
+                return new AbilityAmount { amountType = AbilityAmountType.Boolean, value = "false" };
             case AbilityRequirementType.IsCreated:
-                return new AbilityAmount { type = AbilityAmountType.Boolean, value = "false" };
+                return new AbilityAmount { amountType = AbilityAmountType.Boolean, value = "false" };
             case AbilityRequirementType.CardName:
-                return new AbilityAmount { type = AbilityAmountType.Constant, value = stats.card_name };
+                return new AbilityAmount { amountType = AbilityAmountType.Constant, value = stats.card_name };
             case AbilityRequirementType.BuffPresent:
-                return new AbilityAmount { type = AbilityAmountType.Boolean, value = "false" };
+                return new AbilityAmount { amountType = AbilityAmountType.Boolean, value = "false" };
             case AbilityRequirementType.LocationFull:
                 if (PlayedLocation != null)
-                    return new AbilityAmount { type = AbilityAmountType.Boolean, value = PlayedLocation.isFull().ToString() };
-                return new AbilityAmount { type = AbilityAmountType.Boolean, value = "false" };
+                    return new AbilityAmount { amountType = AbilityAmountType.Boolean, value = PlayedLocation.isFull().ToString() };
+                return new AbilityAmount { amountType = AbilityAmountType.Boolean, value = "false" };
             default:
-                return new AbilityAmount { type = AbilityAmountType.Constant, value = "0" };
+                return new AbilityAmount { amountType = AbilityAmountType.Constant, value = "0" };
         }
     }
 

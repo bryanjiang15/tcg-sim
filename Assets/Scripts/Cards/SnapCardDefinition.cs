@@ -1,6 +1,8 @@
+using System;
 using CardHouse;
 using UnityEngine;
 
+[Serializable]
 [CreateAssetMenu(fileName = "SnapCardDefinition", menuName = "CardHouse/Card Definition/SnapCard")]
 public class SnapCardDefinition : CardDefinition {
     public int cost;

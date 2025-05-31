@@ -47,9 +47,9 @@ public class LocationCard : SnapCard {
         switch (reqType)
         {
             case AbilityRequirementType.Power:
-                return new AbilityAmount { type = AbilityAmountType.Constant, value = GetPower().ToString() };
+                return new AbilityAmount { amountType = AbilityAmountType.Constant, value = GetPower().ToString() };
             case AbilityRequirementType.LocationFull:
-                return new AbilityAmount { type = AbilityAmountType.Boolean, value = IsFull().ToString() };
+                return new AbilityAmount { amountType = AbilityAmountType.Boolean, value = IsFull().ToString() };
             default:
                 return base.GetTargetValue(reqType);
         }

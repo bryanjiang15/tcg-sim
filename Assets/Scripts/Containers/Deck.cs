@@ -11,9 +11,9 @@ public class Deck : CardGroup, ICardContainer
         switch (reqType)
         {
             case AbilityRequirementType.NumberOfCards:
-                return new AbilityAmount { type = AbilityAmountType.Constant, value = cards.Count.ToString() };
+                return new AbilityAmount { amountType = AbilityAmountType.Constant, value = cards.Count.ToString() };
             default:
-                return new AbilityAmount { type = AbilityAmountType.Constant, value = "0" };
+                return new AbilityAmount { amountType = AbilityAmountType.Constant, value = "0" };
         }
     }
 }

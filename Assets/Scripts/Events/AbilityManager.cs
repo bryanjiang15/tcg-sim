@@ -58,7 +58,7 @@ public class AbilityManager : Singleton<AbilityManager> {
             Ability ability = new Ability();
             ability.SetOwner(owner);
             ability.SetUpDefinition(abilityDefinition);
-            if(ability.definition.triggerDefinition.trigger == AbilityTrigger.AfterAbilityTriggered){
+            if(ability.definition.triggerDefinition.triggerType == AbilityTriggerType.AfterAbilityTriggered){
                 if(lastAbility != null){
                     SubscribeAbilityChain(lastAbility, ability);
                 }else{
@@ -74,10 +74,10 @@ public class AbilityManager : Singleton<AbilityManager> {
     public void ActivateOnRevealAbility(SnapCard card){
         if (abilities.ContainsKey(card)) {
             foreach (Ability ability in abilities[card]) {
-                AbilityTrigger trigger = ability.definition.triggerDefinition.trigger;
-                if (trigger == AbilityTrigger.OnReveal) {
+                AbilityTriggerType trigger = ability.definition.triggerDefinition.triggerType;
+                if (trigger == AbilityTriggerType.OnReveal) {
                     TriggerAbilityReaction(card, ability); // Trigger the reaction for OnReveal abilities
-                } else if (trigger == AbilityTrigger.Ongoing) {
+                } else if (trigger == AbilityTriggerType.Ongoing) {
                     OngoingAbility ongoingAbility = new OngoingAbility(ability);
                     activeAbilities.Add(ongoingAbility);
                     ongoingAbility.Activate();
@@ -91,11 +91,11 @@ public class AbilityManager : Singleton<AbilityManager> {
     public void TriggerAbilityReaction(SnapCard owner, Ability ability, List<ITargetable> targets=null, GameAction triggeredAction = null) {
         if (triggeredAction != null) {
             //Check if the triggered target is valid for the ability
-            List<AbilityTargetDefinition> triggeredTargetDefinitions = ability.definition.triggerDefinition.triggeredTarget;
+            List<AbilityTargetDefinition> triggeredTargetDefinitions = ability.definition.triggerDefinition.triggerSource;
             if (triggeredTargetDefinitions != null && triggeredTargetDefinitions.Count > 0) {
                 List<ITargetable> triggeredTargets = TargetSystem.Instance.GetTargets(triggeredTargetDefinitions, owner, triggeredAction: triggeredAction);
                 if (triggeredTargets.Count == 0) {
-                    Debug.Log($"Triggered action does not have valid targets for ability: {ability.owner.name}, {ability.definition.triggerDefinition.triggeredTarget[0].target}");
+                    Debug.Log($"Triggered action does not have valid targets for ability: {ability.owner.name}, {ability.definition.triggerDefinition.triggerSource[0].targetType}");
 
                     return;
                 }
@@ -120,17 +120,17 @@ public class AbilityManager : Singleton<AbilityManager> {
         }
     }
 
-    public bool IsAbilityActiveOnPlay(AbilityTrigger trigger) {
-        return trigger != AbilityTrigger.InHand && trigger != AbilityTrigger.InDeck;
+    public bool IsAbilityActiveOnPlay(AbilityTriggerType trigger) {
+        return trigger != AbilityTriggerType.InHand && trigger != AbilityTriggerType.InDeck;
     }
 
     public void ActivateAbility(Ability ability) {
         activeAbilities.Add(ability);
-        switch(ability.definition.triggerDefinition.trigger) {
-            case AbilityTrigger.GameStart:
+        switch(ability.definition.triggerDefinition.triggerType) {
+            case AbilityTriggerType.GameStart:
                 // AbilityManager.Instance.ActivateOnRevealAbility(owner);
                 break;
-            case AbilityTrigger.EndTurn:
+            case AbilityTriggerType.EndTurn:
                 Action<GameAction> endPhaseAction = (endPhaseGA) => {
                     if (SnapPhaseManager.Instance.GetCurrentPhaseType() == SnapPhaseType.Reveal) {
                         TriggerAbilityReaction(ability.owner, ability, triggeredAction: endPhaseGA);
@@ -141,7 +141,7 @@ public class AbilityManager : Singleton<AbilityManager> {
                     ActionSystem.UnsubscribeReaction<EndPhaseGA>(endPhaseAction, ReactionTiming.PRE);
                 });
                 break;
-            case AbilityTrigger.Destroyed:
+            case AbilityTriggerType.Destroyed:
                 Action<GameAction> destroyCardAction = (destroyCardGA) => {
                     TriggerAbilityReaction(ability.owner, ability, triggeredAction: destroyCardGA);
                 };
@@ -151,7 +151,7 @@ public class AbilityManager : Singleton<AbilityManager> {
                 });
                 
                 break;
-            case AbilityTrigger.BeforeCardPlayed:
+            case AbilityTriggerType.BeforeCardPlayed:
                 Action<GameAction> beforeCardPlayedAction = (beforeCardPlayedGA) => {
                     TriggerAbilityReaction(ability.owner, ability, triggeredAction: beforeCardPlayedGA);
                 };
@@ -160,7 +160,7 @@ public class AbilityManager : Singleton<AbilityManager> {
                     ActionSystem.UnsubscribeReaction<RevealCardGA>(beforeCardPlayedAction, ReactionTiming.PRE);
                 });
                 break;
-            case AbilityTrigger.AfterCardPlayed:
+            case AbilityTriggerType.AfterCardPlayed:
                 Action<GameAction> afterCardPlayedAction = (afterCardPlayedGA) => {
                     TriggerAbilityReaction(ability.owner, ability, triggeredAction: afterCardPlayedGA);
                 };
@@ -178,15 +178,15 @@ public class AbilityManager : Singleton<AbilityManager> {
 
         //If nextPlayedCard is not played this turn
         if (TargetSystem.Instance.GetTargets(new List<AbilityTargetDefinition> {
-            new AbilityTargetDefinition(AbilityTarget.NextPlayedCard) 
+            new AbilityTargetDefinition(AbilityTargetType.NextPlayedCard) 
         }, ability.owner).Count != 0) return;
 
         Ability temporaryAbility = ability;
-        temporaryAbility.definition.triggerDefinition.trigger = AbilityTrigger.BeforeCardPlayed;
-        temporaryAbility.definition.triggerDefinition.triggeredTarget = new List<AbilityTargetDefinition> {
-            new AbilityTargetDefinition(AbilityTarget.AllPlayerCards)
+        temporaryAbility.definition.triggerDefinition.triggerType = AbilityTriggerType.BeforeCardPlayed;
+        temporaryAbility.definition.triggerDefinition.triggerSource = new List<AbilityTargetDefinition> {
+            new AbilityTargetDefinition(AbilityTargetType.AllPlayerCards)
         };
-        var nextCardPlayedTarget = new AbilityTargetDefinition(AbilityTarget.TriggeredActionTargets, AbilityTargetRange.First);
+        var nextCardPlayedTarget = new AbilityTargetDefinition(AbilityTargetType.TriggeredActionTargets, AbilityTargetRange.First);
         temporaryAbility.definition.targetDefinition = new List<AbilityTargetDefinition> { nextCardPlayedTarget };
         temporaryAbility.exhaust = true;
         ActivateAbility(temporaryAbility);

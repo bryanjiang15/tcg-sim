@@ -8,7 +8,7 @@ using System.Linq;
 [System.Serializable]
 public struct AbilityDefinition {
     public AbilityTriggerDefinition triggerDefinition;
-    public AbilityEffect effect;
+    public AbilityEffectType effect;
     public AbilityAmount amount;
     public List<AbilityTargetDefinition> targetDefinition;
     public List<AbilityRequirement> activationRequirements;
@@ -18,11 +18,11 @@ public struct AbilityDefinition {
 
 [System.Serializable]
 public struct AbilityAmount{
-    public AbilityAmountType type;
+    public AbilityAmountType amountType;
     public string value;
     public T GetValue<T>(ITargetable owner, GameAction triggeredAction = null) {
         SnapCard snapCard = owner as SnapCard;
-        switch (type)
+        switch (amountType)
         {
             case AbilityAmountType.Constant:
                 if (typeof(T) == typeof(int)) return (T)System.Convert.ChangeType(value, typeof(int));
@@ -98,7 +98,7 @@ public struct AbilityAmount{
     }
 
     public AbilityTargetDefinition GetDependentTargetDefinition(SnapCard owner){
-        switch (type)
+        switch (amountType)
         {
             case AbilityAmountType.ForEachTarget:
                 var targetValues = JsonConvert.DeserializeObject<Dictionary<string, object>>(value);
@@ -111,25 +111,25 @@ public struct AbilityAmount{
 //TODO: Implement this
 [System.Serializable]
 public struct AbilityRequirement {
-    public AbilityRequirementType ReqType;
-    public AbilityRequirementComparator ReqComparator;
-    public AbilityRequirementCondition ReqCondition;
-    public AbilityAmount ReqAmount;
+    public AbilityRequirementType requirementType;
+    public AbilityRequirementComparator requirementComparator;
+    public AbilityRequirementCondition requirementCondition;
+    public AbilityAmount requirementAmount;
 }
 
 [System.Serializable]
 public struct AbilityTargetDefinition {
-    public AbilityTarget target;
+    public AbilityTargetType targetType;
     public AbilityTargetRange targetRange;
     public AbilityTargetSort targetSort;
-    public List<AbilityRequirement> targetRequirement;
+    public List<AbilityRequirement> targetRequirements;
     public bool excludeSelf;
 
-    public AbilityTargetDefinition(AbilityTarget target, AbilityTargetRange targetRange = AbilityTargetRange.None, AbilityTargetSort targetSort = AbilityTargetSort.None) {
-        this.target = target;
+    public AbilityTargetDefinition(AbilityTargetType target, AbilityTargetRange targetRange = AbilityTargetRange.None, AbilityTargetSort targetSort = AbilityTargetSort.None) {
+        this.targetType = target;
         this.targetRange = targetRange;
         this.targetSort = targetSort;
-        this.targetRequirement = new List<AbilityRequirement>();
+        this.targetRequirements = new List<AbilityRequirement>();
         this.excludeSelf = false;
     }
 }
@@ -137,6 +137,6 @@ public struct AbilityTargetDefinition {
 [System.Serializable]
 public struct AbilityTriggerDefinition 
 {
-    public AbilityTrigger trigger;
-    public List<AbilityTargetDefinition> triggeredTarget;//Targets that can trigger the ability
+    public AbilityTriggerType triggerType;
+    public List<AbilityTargetDefinition> triggerSource;//Targets that can trigger the ability
 }

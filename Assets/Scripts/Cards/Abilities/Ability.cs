@@ -24,37 +24,37 @@ public class Ability
         if (targets == null) {
             targets = TargetSystem.Instance.GetTargets(definition.targetDefinition, owner, triggeredAction: triggeredAction);
         }
-        if (definition.effect == AbilityEffect.Draw) {
+        if (definition.effect == AbilityEffectType.Draw) {
             return new DrawCardGA(definition.amount.GetValue<int>(owner, triggeredAction), owner.ownedPlayer, source: owner);
         }
-        if (definition.effect == AbilityEffect.GainMaxEnergy) {
+        if (definition.effect == AbilityEffectType.GainMaxEnergy) {
             return new GainMaxEnergyGA(this, owner.ownedPlayer, definition.amount);
         }
         if (targets.Count == 0) return null;
         return (GameAction)Activator.CreateInstance(abilityEffectType, this, targets, definition.amount);
     }
 
-    public static Dictionary<AbilityEffect, Type> AbilityEffectTypeMap = new Dictionary<AbilityEffect, Type>(){
-        {AbilityEffect.GainPower, typeof(GainPowerGA)},
-        {AbilityEffect.LosePower, typeof(GainPowerGA)},
-        {AbilityEffect.Draw, typeof(DrawCardGA)},
-        {AbilityEffect.Discard, typeof(DiscardCardGA)},
-        {AbilityEffect.Destroy, typeof(DestroyCardGA)},
-        {AbilityEffect.Move, typeof(MoveCardGA)},
-        {AbilityEffect.StealPower, typeof(StealPowerGA)},
-        {AbilityEffect.AddPowerToLocation, typeof(AddPowerToLocationGA)},
-        {AbilityEffect.CreateCardInHand, typeof(CreateCardInHandGA)},
-        {AbilityEffect.CreateCardInDeck, typeof(CreateCardInDeckGA)},
-        {AbilityEffect.CreateCardInLocation, typeof(CreateCardInLocationGA)},
-        {AbilityEffect.ReduceCost, typeof(IncreaseCostGA)}, // Negative amount reduces cost
-        {AbilityEffect.IncreaseCost, typeof(IncreaseCostGA)},
-        {AbilityEffect.Merge, typeof(MergeCardsGA)},
-        {AbilityEffect.Return, typeof(ReturnCardGA)},
-        {AbilityEffect.AddCardToHand, typeof(AddCardToHandGA)},
-        {AbilityEffect.AddCardToLocation, typeof(AddCardToLocationGA)},
-        {AbilityEffect.SetPower, typeof(SetPowerGA)},
-        {AbilityEffect.AddKeyword, typeof(AddKeywordGA)},
-        {AbilityEffect.AddTemporaryAbility, typeof(AddTemporaryAbilityGA)},
+    public static Dictionary<AbilityEffectType, Type> AbilityEffectTypeMap = new Dictionary<AbilityEffectType, Type>(){
+        {AbilityEffectType.GainPower, typeof(GainPowerGA)},
+        {AbilityEffectType.LosePower, typeof(GainPowerGA)},
+        {AbilityEffectType.Draw, typeof(DrawCardGA)},
+        {AbilityEffectType.Discard, typeof(DiscardCardGA)},
+        {AbilityEffectType.Destroy, typeof(DestroyCardGA)},
+        {AbilityEffectType.Move, typeof(MoveCardGA)},
+        {AbilityEffectType.StealPower, typeof(StealPowerGA)},
+        {AbilityEffectType.AddPowerToLocation, typeof(AddPowerToLocationGA)},
+        {AbilityEffectType.CreateCardInHand, typeof(CreateCardInHandGA)},
+        {AbilityEffectType.CreateCardInDeck, typeof(CreateCardInDeckGA)},
+        {AbilityEffectType.CreateCardInLocation, typeof(CreateCardInLocationGA)},
+        {AbilityEffectType.ReduceCost, typeof(IncreaseCostGA)}, // Negative amount reduces cost
+        {AbilityEffectType.IncreaseCost, typeof(IncreaseCostGA)},
+        {AbilityEffectType.Merge, typeof(MergeCardsGA)},
+        {AbilityEffectType.Return, typeof(ReturnCardGA)},
+        {AbilityEffectType.AddCardToHand, typeof(AddCardToHandGA)},
+        {AbilityEffectType.AddCardToLocation, typeof(AddCardToLocationGA)},
+        {AbilityEffectType.SetPower, typeof(SetPowerGA)},
+        {AbilityEffectType.AddKeyword, typeof(AddKeywordGA)},
+        {AbilityEffectType.AddTemporaryAbility, typeof(AddTemporaryAbilityGA)},
         // Add more cases as needed for additional AbilityEffect values
     };
 
@@ -62,6 +62,7 @@ public class Ability
     {
         definition = abilityDefinition;
         abilityEffectType = AbilityEffectTypeMap[abilityDefinition.effect];
+        Debug.Log("AbilityDefinition: " + JsonUtility.ToJson(abilityDefinition, true));
     }
 
     public void SetUnsubscribeActionCallback(Action<GameAction> callback) {

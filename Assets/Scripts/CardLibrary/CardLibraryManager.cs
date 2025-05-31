@@ -16,7 +16,7 @@ public class CardLibraryManager : MonoBehaviour
     [Serializable]
     public class CardLibraryData
     {
-        public Dictionary<string, CardEntry> cards = new Dictionary<string, CardEntry>();
+        public List<CardEntry> cards = new List<CardEntry>();
     }
 
     [Serializable]
@@ -58,9 +58,10 @@ public class CardLibraryManager : MonoBehaviour
 
     public void AddCard(string cardId, SnapCardDefinition cardDefinition, bool isFoil = false)
     {
-        if (!libraryData.cards.ContainsKey(cardId))
+        var existingCard = libraryData.cards.Find(c => c.cardId == cardId);
+        if (existingCard == null)
         {
-            libraryData.cards[cardId] = new CardEntry
+            libraryData.cards.Add(new CardEntry
             {
                 cardId = cardId,
                 cardDefinition = cardDefinition,
@@ -69,26 +70,27 @@ public class CardLibraryManager : MonoBehaviour
                 isFoil = isFoil,
                 tags = new List<string>(),
                 stats = new Dictionary<string, int>()
-            };
+            });
         }
         else
         {
-            libraryData.cards[cardId].quantity++;
+            existingCard.quantity++;
         }
         SaveLibrary();
     }
 
     public void RemoveCard(string cardId)
     {
-        if (libraryData.cards.ContainsKey(cardId))
+        var card = libraryData.cards.Find(c => c.cardId == cardId);
+        if (card != null)
         {
-            if (libraryData.cards[cardId].quantity > 1)
+            if (card.quantity > 1)
             {
-                libraryData.cards[cardId].quantity--;
+                card.quantity--;
             }
             else
             {
-                libraryData.cards.Remove(cardId);
+                libraryData.cards.Remove(card);
             }
             SaveLibrary();
         }
@@ -96,48 +98,54 @@ public class CardLibraryManager : MonoBehaviour
 
     public CardEntry GetCardInfo(string cardId)
     {
-        return libraryData.cards.ContainsKey(cardId) ? libraryData.cards[cardId] : null;
+        return libraryData.cards.Find(c => c.cardId == cardId);
     }
 
     public List<CardEntry> GetAllCards()
     {
-        return libraryData.cards.Values.ToList();
+        return libraryData.cards;
     }
 
     public void AddTagToCard(string cardId, string tag)
     {
-        if (libraryData.cards.ContainsKey(cardId) && !libraryData.cards[cardId].tags.Contains(tag))
+        var card = libraryData.cards.Find(c => c.cardId == cardId);
+        if (card != null && !card.tags.Contains(tag))
         {
-            libraryData.cards[cardId].tags.Add(tag);
+            card.tags.Add(tag);
             SaveLibrary();
         }
     }
 
     public void RemoveTagFromCard(string cardId, string tag)
     {
-        if (libraryData.cards.ContainsKey(cardId))
+        var card = libraryData.cards.Find(c => c.cardId == cardId);
+        if (card != null)
         {
-            libraryData.cards[cardId].tags.Remove(tag);
+            card.tags.Remove(tag);
             SaveLibrary();
         }
     }
 
     public void UpdateCardStats(string cardId, string statName, int value)
     {
-        if (libraryData.cards.ContainsKey(cardId))
+        var card = libraryData.cards.Find(c => c.cardId == cardId);
+        if (card != null)
         {
-            if (!libraryData.cards[cardId].stats.ContainsKey(statName))
+            if (!card.stats.ContainsKey(statName))
             {
-                libraryData.cards[cardId].stats[statName] = 0;
+                card.stats[statName] = 0;
             }
-            libraryData.cards[cardId].stats[statName] += value;
+            card.stats[statName] += value;
             SaveLibrary();
         }
     }
 
     private void SaveLibrary()
     {
+        Debug.Log("Saving card library:");
+        Debug.Log(libraryData.cards.Count);
         string json = JsonUtility.ToJson(libraryData, true);
+        Debug.Log(json);
         File.WriteAllText(savePath, json);
     }
 
@@ -147,9 +155,28 @@ public class CardLibraryManager : MonoBehaviour
         {
             string json = File.ReadAllText(savePath);
             libraryData = JsonUtility.FromJson<CardLibraryData>(json);
+            Debug.Log("Loading card library:");
+            foreach (var cardEntry in libraryData.cards)
+            {
+                Debug.Log($"Card ID: {cardEntry.cardId}");
+                Debug.Log($"  Name: {cardEntry.cardDefinition.card_name}");
+                Debug.Log($"  Quantity: {cardEntry.quantity}");
+                Debug.Log($"  Tags: {string.Join(", ", cardEntry.tags)}");
+                Debug.Log($"  Is Foil: {cardEntry.isFoil}");
+                if (cardEntry.stats.Count > 0)
+                {
+                    Debug.Log("  Stats:");
+                    foreach (var stat in cardEntry.stats)
+                    {
+                        Debug.Log($"    {stat.Key}: {stat.Value}");
+                    }
+                }
+                Debug.Log("-------------------");
+            }
         }
         else
         {
+            Debug.Log("No card library found. Creating new one.");
             libraryData = new CardLibraryData();
             SaveLibrary();
         }
@@ -158,22 +185,23 @@ public class CardLibraryManager : MonoBehaviour
     // Additional utility methods
     public List<CardEntry> GetCardsByTag(string tag)
     {
-        return libraryData.cards.Values.Where(card => card.tags.Contains(tag)).ToList();
+        return libraryData.cards.Where(card => card.tags.Contains(tag)).ToList();
     }
 
     public List<CardEntry> GetFoilCards()
     {
-        return libraryData.cards.Values.Where(card => card.isFoil).ToList();
+        return libraryData.cards.Where(card => card.isFoil).ToList();
     }
 
     public int GetTotalCardCount()
     {
-        return libraryData.cards.Values.Sum(card => card.quantity);
+        return libraryData.cards.Sum(card => card.quantity);
     }
 
     public Dictionary<string, int> GetCardStats(string cardId)
     {
-        return libraryData.cards.ContainsKey(cardId) ? libraryData.cards[cardId].stats : new Dictionary<string, int>();
+        var card = libraryData.cards.Find(c => c.cardId == cardId);
+        return card != null ? card.stats : new Dictionary<string, int>();
     }
 
     public CardGenerator GetCardGenerator()

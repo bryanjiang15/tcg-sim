@@ -1,4 +1,4 @@
-public enum AbilityTrigger
+public enum AbilityTriggerType
 {
     OnReveal, //When card is revealed - from any place (hand,deck,created,played) to location
     Ongoing,
@@ -21,7 +21,7 @@ public enum AbilityTrigger
     None
 }
 
-public enum AbilityEffect
+public enum AbilityEffectType
 {
     GainPower,
     LosePower, //Self loses power
@@ -70,7 +70,7 @@ public enum CalculationType
     MinValue
 }
 
-public enum AbilityTarget
+public enum AbilityTargetType
 {
     Deck,
     Hand,
@@ -92,7 +92,7 @@ public enum AbilityTarget
     NextPlayedCard,
     TriggeredActionTargets, // Targets that the action that triggered this ability affected
     TriggeredActionSource, // The source card of the action that triggered this ability
-    CreatedCard, //Only activated when trigger is afterabilitytriggered is a create card ability
+    CreatedCard, //Only activated when trigger is afterAbilied is a create card ability
     AllPlayerPlayedCards,
     AllEnemyPlayedCards,
     OwnedPlayer,
