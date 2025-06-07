@@ -1,10 +1,10 @@
 {
     "target": {
-        "target": "Self",
+        "targetType": "Self",
         "targetRange": "None",
         "targetSort": "None",
         "excludeSelf": false,
-        "targetRequirement": []
+        "targetRequirements": []
     },
     "type": "Power",
     "calculation": "Total"

@@ -42,6 +42,7 @@ public class CardLibraryManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
             InitializeLibrary();
+            ClearLibrary();
             cardGenerator = new CardGenerator();
         }
         else
@@ -159,18 +160,6 @@ public class CardLibraryManager : MonoBehaviour
             foreach (var cardEntry in libraryData.cards)
             {
                 Debug.Log($"Card ID: {cardEntry.cardId}");
-                Debug.Log($"  Name: {cardEntry.cardDefinition.card_name}");
-                Debug.Log($"  Quantity: {cardEntry.quantity}");
-                Debug.Log($"  Tags: {string.Join(", ", cardEntry.tags)}");
-                Debug.Log($"  Is Foil: {cardEntry.isFoil}");
-                if (cardEntry.stats.Count > 0)
-                {
-                    Debug.Log("  Stats:");
-                    foreach (var stat in cardEntry.stats)
-                    {
-                        Debug.Log($"    {stat.Key}: {stat.Value}");
-                    }
-                }
                 Debug.Log("-------------------");
             }
         }
@@ -207,5 +196,20 @@ public class CardLibraryManager : MonoBehaviour
     public CardGenerator GetCardGenerator()
     {
         return cardGenerator;
+    }
+
+    public void ClearLibrary()
+    {
+        // Delete the saved file if it exists
+        if (File.Exists(savePath))
+        {
+            File.Delete(savePath);
+        }
+
+        // Reset the library data
+        libraryData = new CardLibraryData();
+        SaveLibrary();
+        
+        Debug.Log("Card library has been cleared.");
     }
 } 

@@ -1,0 +1,56 @@
+.unity-tab-view__header-container {
+    background-color: rgb(193, 175, 149);
+    border-radius: 10px;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+}
+
+/* Style for tabs */
+.unity-tab__header {
+    -unity-font-style: bold;
+    font-size: 14px;
+    border-radius: 5px;
+    margin: 5px;
+    background-color: transparent;
+    flex-grow: 1;
+    align-items: center;
+    justify-content: center;
+}
+    
+/* Adds background color for the selected tab */
+.unity-tab__header:checked  {
+    background-color: rgb(222, 202, 172);
+}
+    
+/* Style for tabContent */
+.tab-content {
+    background-color: rgb(255, 255, 255);
+    font-size: 20px;
+}
+    
+/* By default, each tab header has an underline. This hides the header underline  */
+.unity-tab__header-underline {
+    opacity: 0; /* or rgba(0, 0, 0, 0); */
+}
+
+
+.unity-tab__content-container {
+    background-color: rgb(254, 232, 198);
+    margin-top: 10px;
+    border-radius: 10px;
+    height: 100%;
+}
+
+.unity-text-field, .unity-popup-field {
+    flex-direction: column;
+}
+
+.unity-base-text-field__input, .unity-base-popup-field__input {
+    border-radius: 10px;
+}
+
+.text-box {
+    border-radius: 10px;
+    height: 300px;
+}

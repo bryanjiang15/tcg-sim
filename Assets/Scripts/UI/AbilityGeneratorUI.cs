@@ -1,38 +1,56 @@
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
+using UnityEngine.UIElements;
 using System.Threading.Tasks;
 using System.Linq;
 
 public class AbilityGeneratorUI : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI promptInput;
-    [SerializeField] private Button generateButton;
-    [SerializeField] private TextMeshProUGUI statusText;
+    [SerializeField] private UIDocument uiDocument;
     [SerializeField] private CardLibraryManager cardLibraryManager;
 
-    private void Start()
+    private TextField promptInput;
+    private Button generateButton;
+    private Label statusText;
+
+    private void OnEnable()
     {
-        generateButton.onClick.AddListener(OnGenerateButtonClicked);
+        var root = uiDocument.rootVisualElement;
+        
+        // Get references to UI elements
+        promptInput = root.Q<TextField>("prompt-input");
+        generateButton = root.Q<Button>("generate-button");
+        statusText = root.Q<Label>("status-text");
+
+        // Register button click event
+        generateButton.clicked += OnGenerateButtonClicked;
+    }
+
+    private void OnDisable()
+    {
+        // Unregister button click event
+        if (generateButton != null)
+        {
+            generateButton.clicked -= OnGenerateButtonClicked;
+        }
     }
 
     private async void OnGenerateButtonClicked()
     {
-        if (string.IsNullOrEmpty(promptInput.text))
+        if (string.IsNullOrEmpty(promptInput.value))
         {
             statusText.text = "Please enter a prompt";
             return;
         }
 
-        generateButton.interactable = false;
+        generateButton.SetEnabled(false);
         statusText.text = "Generating ability...";
 
-        var abilityDefinition = await cardLibraryManager.GetCardGenerator().GenerateAbilityFromPrompt(promptInput.text);
+        var abilityDefinition = await cardLibraryManager.GetCardGenerator().GenerateAbilityFromPrompt(promptInput.value);
 
         if (abilityDefinition == null)
         {
             statusText.text = "Failed to generate ability";
-            generateButton.interactable = true;
+            generateButton.SetEnabled(true);
             return;
         }
 
@@ -49,6 +67,6 @@ public class AbilityGeneratorUI : MonoBehaviour
         cardLibraryManager.AddCard("generated_" + System.Guid.NewGuid().ToString(), cardDefinition);
 
         statusText.text = "Ability generated successfully!";
-        generateButton.interactable = true;
+        generateButton.SetEnabled(true);
     }
 } 
