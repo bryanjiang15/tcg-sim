@@ -2,9 +2,9 @@ using UnityEngine;
 using System;
 using System.Collections;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using System.Collections.Generic;
 using UnityEngine.Networking;
+using Mono.Cecil;
 
 public class CardGenerator
 {
@@ -16,15 +16,16 @@ public class CardGenerator
 
     private struct CardAbilityRequest
     {
-        public string description;
+        public string abilityDescription;
+        public string cardDescription;
     }
 
-    public async Task<AbilityDefinition?> GenerateAbilityFromPrompt(string prompt)
+    public async Task<CardGenerationData?> GenerateAbilityFromPrompt(string prompt, string cardDescription)
     {
         try
         {
             // Create the request payload
-            CardAbilityRequest requestData = new CardAbilityRequest { description = prompt };
+            CardAbilityRequest requestData = new CardAbilityRequest { abilityDescription = prompt, cardDescription = cardDescription };
             string jsonData = JsonUtility.ToJson(requestData);
             byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
 
@@ -51,7 +52,8 @@ public class CardGenerator
                 }
                 // Parse the API response
                 Debug.Log("Response: " + request.downloadHandler.text);
-                return JsonUtility.FromJson<AbilityDefinition>(request.downloadHandler.text);
+
+                return JsonUtility.FromJson<CardGenerationData>(request.downloadHandler.text);
             }
         }
         catch (Exception ex)

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace CardHouse
 {
-    public class GroupSetup : MonoBehaviour
+    public class GroupSetup : MonoBehaviour, IGroupSetup
     {
         [Serializable]
         public struct GroupPopulationData

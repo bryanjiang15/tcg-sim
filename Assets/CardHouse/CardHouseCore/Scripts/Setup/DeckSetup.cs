@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace CardHouse
 {
-    public class DeckSetup : MonoBehaviour
+    public class DeckSetup : MonoBehaviour, IGroupSetup
     {
         public bool RunOnStart = true;
         public GameObject CardPrefab;

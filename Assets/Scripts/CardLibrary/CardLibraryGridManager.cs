@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using CardHouse;
+using CardLibrary;
 
 public class CardLibraryGridManager : MonoBehaviour
 {
@@ -52,7 +53,7 @@ public class CardLibraryGridManager : MonoBehaviour
                 
                 if (cardUIComponent != null)
                 {
-                    cardUIComponent.Initialize(cardEntry.cardDefinition, cardEntry.isFoil);
+                    cardUIComponent.Initialize(cardEntry, cardEntry.isFoil);
                 }
             }
         }

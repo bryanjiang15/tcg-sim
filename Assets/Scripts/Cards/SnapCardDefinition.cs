@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using CardHouse;
 using UnityEngine;
 
@@ -10,5 +11,6 @@ public class SnapCardDefinition : CardDefinition {
     public string card_name;
     public int series;
     public Sprite Art;
-    public AbilityDefinition[] abilities;
+    public string artPath;
+    public List<AbilityDefinition> abilities;
 }

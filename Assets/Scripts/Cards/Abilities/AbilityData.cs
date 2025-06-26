@@ -55,6 +55,7 @@ public enum AbilityEffectType
 
 public enum AbilityAmountType
 {
+    None,
     Constant,
     ForEachTarget,
     Cardid,

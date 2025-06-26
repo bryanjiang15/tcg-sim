@@ -3,19 +3,20 @@
     <engine:TabView view-data-key="TabbedMenu" name="TabView" style="top: 10%; left: 1%; right: auto; bottom: auto; width: 70%; align-content: center;">
         <engine:Tab label="General" name="Tab" style="height: auto;">
             <engine:GroupBox style="flex-direction: row; justify-content: space-around; align-self: stretch;">
-                <engine:TextField label="Card Name" placeholder-text="filler text" style="flex-direction: column;" />
+                <engine:TextField label="Card Name" placeholder-text="filler text" name="card-name-input" style="flex-direction: column;" />
                 <engine:DropdownField label="Card Type" />
             </engine:GroupBox>
             <engine:GroupBox style="flex-direction: row; justify-content: space-around; align-self: stretch;">
                 <engine:DropdownField label="Color" />
                 <engine:DropdownField label="Rarity" />
             </engine:GroupBox>
+            <engine:TextField label="Description" placeholder-text="America Chavez from marvel comics" name="card-description-input" style="margin-left: 50px; margin-right: 50px; margin-bottom: 10px;" />
         </engine:Tab>
         <engine:Tab label="Stats" focusable="false">
             <engine:Label text="Label" name="status-text" />
             <engine:GroupBox name="GroupBox" style="flex-direction: row; justify-content: space-between;">
-                <engine:IntegerField label="Power" value="3" />
-                <engine:IntegerField label="Cost" value="2" />
+                <engine:IntegerField label="Power" value="3" name="power-input" />
+                <engine:IntegerField label="Cost" value="2" name="cost-input" />
             </engine:GroupBox>
             <engine:TextField placeholder-text="filler text" name="prompt-input" class="text-box" style="flex-direction: column-reverse; margin-top: 20px; margin-right: 20px; margin-bottom: 20px; margin-left: 20px;" />
             <engine:Button text="Submit" name="generate-button" />

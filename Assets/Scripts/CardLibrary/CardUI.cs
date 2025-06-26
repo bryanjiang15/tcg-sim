@@ -3,6 +3,8 @@ using UnityEngine.UI;
 using TMPro;
 using CardHouse;
 using UnityEngine.EventSystems;
+using CardLibrary;
+using System;
 
 public class CardUI : MonoBehaviour, IPointerClickHandler
 {
@@ -15,19 +17,23 @@ public class CardUI : MonoBehaviour, IPointerClickHandler
     [SerializeField] private TextMeshProUGUI quantityText;
     [SerializeField] private GameObject selectedIndicator;
 
-    private CardLibraryManager.CardEntry cardEntry;
+    private CardEntry cardEntry;
     private bool isSelected;
+    private DeckBuilderManager deckBuilderManager;
 
-    public void Initialize(SnapCardDefinition cardDefinition, bool isFoil)
+    public static event Action<CardEntry, bool> OnCardClicked;
+
+    private void Start()
     {
-        if (cardDefinition == null) return;
+        deckBuilderManager = FindAnyObjectByType<DeckBuilderManager>();
+    }
+
+    public void Initialize(CardEntry cardEntry, bool isFoil)
+    {
+        if (cardEntry == null) return;
 
         // Store the card entry
-        cardEntry = new CardLibraryManager.CardEntry
-        {
-            cardDefinition = cardDefinition,
-            isFoil = isFoil
-        };
+        this.cardEntry = cardEntry;
 
         // Update UI elements
         UpdateUI();
@@ -35,15 +41,12 @@ public class CardUI : MonoBehaviour, IPointerClickHandler
 
     private void UpdateUI()
     {
-        if (cardEntry == null || cardEntry.cardDefinition == null) return;
+        if (cardEntry == null || cardEntry.getCardDefinition() == null) return;
 
         // Update basic card information
-        cardNameText.text = cardEntry.cardDefinition.card_name;
-        powerText.text = cardEntry.cardDefinition.power.ToString();
-        costText.text = cardEntry.cardDefinition.cost.ToString();
-        
-        // Update foil effect
-        foilOverlay.gameObject.SetActive(cardEntry.isFoil);
+        cardNameText.text = cardEntry.getCardDefinition().card_name;
+        powerText.text = cardEntry.getCardDefinition().power.ToString();
+        costText.text = cardEntry.getCardDefinition().cost.ToString();
         
         // Update quantity if available
         if (quantityText != null)
@@ -52,15 +55,34 @@ public class CardUI : MonoBehaviour, IPointerClickHandler
         }
 
         // TODO: Load and set card image if you have card artwork
-        // if (cardImage != null)
-        // {
-        //     cardImage.sprite = cardEntry.cardDefinition.cardArtwork;
-        // }
+        if (cardEntry.getCardDefinition().Art != null)
+        {
+            cardImage.sprite = cardEntry.getCardDefinition().Art;
+        }
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        ToggleSelection();
+        if (cardEntry == null || cardEntry.getCardDefinition() == null) return;
+
+        bool isRightClick = eventData.button == PointerEventData.InputButton.Right;
+        
+        // Trigger the card click event
+        OnCardClicked?.Invoke(cardEntry, isRightClick);
+
+        // Handle left click for deck building
+        if (!isRightClick)
+        {
+            if (deckBuilderManager != null)
+            {
+                Debug.Log("CardUI: OnPointerClick");
+                deckBuilderManager.OnCardLibraryCardClicked(cardEntry);
+            }
+            else
+            {
+                ToggleSelection();
+            }
+        }
     }
 
     public void ToggleSelection()
@@ -75,7 +97,7 @@ public class CardUI : MonoBehaviour, IPointerClickHandler
         selectedIndicator.SetActive(false);
     }
 
-    public CardLibraryManager.CardEntry GetCardEntry()
+    public CardEntry GetCardEntry()
     {
         return cardEntry;
     }
