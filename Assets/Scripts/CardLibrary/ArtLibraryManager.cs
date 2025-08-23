@@ -1,27 +1,23 @@
 using System;
 using System.IO;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace CardLibrary
 {
-    public class ArtLibraryManager : Singleton<ArtLibraryManager>
+    public class ArtLibraryManager
     {
-        public static ArtLibraryManager Instance { get; private set; }
-
         private string artDirectory;
+        private Dictionary<string, Sprite> spriteCache = new Dictionary<string, Sprite>();
 
-        private void Awake()
-        {
-            InitializeArtLibrary();
-        }
-
-        private void InitializeArtLibrary()
+        public void InitializeArtLibrary()
         {
             artDirectory = Path.Combine(Application.persistentDataPath, "CardArt");
             if (!Directory.Exists(artDirectory))
             {
                 Directory.CreateDirectory(artDirectory);
             }
+            Debug.Log("Art library initialized");
         }
 
         /// <summary>
@@ -44,6 +40,13 @@ namespace CardLibrary
             {
                 byte[] bytes = cardArt.EncodeToPNG();
                 File.WriteAllBytes(artPath, bytes);
+                
+                // Clear cache for this path to force reload
+                if (spriteCache.ContainsKey(artPath))
+                {
+                    spriteCache.Remove(artPath);
+                }
+                
                 Debug.Log($"Card art saved successfully for card ID {cardId} at: {artPath}");
                 return artPath;
             }
@@ -55,7 +58,7 @@ namespace CardLibrary
         }
 
         /// <summary>
-        /// Loads card art from the specified file path
+        /// Loads card art from the specified file path with caching
         /// </summary>
         /// <param name="artPath">The file path to load the art from</param>
         /// <returns>The loaded sprite, or null if loading failed</returns>
@@ -65,6 +68,12 @@ namespace CardLibrary
             {
                 Debug.LogError("Art path is null or empty");
                 return null;
+            }
+
+            // Check cache first
+            if (spriteCache.ContainsKey(artPath))
+            {
+                return spriteCache[artPath];
             }
 
             if (!File.Exists(artPath))
@@ -78,7 +87,12 @@ namespace CardLibrary
                 byte[] bytes = File.ReadAllBytes(artPath);
                 Texture2D texture = new Texture2D(2, 2);
                 texture.LoadImage(bytes);
-                return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+                Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+                
+                // Cache the sprite
+                spriteCache[artPath] = sprite;
+                
+                return sprite;
             }
             catch (Exception e)
             {
@@ -96,6 +110,48 @@ namespace CardLibrary
         {
             string artPath = Path.Combine(artDirectory, $"cardArt_{cardId}.png");
             return LoadCardArt(artPath);
+        }
+
+        /// <summary>
+        /// Preloads all card art into cache for faster access
+        /// </summary>
+        public void PreloadAllCardArt()
+        {
+            if (!Directory.Exists(artDirectory))
+                return;
+
+            try
+            {
+                string[] files = Directory.GetFiles(artDirectory, "*.png");
+                foreach (string file in files)
+                {
+                    LoadCardArt(file);
+                }
+                Debug.Log($"Preloaded {files.Length} card art files into cache");
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"Failed to preload card art: {e.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Clears the sprite cache to free memory
+        /// </summary>
+        public void ClearSpriteCache()
+        {
+            spriteCache.Clear();
+            Resources.UnloadUnusedAssets();
+            Debug.Log("Sprite cache cleared");
+        }
+
+        /// <summary>
+        /// Gets the number of cached sprites
+        /// </summary>
+        /// <returns>Number of cached sprites</returns>
+        public int GetCachedSpriteCount()
+        {
+            return spriteCache.Count;
         }
 
         /// <summary>

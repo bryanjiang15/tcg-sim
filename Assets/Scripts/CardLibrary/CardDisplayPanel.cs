@@ -3,6 +3,7 @@ using TMPro;
 using CardHouse;
 using CardLibrary;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class CardDisplayPanel : MonoBehaviour, IDeselectHandler
 {
@@ -10,6 +11,7 @@ public class CardDisplayPanel : MonoBehaviour, IDeselectHandler
     [SerializeField] private TextMeshProUGUI abilityTargetText;
     [SerializeField] private TextMeshProUGUI abilityEffectText;
     [SerializeField] private TextMeshProUGUI abilityAmountText;
+    [SerializeField] private CardUI cardUI;
 
     private void Start()
     {
@@ -30,11 +32,12 @@ public class CardDisplayPanel : MonoBehaviour, IDeselectHandler
     {
         if (!isRightClick) return; // Only show panel on right click
 
-        DisplayCard(cardEntry.getCardDefinition());
+        DisplayCard(cardEntry);
     }
 
-    public void DisplayCard(SnapCardDefinition cardDefinition)
+    public void DisplayCard(CardEntry cardEntry)
     {
+        var cardDefinition = cardEntry.getCardDefinition();
         if (cardDefinition == null) return;
 
         Debug.Log("Displaying card: " + cardDefinition.card_name);
@@ -44,6 +47,8 @@ public class CardDisplayPanel : MonoBehaviour, IDeselectHandler
         abilityTargetText.text = "";
         abilityEffectText.text = "";
         abilityAmountText.text = "";
+
+        cardUI.Initialize(cardEntry, false);
 
         // Display the first ability if any
         if (cardDefinition.abilities != null && cardDefinition.abilities.Count > 0)

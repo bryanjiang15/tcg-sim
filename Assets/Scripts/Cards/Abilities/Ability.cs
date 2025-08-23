@@ -12,6 +12,7 @@ public class Ability
     public AbilityDefinition definition;
     public Type abilityEffectType { get; protected set; }
     public SnapCard owner { get; private set; }
+    public SnapTrigger trigger;
     public bool exhaust = false;
 
     private Action<GameAction> unsubscribeActionCallback;
@@ -63,6 +64,10 @@ public class Ability
         definition = abilityDefinition;
         abilityEffectType = AbilityEffectTypeMap[abilityDefinition.effect];
         Debug.Log("AbilityDefinition: " + JsonUtility.ToJson(abilityDefinition, true));
+
+        //Set up SnapTrigger
+        trigger = SnapInterpreter.InterpretAbility(abilityDefinition);
+        trigger.Register(this);
     }
 
     public void SetUnsubscribeActionCallback(Action<GameAction> callback) {

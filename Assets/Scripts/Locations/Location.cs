@@ -24,7 +24,7 @@ public class Location : MonoBehaviour {
     public int totalPower {get; private set;} // Total power of all cards in this location, including the location card itself
 
     void Start() {
-        cardRepresentation.initCardStats(new SnapCardStats(0, 0, "Location", 0));
+        cardRepresentation.initCardStats(new SnapCardStats(0, 0, "Location", 0, 0));
         cardRepresentation.SetLocation(this);
         if (cardGroup != null) {
             cardGroup.OnCardMounted.AddListener(subscribePowerListener);
@@ -79,6 +79,10 @@ public class Location : MonoBehaviour {
         if (cardGroup != null) {
             cardGroup.OnGroupChanged.RemoveListener(UpdatePowerLabel);
         }
+    }
+
+    public void AddCard(SnapCard card) {
+        cardGroup.Mount(card);
     }
 
     void AddPlayedCard(SnapCard card) {

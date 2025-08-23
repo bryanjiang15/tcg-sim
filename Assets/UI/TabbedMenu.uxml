@@ -1,6 +1,6 @@
 <engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/UI/TabbedMenu.uss?fileID=7433441132597879392&amp;guid=d7a0435bece040140b9aeba6a112cf93&amp;type=3#TabbedMenu" />
-    <engine:TabView view-data-key="TabbedMenu" name="TabView" style="top: 10%; left: 1%; right: auto; bottom: auto; width: 70%; align-content: center;">
+    <engine:TabView view-data-key="TabbedMenu" name="TabView" style="top: 10%; left: 1%; right: auto; bottom: auto; width: 60%; align-content: center;">
         <engine:Tab label="General" name="Tab" style="height: auto;">
             <engine:GroupBox style="flex-direction: row; justify-content: space-around; align-self: stretch;">
                 <engine:TextField label="Card Name" placeholder-text="filler text" name="card-name-input" style="flex-direction: column;" />

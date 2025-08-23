@@ -49,13 +49,13 @@ public class RevealEventHandler : MonoBehaviour {
     private IEnumerator ProcessCardEvents() {
         Player currentPlayer = Player.Player1;
         while (PlayedCards[currentPlayer].Count > 0) {
-            while (ActionSystem.Instance.IsPerforming) yield return null;
+            while (ActionSystem.Instance.IsPerforming || AbilityManager.Instance.AbilityChain.Count > 0) yield return null;
             SnapCard card = PlayedCards[currentPlayer][0];
             PlayedCards[currentPlayer].RemoveAt(0);
             ActionSystem.Instance.Perform(new RevealCardGA(card));
         }
         PlayedCards[currentPlayer].Clear();
-        while(ActionSystem.Instance.IsPerforming) yield return null;
+        while(ActionSystem.Instance.IsPerforming || AbilityManager.Instance.AbilityChain.Count > 0) yield return null;
         SnapPhaseManager.Instance.NextPhase();
     }
 

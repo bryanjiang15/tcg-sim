@@ -6,22 +6,70 @@ using UnityEngine;
 using UnityEngine.Events;
 
 public struct SnapCardStats {
-    public int power;
-    public int cost;
+    private Dictionary<string, CardStat> stats;
     public string card_name;
+    public int card_id;
     public int series;
 
-    public SnapCardStats(int power, int cost, string name, int series) {
-        this.power = power;
-        this.cost = cost;
+    public SnapCardStats(int power, int cost, string name, int series, int id) {
         this.card_name = name;
+        this.card_id = id;
         this.series = series;
+        this.stats = new Dictionary<string, CardStat>();
+        
+        // Initialize with default stats
+        stats["power"] = new CardStat("power", power);
+        stats["cost"] = new CardStat("cost", cost);
+    }
+
+    // Indexer to access stats by name
+    public int this[string statName] {
+        get {
+            if (stats.ContainsKey(statName)) {
+                return stats[statName].statValue;
+            }
+            return 0; // Default value if stat doesn't exist
+        }
+        set {
+            if (stats.ContainsKey(statName)) {
+                stats[statName] = new CardStat(statName, value);
+            } else {
+                stats[statName] = new CardStat(statName, value);
+            }
+        }
+    }
+
+    // Method to add a new stat
+    public void AddStat(string statName, int statValue) {
+        stats[statName] = new CardStat(statName, statValue);
+    }
+
+    // Method to get a CardStat object
+    public CardStat GetCardStat(string statName) {
+        if (stats.ContainsKey(statName)) {
+            return stats[statName];
+        }
+        return null;
+    }
+
+    // Method to check if a stat exists
+    public bool HasStat(string statName) {
+        return stats.ContainsKey(statName);
+    }
+
+    // Method to get all stat names
+    public IEnumerable<string> GetStatNames() {
+        return stats.Keys;
     }
 }
 
 public class SnapCard : Card, IBuffObtainable, IDestructible, IDiscardable, IMoveable { 
     public SnapCardStats stats { get ; private set; }
     public int PlayedOrder { get; private set; }
+
+    [SerializeField] private GameObject highlight;
+    public bool IsSelectable { get; private set; } = false;
+    public bool IsSelected { get; private set; } = false;
 
     [HideInInspector] public bool Revealed { get; private set; } = false;
 
@@ -30,6 +78,8 @@ public class SnapCard : Card, IBuffObtainable, IDestructible, IDiscardable, IMov
     public UnityEvent BuffChanged = new UnityEvent();
     public List<Buff> buffs = new List<Buff>();
     public Location PlayedLocation { get; private set; }
+    public List<Ability> abilities = new List<Ability>();
+    public SnapContext context;
     public virtual Player ownedPlayer => GroupRegistry.Instance.GetOwnerIndex(Group) == 0 ? Player.Player1 : Player.Player2;
 
     Vector3 originalScale; // Original scale of the card for resizing during drag
@@ -38,6 +88,7 @@ public class SnapCard : Card, IBuffObtainable, IDestructible, IDiscardable, IMov
         if (collider != null) {
             originalScale = collider.size; // Store the original size of the collider for resizing during drag
         }
+        context = new SnapContext();
     }
 
     public static float FlipCardDelay = 0.5f;
@@ -53,11 +104,11 @@ public class SnapCard : Card, IBuffObtainable, IDestructible, IDiscardable, IMov
         this.stats = stats;
         SnapCurrencyCost currencyCost = GetComponent<SnapCurrencyCost>();
         if (currencyCost != null)
-            currencyCost.SetBaseEnergyCost(stats.cost);
+            currencyCost.SetBaseEnergyCost(stats["cost"]);
         
         Power power = GetComponent<Power>();
         if (power != null)
-            power.SetBasePower(stats.power);
+            power.SetBasePower(stats["power"]);
     }
 
     public void SetPlayedLocation(Location location) {
@@ -72,7 +123,7 @@ public class SnapCard : Card, IBuffObtainable, IDestructible, IDiscardable, IMov
         CardRevealed.Invoke();
         if (IsCardPlayed)
             yield return new WaitForSeconds(FlipCardDelay);
-        AbilityManager.Instance.ActivateOnRevealAbility(this);
+        // AbilityManager.Instance.ActivateOnRevealAbility(this);
 
         //List<Ability> abilities = new List<Ability>(GetComponents<Ability>());
 
@@ -147,6 +198,23 @@ public class SnapCard : Card, IBuffObtainable, IDestructible, IDiscardable, IMov
             // Reset the size of the collider to its original size when not dragging
             boxCollider.size = originalScale; // Use the stored original scale
         }
+    } 
+
+    public void SetSelectable(bool isSelectable) {
+        IsSelectable = isSelectable;
+        highlight.SetActive(isSelectable);
+    }
+
+    public void SelectCard() {
+        if (IsSelectable) {
+            if (IsSelected) {
+                IsSelected = false;
+                highlight.GetComponent<SpriteRenderer>().color = new Color(0, 1, 0.1f, 0.75f);
+            } else {
+                IsSelected = true;
+                highlight.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+            }
+        }
     }
 
     /*  Public Actions */
@@ -207,7 +275,7 @@ public class SnapCard : Card, IBuffObtainable, IDestructible, IDiscardable, IMov
         return PlayedLocation != null;
     }
 
-    public virtual AbilityAmount GetTargetValue(AbilityRequirementType reqType)
+    public virtual AbilityAmount GetTargetValue(AbilityRequirementType reqType, AbilityAmount reqAmount = null)
     {
         switch (reqType)
         {
@@ -222,13 +290,18 @@ public class SnapCard : Card, IBuffObtainable, IDestructible, IDiscardable, IMov
             case AbilityRequirementType.IsCreated:
                 return new AbilityAmount { amountType = AbilityAmountType.Boolean, value = "false" };
             case AbilityRequirementType.CardName:
-                return new AbilityAmount { amountType = AbilityAmountType.Constant, value = stats.card_name };
+                return new AbilityAmount { amountType = AbilityAmountType.Cardid, value = stats.card_name };
             case AbilityRequirementType.BuffPresent:
                 return new AbilityAmount { amountType = AbilityAmountType.Boolean, value = "false" };
             case AbilityRequirementType.LocationFull:
                 if (PlayedLocation != null)
                     return new AbilityAmount { amountType = AbilityAmountType.Boolean, value = PlayedLocation.isFull().ToString() };
                 return new AbilityAmount { amountType = AbilityAmountType.Boolean, value = "false" };
+            case AbilityRequirementType.HasTag:
+                if (reqAmount == null)
+                    return new AbilityAmount { amountType = AbilityAmountType.Boolean, value = "false" };
+                bool hasTag = stats.GetCardStat(reqAmount.value) != null;
+                return new AbilityAmount { amountType = AbilityAmountType.Boolean, value = hasTag.ToString() };
             default:
                 return new AbilityAmount { amountType = AbilityAmountType.Constant, value = "0" };
         }
@@ -236,7 +309,7 @@ public class SnapCard : Card, IBuffObtainable, IDestructible, IDiscardable, IMov
 
 #if UNITY_EDITOR
     private void OnDrawGizmosSelected() {
-        Debug.Log($"Card Name: {stats.card_name}, Power: {stats.power}, Cost: {stats.cost}, Series: {stats.series}");
+        Debug.Log($"Card Name: {stats.card_name}, Power: {stats["power"]}, Cost: {stats["cost"]}, Series: {stats.series}");
         if (buffs != null && buffs.Count > 0) {
             for(int i = 0; i < buffs.Count; i++) {
                 Buff buff = buffs[i];

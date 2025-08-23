@@ -51,6 +51,7 @@ public enum AbilityEffectType
     AddKeyword,
     CopyCard,
     AddTemporaryAbility,
+    AddTag,
 }
 
 public enum AbilityAmountType
@@ -98,6 +99,7 @@ public enum AbilityTargetType
     AllEnemyPlayedCards,
     OwnedPlayer,
     EnemyPlayer,
+    Variable,
 }
 
 public enum AbilityTargetRange{
@@ -136,6 +138,7 @@ public enum AbilityRequirementType
     BuffPresent, // New: Check if a specific buff is present
     LocationFull, // New: Check if a location is occupied
     CurrentCost,
+    HasTag,
 }
 
 public enum AbilityRequirementComparator
@@ -157,4 +160,32 @@ public enum AbilityRequirementCondition
 {
     All,
     Any
+}
+
+public enum AbilityChoiceType
+{
+    Player,
+    Card,
+    Location,
+    Resource,
+}
+
+public enum AbilityActivationLocation
+{
+    Hand,
+    Deck,
+    Field,
+    Other,
+    AllUnexcluded,
+    AllIncluded,
+}
+
+public enum SnapComponentType
+{
+    Action,
+    If,
+    Else,
+    EndCondition,
+    While,
+    Choice,
 }

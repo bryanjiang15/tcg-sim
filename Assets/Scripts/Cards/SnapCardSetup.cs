@@ -12,7 +12,7 @@ public class SnapCardSetup : CardSetup {
     {
         if (data is SnapCardDefinition snapCardDef)
         {
-            SnapCardStats stats = new SnapCardStats(snapCardDef.power, snapCardDef.cost, snapCardDef.card_name, snapCardDef.series);
+            SnapCardStats stats = new SnapCardStats(snapCardDef.power, snapCardDef.cost, snapCardDef.card_name, snapCardDef.series, snapCardDef.card_id);
             card.initCardStats(stats);
             Image.sprite = snapCardDef.Art;
             NameLabel.text = snapCardDef.card_name;

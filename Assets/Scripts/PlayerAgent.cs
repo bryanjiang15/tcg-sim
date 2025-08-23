@@ -58,8 +58,8 @@ public class PlayerAgent : Agent
             {
                 if (card is SnapCard snapCard)
                 {
-                    sensor.AddObservation(snapCard.stats.power / 6f);
-                    sensor.AddObservation(snapCard.stats.cost / 6f);
+                    sensor.AddObservation(snapCard.stats["power"] / 6f);
+                    sensor.AddObservation(snapCard.stats["cost"] / 6f);
                 }
             }
         }
@@ -70,9 +70,9 @@ public class PlayerAgent : Agent
         //Card power
         sensor.AddObservation(card.GetPower() / 15f);
         //Original power
-        sensor.AddObservation(card.stats.power / 15f);
+        sensor.AddObservation(card.stats["power"] / 15f);
         //Card cost
-        sensor.AddObservation(card.stats.cost / 6f);
+        sensor.AddObservation(card.stats["cost"] / 6f);
         sensor.AddObservation(card.GetBaseCost() / 6f);
         
     }
@@ -102,7 +102,7 @@ public class PlayerAgent : Agent
         {
             var hand = GroupRegistry.Instance.Get(GroupName.Hand, playerIndex == Player.Player1 ? 1 : 0);
             SnapCard card = hand.MountedCards[cardIndex] as SnapCard;
-            if (CurrencyRegistry.Instance.GetCurrency("Energy", playerIndex == Player.Player1 ? 1 : 0) >= card.stats.cost)
+            if (CurrencyRegistry.Instance.GetCurrency("Energy", playerIndex == Player.Player1 ? 1 : 0) >= card.stats["cost"])
             {
                 hand.UnMount(cardIndex);
                 playerLocations.cardGroup.Mount(card, 0);

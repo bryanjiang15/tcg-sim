@@ -7,7 +7,7 @@ public class Deck : CardGroup, ICardContainer
     public Player ownedPlayer;
     Player ITargetable.ownedPlayer => ownedPlayer;
 
-    public AbilityAmount GetTargetValue(AbilityRequirementType reqType) {
+    public AbilityAmount GetTargetValue(AbilityRequirementType reqType, AbilityAmount reqAmount = null) {
         switch (reqType)
         {
             case AbilityRequirementType.NumberOfCards:

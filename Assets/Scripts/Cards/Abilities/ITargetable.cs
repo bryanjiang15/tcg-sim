@@ -1,7 +1,7 @@
 public interface ITargetable
 {
     Player ownedPlayer { get; }
-    AbilityAmount GetTargetValue(AbilityRequirementType reqType);
+    AbilityAmount GetTargetValue(AbilityRequirementType reqType, AbilityAmount reqAmount = null);
 }
 
 public interface IDestructible : ITargetable

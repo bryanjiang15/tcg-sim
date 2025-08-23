@@ -3,6 +3,7 @@ using CardHouse;
 using UnityEngine;
 using CardLibrary;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 public class ObjectMapper
 {
@@ -12,7 +13,7 @@ public class ObjectMapper
         cardDefinition.power = cardData.power;
         cardDefinition.card_name = cardData.card_name;
         cardDefinition.series = cardData.series;
-        cardDefinition.abilities = cardData.abilities;
+        cardDefinition.abilities = cardData.abilities.Select(ability => GetAbilityDefinition(ability)).ToList();
         return cardDefinition;
     }
     
@@ -22,15 +23,32 @@ public class ObjectMapper
             power = cardDefinition.power,
             card_name = cardDefinition.card_name,
             series = cardDefinition.series,
-            abilities = cardDefinition.abilities,
+            abilities = cardDefinition.abilities.Select(ability => GetSnapAbilityData(ability)).ToList(),
             artPath = cardDefinition.artPath
         };
+    }
+
+    public static SnapAbilityData GetSnapAbilityData(AbilityDefinition abilityDefinition) {
+        return new SnapAbilityData {
+            triggerDefinition = abilityDefinition.triggerDefinition,
+            snapComponentData = abilityDefinition.snapComponentDefinitions.Select(
+                block => JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(block))).ToList(),
+            description = abilityDefinition.description
+        };
+    }
+
+    public static AbilityDefinition GetAbilityDefinition(SnapAbilityData snapAbilityData) {
+        var abilityDefinition = new AbilityDefinition();
+        abilityDefinition.triggerDefinition = snapAbilityData.triggerDefinition;
+        abilityDefinition.snapComponentDefinitions = snapAbilityData.GetBlockDefinitions();
+        abilityDefinition.description = snapAbilityData.description;
+        return abilityDefinition;
     }
 
     public static SnapDeckData GetSnapDeckData(DeckDefinition deckDefinition) {
         return new SnapDeckData {
             deckArtPath = deckDefinition.name,
-            CardIds = deckDefinition.CardCollection.Select(card => card.cost).ToList()
+            CardIds = deckDefinition.CardCollection.Select(card => card.card_id).ToList()
         };
     }
 

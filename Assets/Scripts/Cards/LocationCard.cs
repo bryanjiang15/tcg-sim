@@ -43,7 +43,7 @@ public class LocationCard : SnapCard {
         return power;
     }
 
-    public override AbilityAmount GetTargetValue(AbilityRequirementType reqType) {
+    public override AbilityAmount GetTargetValue(AbilityRequirementType reqType, AbilityAmount reqAmount = null) {
         switch (reqType)
         {
             case AbilityRequirementType.Power:
@@ -51,7 +51,7 @@ public class LocationCard : SnapCard {
             case AbilityRequirementType.LocationFull:
                 return new AbilityAmount { amountType = AbilityAmountType.Boolean, value = IsFull().ToString() };
             default:
-                return base.GetTargetValue(reqType);
+                return base.GetTargetValue(reqType, reqAmount);
         }
     }
 }

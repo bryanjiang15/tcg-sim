@@ -68,7 +68,8 @@ public class ActionSystem : Singleton<ActionSystem>
 
     private IEnumerator PerformReaction()
     {
-        foreach (var reaction in reactions)
+        var reactionsCopy = new List<GameAction>(reactions);
+        foreach (var reaction in reactionsCopy )
         {
             yield return Flow(reaction);
         }
@@ -110,5 +111,25 @@ public class ActionSystem : Singleton<ActionSystem>
         }
     }
     
-    
+    public static void SubscribeReaction(Type type, Action<GameAction> reaction, ReactionTiming timing)
+    {
+        Dictionary<Type, List<Action<GameAction>>> subs = timing == ReactionTiming.PRE ? preSubs : postSubs;
+        if (subs.ContainsKey(type))
+        {
+            subs[type].Add(reaction);
+        }
+        else
+        {
+            subs.Add(type, new List<Action<GameAction>> { reaction });
+        }
+    }
+
+    public static void UnsubscribeReaction(Type type, Action<GameAction> reaction, ReactionTiming timing)
+    {
+        Dictionary<Type, List<Action<GameAction>>> subs = timing == ReactionTiming.PRE ? preSubs : postSubs;
+        if (subs.ContainsKey(type))
+        {
+            subs[type].Remove(reaction);
+        }
+    }
 }

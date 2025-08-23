@@ -53,6 +53,13 @@ public class TargetSystem : MonoBehaviour {
                 Location enemyLocation = GetEnemyLocation(ownerLocation);
                 targets = enemyLocation.cardGroup.MountedCards.OfType<ITargetable>().ToList();
                 break;
+            case AbilityTargetType.AllDirectLocationCards:
+                List<Location> allDirectLocations = GetLocations(ownerLocation.position);
+                foreach (Location location in allDirectLocations)
+                {
+                    targets.AddRange(location.cardGroup.MountedCards.OfType<ITargetable>());
+                }
+                break;
             case AbilityTargetType.AllPlayerCards:
                 targets = FindObjectsByType<SnapCard>(FindObjectsSortMode.None).Where(card =>
                     card.ownedPlayer == owner.ownedPlayer && !(card is LocationCard)).Cast<ITargetable>().ToList();
@@ -145,11 +152,14 @@ public class TargetSystem : MonoBehaviour {
                     targets = new List<ITargetable>();
                 }
                 break;
+            case AbilityTargetType.Variable:
+                targets = owner.context.GetVariable<IEnumerable<ITargetable>>(targetDefinition.variableName).ToList();
+                break;
         }
         // Apply additional filters based on targetRange, targetSort, and targetRequirement
         targets = ApplyRangeFilter(targets, targetDefinition, triggeredAction);
         if (targetDefinition.excludeSelf) {
-            targets = targets.Where(target => target != owner).ToList();
+            targets = targets.Where(target => (SnapCard)target != owner).ToList();
         }
         return targets;
     }
@@ -256,7 +266,7 @@ public class TargetSystem : MonoBehaviour {
         int satisfiedCount = 0;
         foreach (ITargetable snapCard in target) {
             if (snapCard is SnapCard card) {
-                AbilityAmount targetValue = GetTargetValue(reqType, card);
+                AbilityAmount targetValue = GetTargetValue(reqType, card, reqAmount);
                 if(targetValue.amountType == AbilityAmountType.Boolean){
                     return targetValue.GetValue<bool>(card, triggeredAction) == reqAmount.GetValue<bool>(card, triggeredAction);
                 }
@@ -301,8 +311,8 @@ public class TargetSystem : MonoBehaviour {
         }
     }
 
-    public AbilityAmount GetTargetValue(AbilityRequirementType reqType, ITargetable target) {
-        return target.GetTargetValue(reqType);
+    public AbilityAmount GetTargetValue(AbilityRequirementType reqType, ITargetable target, AbilityAmount reqAmount = null) {
+        return target.GetTargetValue(reqType, reqAmount);
     }
 
     public Location GetEnemyLocation(Location location) {

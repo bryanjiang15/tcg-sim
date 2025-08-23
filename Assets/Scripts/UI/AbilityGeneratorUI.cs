@@ -1,7 +1,5 @@
 using UnityEngine;
 using UnityEngine.UIElements;
-using System.Threading.Tasks;
-using System.Linq;
 using CardLibrary;
 using System.Collections.Generic;
 using System.Collections;
@@ -85,7 +83,7 @@ public class AbilityGeneratorUI : MonoBehaviour
 
         // Create a new card with the generated ability
         var cardDefinition = ScriptableObject.CreateInstance<SnapCardDefinition>();
-        cardDefinition.abilities = new List<AbilityDefinition> { abilityDefinition.Value };
+        cardDefinition.abilities = new List<AbilityDefinition> { abilityDefinition };
         cardDefinition.card_name = cardNameInput.value;
         cardDefinition.cost = cost;
         cardDefinition.power = power;
@@ -95,9 +93,9 @@ public class AbilityGeneratorUI : MonoBehaviour
             cardDefinition.Art = sprite;
             
             // Add the card to the library
-            string artPath = cardLibraryManager.SaveCardArt(System.Guid.NewGuid().GetHashCode(), sprite.texture);
+            string artPath = cardLibraryManager.SaveCardArt(Math.Abs(System.Guid.NewGuid().GetHashCode()), sprite.texture);
             cardDefinition.artPath = artPath;
-            cardLibraryManager.AddCard(System.Guid.NewGuid().GetHashCode(), cardDefinition);
+            cardLibraryManager.AddCard(Math.Abs(System.Guid.NewGuid().GetHashCode()), cardDefinition);
 
             statusText.text = "Ability generated successfully!";
             generateButton.SetEnabled(true);

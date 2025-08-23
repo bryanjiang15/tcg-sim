@@ -6,6 +6,13 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 8c9cfa26abfee488c85f1582747f6a02
+    path: Assets/Scenes/TCG/CardCreation.unity
+    guid: 1a5bd913e831547f1864872eecba4947
+  - enabled: 1
+    path: Assets/Scenes/TCG/CardLibrary.unity
+    guid: 5aeef9f3c5689466d836a2ca78395f2e
+  - enabled: 1
+    path: Assets/Scenes/TCG/Tcg.unity
+    guid: 9a89e957ceacb5d4991e8e33e0635f19
   m_configObjects: {}
+  m_UseUCBPForAssetBundles: 0

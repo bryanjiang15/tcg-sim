@@ -81,7 +81,7 @@ public class SnapPhaseManager : PhaseManager {
         if (CurrentPhase != null)
         {
             ActionSystem.Instance.Perform(new BeginPhaseGA());
-            while (ActionSystem.Instance.IsPerforming) yield return null;
+            while (ActionSystem.Instance.IsPerforming || AbilityManager.Instance.AbilityChain.Count > 0) yield return null;
             OnPhaseChanged?.Invoke(CurrentPhase);
         }
     }
@@ -90,7 +90,7 @@ public class SnapPhaseManager : PhaseManager {
     {
         ActionSystem.Instance.Perform(new EndPhaseGA());
 
-        while (ActionSystem.Instance.IsPerforming) yield return null;
+        while (ActionSystem.Instance.IsPerforming || AbilityManager.Instance.AbilityChain.Count > 0) yield return null;
         OnPhaseChanged?.Invoke(CurrentPhase);
     }
 

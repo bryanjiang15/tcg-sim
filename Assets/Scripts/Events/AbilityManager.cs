@@ -5,8 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Collections;
 using CardHouse;
-using Unity.Mathematics;
-using UnityEditor;
 
 public class AbilityManager : Singleton<AbilityManager> {
 
@@ -18,18 +16,24 @@ public class AbilityManager : Singleton<AbilityManager> {
     //Non activate abilities: abilities not activatd in hand/deck that are not on the field
     private List<Ability> activeAbilities = new List<Ability>();
 
+    //Number of abilities currently performing
+    public Stack<Ability> AbilityChain { get; set; } = new Stack<Ability>();
+
     private void Start() {
         List<Location> locations = new List<Location>(FindObjectsByType<Location>(FindObjectsSortMode.None));
         ActionSystem.AttachPerformer<GainPowerGA>(GainPowerPerformer);
+        ActionSystem.AttachPerformer<StealPowerGA>(StealPowerPerformer);
         ActionSystem.AttachPerformer<DestroyCardGA>(DestroyCardPerformer);
         ActionSystem.AttachPerformer<DiscardCardGA>(DiscardCardPerformer);
+        ActionSystem.AttachPerformer<MoveCardGA>(MoveCardPerformer);
         ActionSystem.AttachPerformer<IncreaseCostGA>(GainCostPerformer);
         ActionSystem.AttachPerformer<CreateCardInLocationGA>(CreateCardInLocationPerformer);
         ActionSystem.AttachPerformer<CreateCardInHandGA>(CreateCardInHandPerformer);
         ActionSystem.AttachPerformer<CreateCardInDeckGA>(CreateCardInDeckPerformer);
         ActionSystem.AttachPerformer<SetPowerGA>(SetPowerPerformer);
+        ActionSystem.AttachPerformer<GainEnergyGA>(GainEnergyPerformer);
         ActionSystem.AttachPerformer<GainMaxEnergyGA>(GainMaxEnergyPerformer);
-    }
+     }
 
     public Dictionary<SnapCard, List<Ability>> GetAbilities() {
         return abilities;
@@ -57,6 +61,7 @@ public class AbilityManager : Singleton<AbilityManager> {
             AbilityDefinition abilityDefinition = snapCardDefinition.abilities[i];
             Ability ability = new Ability();
             ability.SetOwner(owner);
+            owner.abilities.Add(ability);
             ability.SetUpDefinition(abilityDefinition);
             if(ability.definition.triggerDefinition.triggerType == AbilityTriggerType.AfterAbilityTriggered){
                 if(lastAbility != null){
@@ -242,6 +247,18 @@ public class AbilityManager : Singleton<AbilityManager> {
         yield return null;
     }
 
+    private IEnumerator StealPowerPerformer(StealPowerGA action) {
+        List<ITargetable> targets = action.targets.Cast<ITargetable>().ToList();
+        IBuffObtainable owner = action.owner as IBuffObtainable;
+        foreach (ITargetable target in targets) {
+            if (target is IBuffObtainable buffObtainable) {
+                buffObtainable.GainPower(-action.amount.GetValue<int>(action.owner, triggeredAction: action), action.owner);
+                owner.GainPower(action.amount.GetValue<int>(action.owner, triggeredAction: action), action.owner);
+            }
+        }
+        yield return null;
+    }
+
     private IEnumerator DestroyCardPerformer(DestroyCardGA action) {
         List<ITargetable> targets = action.targets.Cast<ITargetable>().ToList();
         foreach (ITargetable target in targets) {
@@ -249,6 +266,16 @@ public class AbilityManager : Singleton<AbilityManager> {
                 destructible.DestroyCard(action.owner);
             }
            
+        }
+        yield return null;
+    }
+
+    private IEnumerator MoveCardPerformer(MoveCardGA action) {
+        List<ITargetable> targets = action.targets;
+        foreach (ITargetable target in targets) {
+            if (target is IMoveable moveable && moveable.canBeMoved()) {
+                moveable.MoveCard(action.owner, action.amount.GetValue<LocationPosition>(action.owner, triggeredAction: action));
+            }
         }
         yield return null;
     }
@@ -263,6 +290,12 @@ public class AbilityManager : Singleton<AbilityManager> {
                 card.DiscardCard(action.owner);
             }
         }
+        yield return null;
+    }
+
+    private IEnumerator GainEnergyPerformer(GainEnergyGA action) {
+        int playerIndex = (int)action.player;
+        EnergySystem.Instance.AddTemporaryEnergyBoost(action.player, action.amount.GetValue<int>(action.owner, triggeredAction: action));
         yield return null;
     }
     

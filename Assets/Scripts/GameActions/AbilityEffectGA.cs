@@ -1,8 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class AbilityEffectGA : GameAction {
+public abstract class AbilityEffectGA : GameAction {
     public SnapCard owner; // The card that owns this ability effect
     public List<ITargetable> targets; // The list of targets affected by this ability
     public AbilityAmount amount; // The amount associated with this ability effect
@@ -39,6 +40,20 @@ public class MoveCardGA : AbilityEffectGA, ILocationCardsUpdated
     public MoveCardGA(Ability ability, List<ITargetable> targets, AbilityAmount amount)
         : base(ability, targets, amount)
     {
+    }
+}
+
+public class GainEnergyGA : GameAction
+{
+    public SnapCard owner;
+    public Player player;
+    public AbilityAmount amount;
+
+    public GainEnergyGA(Ability ability, Player player, AbilityAmount amount)
+    {
+        this.owner = ability.owner;
+        this.player = player;
+        this.amount = amount;
     }
 }
 
@@ -128,7 +143,7 @@ public class MergeCardsGA : AbilityEffectGA, ILocationCardsUpdated, IPowerChange
     public SnapCard RecieveTarget;
 
     public MergeCardsGA(Ability ability, List<SnapCard> MergeTarget, SnapCard RecieveTarget) 
-        : base(ability, MergeTarget.Cast<ITargetable>().ToList(), new AbilityAmount()) {
+        : base(ability, MergeTarget.Cast<ITargetable>().ToList(), new AbilityAmount { amountType = AbilityAmountType.None, value = "0" }) {
         this.MergeTarget = MergeTarget;
         this.RecieveTarget = RecieveTarget;
     }

@@ -4,6 +4,7 @@ using UnityEngine;
 using System.IO;
 using System.Linq;
 using CardHouse;
+using Newtonsoft.Json;
 
 namespace CardLibrary
 {
@@ -13,9 +14,8 @@ namespace CardLibrary
         public List<DeckDefinition> decks = new List<DeckDefinition>();
     }
 
-    public class CardLibraryManager : MonoBehaviour
+    public class CardLibraryManager : Singleton<CardLibraryManager>
     {
-        public static CardLibraryManager Instance { get; private set; }
 
         private CardGenerator cardGenerator;
         private CardLibraryData libraryData;
@@ -23,19 +23,16 @@ namespace CardLibrary
         private DeckLibrary deckLibrary;
         private string deckSavePath;
 
-        private void Awake()
+        private ArtLibraryManager artLibraryManager;
+
+        protected override void Awake() 
         {
-            if (Instance == null)
-            {
-                Instance = this;
-                DontDestroyOnLoad(gameObject);
-                InitializeLibrary();
-                cardGenerator = new CardGenerator();
-            }
-            else
-            {
-                Destroy(gameObject);
-            }
+            base.Awake();
+            cardGenerator = new CardGenerator();
+            artLibraryManager = new ArtLibraryManager();
+            artLibraryManager.InitializeArtLibrary();
+            InitializeLibrary();
+
         }
 
         private void InitializeLibrary()
@@ -44,6 +41,10 @@ namespace CardLibrary
             deckSavePath = Path.Combine(Application.persistentDataPath, "deckLibrary.json");
             LoadLibrary();
             LoadDeckLibrary();
+            
+            // Preload all card art for better performance
+            artLibraryManager.PreloadAllCardArt();
+            Debug.Log($"Preloaded {artLibraryManager.GetCachedSpriteCount()} card art sprites");
         }
 
         public void AddCard(int cardId, SnapCardDefinition cardDefinition, bool isFoil = false)
@@ -137,7 +138,7 @@ namespace CardLibrary
         {
             Debug.Log("Saving card library:");
             Debug.Log(libraryData.cards.Count);
-            string json = JsonUtility.ToJson(libraryData, true);
+            string json = JsonConvert.SerializeObject(libraryData, Formatting.Indented);
             Debug.Log(json);
             File.WriteAllText(savePath, json);
         }
@@ -147,12 +148,15 @@ namespace CardLibrary
             if (File.Exists(savePath))
             {
                 string json = File.ReadAllText(savePath);
-                libraryData = JsonUtility.FromJson<CardLibraryData>(json);
+                libraryData = JsonConvert.DeserializeObject<CardLibraryData>(json);
                 Debug.Log("Loading card library:");
                 foreach (var cardEntry in libraryData.cards)
                 {
                     Debug.Log($"Card ID: {cardEntry.cardId}");
-                    Debug.Log($"Card Definition: {cardEntry.cardData}");
+                    if (cardEntry.cardData.abilities != null && cardEntry.cardData.abilities.Count > 0)
+                    {
+                        Debug.Log($"Abilities: {cardEntry.cardData.abilities[0]}");
+                    }
                     Debug.Log("-------------------");
                 }
             }
@@ -210,7 +214,7 @@ namespace CardLibrary
             if (File.Exists(deckSavePath))
             {
                 string json = File.ReadAllText(deckSavePath);
-                var snapDeckLibraryData = JsonUtility.FromJson<SnapDeckLibraryData>(json);
+                var snapDeckLibraryData = JsonConvert.DeserializeObject<SnapDeckLibraryData>(json);
                 deckLibrary = ObjectMapper.GetDeckLibraryData(snapDeckLibraryData);
             }
             else
@@ -223,7 +227,7 @@ namespace CardLibrary
         private void SaveDeckLibrary()
         {
             SnapDeckLibraryData snapDeckLibraryData = ObjectMapper.GetSnapDeckLibraryData(deckLibrary);
-            string json = JsonUtility.ToJson(snapDeckLibraryData, true);
+            string json = JsonConvert.SerializeObject(snapDeckLibraryData, Formatting.Indented);
             File.WriteAllText(deckSavePath, json);
         }
 
@@ -257,12 +261,7 @@ namespace CardLibrary
         /// <returns>The file path where the art was saved</returns>
         public string SaveCardArt(int cardId, Texture2D cardArt)
         {
-            if (ArtLibraryManager.Instance == null)
-            {
-                Debug.LogError("ArtLibraryManager instance not found. Make sure it's added to the scene.");
-                return null;
-            }
-            return ArtLibraryManager.Instance.SaveCardArt(cardId, cardArt);
+            return artLibraryManager.SaveCardArt(cardId, cardArt);
         }
 
         /// <summary>
@@ -272,12 +271,7 @@ namespace CardLibrary
         /// <returns>The loaded sprite, or null if loading failed</returns>
         public Sprite LoadCardArt(string artPath)
         {
-            if (ArtLibraryManager.Instance == null)
-            {
-                Debug.LogError("ArtLibraryManager instance not found. Make sure it's added to the scene.");
-                return null;
-            }
-            return ArtLibraryManager.Instance.LoadCardArt(artPath);
+            return artLibraryManager.LoadCardArt(artPath);
         }
 
         /// <summary>
@@ -287,12 +281,16 @@ namespace CardLibrary
         /// <returns>The loaded sprite, or null if loading failed</returns>
         public Sprite LoadCardArtById(int cardId)
         {
-            if (ArtLibraryManager.Instance == null)
-            {
-                Debug.LogError("ArtLibraryManager instance not found. Make sure it's added to the scene.");
-                return null;
-            }
-            return ArtLibraryManager.Instance.LoadCardArtById(cardId);
+            return artLibraryManager.LoadCardArtById(cardId);
+        }
+
+        /// <summary>
+        /// Gets a card entry by card ID
+        /// </summary>
+        /// <param name="cardId">The ID of the card</param>
+        /// <returns>The card entry, or null if not found</returns>
+        public CardEntry GetCardEntry(int cardId) {
+            return libraryData.cards.Find(c => c.cardId == cardId);
         }
     }
 } 
