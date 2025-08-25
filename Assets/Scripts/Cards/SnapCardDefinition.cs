@@ -9,6 +9,7 @@ public class SnapCardDefinition : CardDefinition {
     public int card_id;
     public int cost;
     public int power;
+    public List<Tag> tags;
     public string card_name;
     public int series;
     public Sprite Art;

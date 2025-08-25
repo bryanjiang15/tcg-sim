@@ -70,14 +70,14 @@ public class AbilityGeneratorUI : MonoBehaviour
 
         var cardGenerationData = await cardLibraryManager.GetCardGenerator().GenerateAbilityFromPrompt(promptInput.value, cardDescriptionInput.value);
 
-        AbilityDefinition? abilityDefinition = cardGenerationData.AbilityDefinition;
-
-        if (abilityDefinition == null)
+        if (cardGenerationData == null)
         {
             statusText.text = "Failed to generate ability";
             generateButton.SetEnabled(true);
             return;
         }
+
+        AbilityDefinition? abilityDefinition = cardGenerationData.AbilityDefinition;
 
         Debug.Log(JsonUtility.ToJson(abilityDefinition, true));
 

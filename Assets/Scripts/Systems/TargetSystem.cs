@@ -274,6 +274,12 @@ public class TargetSystem : MonoBehaviour {
                     if (card.HasKeyword(reqAmount.value))
                         satisfiedCount++;
                 }
+                else if (reqType == AbilityRequirementType.HasTag) {
+                    if (snapCard is ITaggable taggable) {
+                        if (taggable.HasTag(reqAmount.value))
+                            satisfiedCount++;
+                    }
+                }
                 else if (CompareRequirementValue(card, targetValue, reqAmount, reqComparator, triggeredAction)) {
                     satisfiedCount++;
                 }
