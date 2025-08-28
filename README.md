@@ -5,11 +5,11 @@ A powerful Unity-based Trading Card Game (TCG) simulator that allows you to crea
 ## 🎮 Features
 
 ### Core Game Systems
+- **AI Card Generation**: Use OpenAI to create cards with unique abilities, art, and rules using just text descriptions
 - **Card Management System**: Complete card creation, editing, and management with customizable stats (power, cost, abilities)
 - **Deck Building**: Intuitive deck builder with card library management
 - **Game Engine**: Full-featured TCG engine with phases, turns, and rule systems
 - **Targeting System**: Advanced targeting mechanics for card abilities and effects
-- **Energy System**: Resource management for card costs and gameplay balance
 
 ### AI Integration
 - **AI-Powered Card Generation**: Use OpenAI API to automatically generate card designs and abilities
@@ -68,11 +68,10 @@ Assets/
 │   ├── Cards/            # Card-related scripts
 │   │   ├── SnapCard.cs
 │   │   ├── LocationCard.cs
-│   │   └── Abilities/
+│   │   └── Abilities/    # Contains ability data and definitions
 │   ├── Phases/           # Game phase management
 │   ├── Events/           # Event system
 │   ├── UI/              # User interface scripts
-│   └── Python_game/     # AI integration
 ├── Scenes/
 │   └── TCG/             # Game scenes
 │       ├── Tcg.unity    # Main game scene
@@ -91,32 +90,23 @@ Assets/
 
 ### Installation
 1. Clone this repository
-2. Open the project in Unity
-3. Install required Python packages: `pip install openai`
-4. Configure your OpenAI API key in the settings
-5. Open the main TCG scene and start playing!
+2. Clone the ![Cards](https://github.com/bryanjiang15/cards) repository
 
 ### Basic Usage
 1. **Create Cards**: Use the Card Creation tool to design new cards with AI assistance
 2. **Build Decks**: Assemble your card collection into powerful decks
 3. **Play Games**: Challenge AI opponents or other players in the main game
-4. **Train**: Practice your strategies in Training mode
+4. **Build The Game**: Edit the rules and features of your games freely
 
 ## 🎯 Key Systems
 
 ### Card System
 Cards are the heart of the game, featuring:
-- Customizable stats (power, cost, etc.)
-- Complex ability systems
+- Highly customizable stats (Power, Cost, etc)
+- Dynamic ability systems allowing cards to be created through JSON definitions
 - Buff/debuff mechanics
+- Tag mechanics to categorize cards
 - Location-based gameplay
-
-### AI Integration
-The Python AI interface provides:
-- Automated gameplay testing
-- Card generation assistance
-- Game state analysis
-- Strategic decision making
 
 ### Targeting System
 Advanced targeting mechanics for:
@@ -124,6 +114,7 @@ Advanced targeting mechanics for:
 - Effect applications
 - Strategic positioning
 - Multi-target effects
+- Requirement activation
 
 ## 🤝 Contributing
 
@@ -138,12 +129,6 @@ We welcome contributions! Please feel free to submit pull requests or open issue
 ## 📄 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🙏 Acknowledgments
-
-- Unity Technologies for the game engine
-- OpenAI for AI integration capabilities
-- The TCG community for inspiration and feedback
 
 ---
 
