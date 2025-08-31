@@ -56,5 +56,6 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "TCG-sim.sln"
+    "dotnet.defaultSolution": "TCG-sim.sln",
+    "dotnet.preferCSharpExtension": true
 }

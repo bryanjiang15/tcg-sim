@@ -25,7 +25,7 @@ namespace CardLibrary
 
         public SnapCardDefinition getCardDefinition()
         {
-            return cardData.getCardDefinition(cardId);
+            return cardData.GetCardDefinition();
         }
     }
 } 

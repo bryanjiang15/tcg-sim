@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 /// Central registry for managing all user-created tags in the TCG game.
 /// Provides persistence, serialization, and efficient tag management.
 /// </summary>
-public class TagRegistry : MonoBehaviour
+public class TagRegistry : Singleton<TagRegistry>
 {
     [Header("Tag Registry Settings")]
     [SerializeField] private string saveFileName = "user_tags.json";
@@ -30,23 +30,6 @@ public class TagRegistry : MonoBehaviour
     // Properties
     public IReadOnlyDictionary<string, TagDefinition> AllTags => _tagDefinitions;
     public int TagCount => _tagDefinitions.Count;
-    
-    // Singleton pattern
-    public static TagRegistry Instance { get; private set; }
-    
-    private void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-            LoadTags();
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
     
     private void Start()
     {

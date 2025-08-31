@@ -7,12 +7,16 @@ using UnityEngine;
 [Serializable]
 public class SnapCardData
 {
+    public int cardId;
     public int cost;
     public int power;
     public string card_name;
     public int series;
     public string artPath; // Store the path to the art asset instead of the Sprite
     public List<SnapAbilityData> abilities; // Store ability IDs
+
+    public DateTime dateCreated;
+    public DateTime dateUpdated;
 
     // Cached CardDefinition to avoid repeated creation
     private SnapCardDefinition cachedDefinition;
@@ -39,7 +43,7 @@ public class SnapCardData
     // Empty constructor for JSON deserialization
     public SnapCardData() { }
 
-    public SnapCardDefinition getCardDefinition(int card_id)
+    public SnapCardDefinition GetCardDefinition()
     {
         // Return cached definition if available
         if (cachedDefinition != null)
@@ -49,7 +53,7 @@ public class SnapCardData
 
         // Create new definition and cache it
         cachedDefinition = ScriptableObject.CreateInstance<SnapCardDefinition>();
-        cachedDefinition.card_id = card_id;
+        cachedDefinition.card_id = cardId;
         cachedDefinition.cost = cost;
         cachedDefinition.power = power;
         cachedDefinition.card_name = card_name;

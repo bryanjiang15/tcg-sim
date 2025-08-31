@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Nova_05_Foreground_Common_0: 7503997118918454874
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -159,7 +159,9 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      SilverSurfer_03_Foreground_Common_0: -283617380592561411
+      SilverSurfer_03_Foreground_Common_1: 6997349651879386017
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

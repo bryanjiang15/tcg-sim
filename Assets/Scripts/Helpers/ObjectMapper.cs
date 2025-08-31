@@ -63,16 +63,4 @@ public class ObjectMapper
 
         return deckDefinition;
     }
-
-    public static SnapDeckLibraryData GetSnapDeckLibraryData(DeckLibrary deckLibrary) {
-        return new SnapDeckLibraryData {
-            decks = deckLibrary.decks.Select(deck => GetSnapDeckData(deck)).ToList()
-        };
-    }
-
-    public static DeckLibrary GetDeckLibraryData(SnapDeckLibraryData snapDeckLibraryData) {
-        return new DeckLibrary {
-            decks = snapDeckLibraryData.decks.Select(deck => GetDeckDefinition(deck)).ToList()
-        };
-    }
 }
