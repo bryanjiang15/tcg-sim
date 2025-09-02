@@ -87,7 +87,23 @@ namespace CardLibrary
             
             // Deserialize all properties except snapComponentDefinitions
             if (abilityJson["triggerDefinition"] != null)
-                abilityDefinition.triggerDefinition = abilityJson["triggerDefinition"].ToObject<AbilityTriggerDefinition>();
+            {
+                var triggerDefJson = abilityJson["triggerDefinition"] as JObject;
+                if (triggerDefJson != null)
+                {
+                    // Check if the trigger definition has a nested "trigger" object
+                    if (triggerDefJson["trigger"] != null)
+                    {
+                        // Extract the nested trigger data
+                        abilityDefinition.triggerDefinition = triggerDefJson["trigger"].ToObject<AbilityTriggerDefinition>();
+                    }
+                    else
+                    {
+                        // Direct deserialization if no nested structure
+                        abilityDefinition.triggerDefinition = triggerDefJson.ToObject<AbilityTriggerDefinition>();
+                    }
+                }
+            }
             
             if (abilityJson["description"] != null)
                 abilityDefinition.description = abilityJson["description"].ToString();

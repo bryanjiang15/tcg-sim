@@ -1,18 +1,18 @@
 <engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/UI/TabbedMenu.uss?fileID=7433441132597879392&amp;guid=d7a0435bece040140b9aeba6a112cf93&amp;type=3#TabbedMenu" />
-    <engine:TabView view-data-key="TabbedMenu" name="TabView" style="top: 10%; left: 1%; right: auto; bottom: auto; width: 60%; align-content: center;">
-        <engine:Tab label="General" name="Tab" style="height: auto;">
-            <engine:GroupBox style="flex-direction: row; justify-content: space-around; align-self: stretch;">
+    <engine:TabView view-data-key="TabbedMenu" name="TabView" style="top: 10%; left: 1%; right: auto; bottom: auto; width: 60%; align-content: center; flex-direction: column;">
+        <engine:Tab label="General" name="Tab" tabindex="0" style="height: auto; display: flex;">
+            <engine:GroupBox name="GroupBox" style="flex-direction: row; justify-content: space-around; align-self: stretch;">
                 <engine:TextField label="Card Name" placeholder-text="filler text" name="card-name-input" style="flex-direction: column;" />
                 <engine:DropdownField label="Card Type" />
             </engine:GroupBox>
             <engine:GroupBox style="flex-direction: row; justify-content: space-around; align-self: stretch;">
-                <engine:DropdownField label="Color" />
+                <engine:DropdownField label="Color" name="color-input" />
                 <engine:DropdownField label="Rarity" />
             </engine:GroupBox>
             <engine:TextField label="Description" placeholder-text="America Chavez from marvel comics" name="card-description-input" style="margin-left: 50px; margin-right: 50px; margin-bottom: 10px;" />
         </engine:Tab>
-        <engine:Tab label="Stats" focusable="false">
+        <engine:Tab label="Stats" focusable="false" style="display: none;">
             <engine:Label text="Label" name="status-text" />
             <engine:GroupBox name="GroupBox" style="flex-direction: row; justify-content: space-between;">
                 <engine:IntegerField label="Power" value="3" name="power-input" />
@@ -21,7 +21,7 @@
             <engine:TextField placeholder-text="filler text" name="prompt-input" class="text-box" style="flex-direction: column-reverse; margin-top: 20px; margin-right: 20px; margin-bottom: 20px; margin-left: 20px;" />
             <engine:Button text="Submit" name="generate-button" />
         </engine:Tab>
-        <engine:Tab label="Abilities">
+        <engine:Tab label="Abilities" style="display: none;">
             <engine:Label text="Abilities" />
         </engine:Tab>
     </engine:TabView>

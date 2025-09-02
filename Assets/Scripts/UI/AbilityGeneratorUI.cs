@@ -15,6 +15,7 @@ public class AbilityGeneratorUI : MonoBehaviour
     private TextField cardNameInput;
     private IntegerField powerInput;
     private IntegerField costInput;
+    private DropdownField colorInput;
     private TextField cardDescriptionInput;
     private Button generateButton;
     private Label statusText;
@@ -28,6 +29,7 @@ public class AbilityGeneratorUI : MonoBehaviour
         cardNameInput = root.Q<TextField>("card-name-input");
         powerInput = root.Q<IntegerField>("power-input");
         costInput = root.Q<IntegerField>("cost-input");
+        colorInput = root.Q<DropdownField>("color-input");
         generateButton = root.Q<Button>("generate-button");
         statusText = root.Q<Label>("status-text");
         cardDescriptionInput = root.Q<TextField>("card-description-input");
@@ -88,6 +90,9 @@ public class AbilityGeneratorUI : MonoBehaviour
         cardDefinition.cost = cost;
         cardDefinition.power = power;
 
+        // Create color tag for the card
+        cardDefinition.tags = CreateColorTag(colorInput.value);
+
         // Download and set the art
         StartCoroutine(DownloadArt(cardGenerationData.CardArtUrl, (sprite) => {
             cardDefinition.Art = sprite;
@@ -95,7 +100,7 @@ public class AbilityGeneratorUI : MonoBehaviour
             // Add the card to the library
             string artPath = cardLibraryManager.SaveCardArt(Math.Abs(System.Guid.NewGuid().GetHashCode()), sprite.texture);
             cardDefinition.artPath = artPath;
-            cardLibraryManager.AddCard(Math.Abs(System.Guid.NewGuid().GetHashCode()), cardDefinition);
+            cardLibraryManager.AddCard(cardDefinition);
 
             statusText.text = "Ability generated successfully!";
             generateButton.SetEnabled(true);
@@ -121,5 +126,36 @@ public class AbilityGeneratorUI : MonoBehaviour
         Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
         
         onSpriteReady?.Invoke(sprite);
+    }
+
+    /// <summary>
+    /// Creates a color tag for a card using the TagManager system
+    /// </summary>
+    /// <param name="colorName">The name of the color tag to create</param>
+    /// <returns>A list containing the color tag, or an empty list if creation fails</returns>
+    private List<Tag> CreateColorTag(string colorName)
+    {
+        if (string.IsNullOrEmpty(colorName))
+        {
+            return new List<Tag>();
+        }
+
+        // Check if the tag already exists, if not create it
+        if (!TagManager.HasTag(colorName))
+        {
+            TagManager.CreateTag(colorName, $"Card color: {colorName}", TagCategory.CardColor, true);
+        }
+        
+        // Create a tag instance and add it to the card
+        var colorTag = TagManager.CreateTagInstance(colorName);
+        if (colorTag != null)
+        {
+            return new List<Tag> { colorTag };
+        }
+        else
+        {
+            Debug.LogWarning($"Failed to create tag instance for color: {colorName}");
+            return new List<Tag>();
+        }
     }
 } 

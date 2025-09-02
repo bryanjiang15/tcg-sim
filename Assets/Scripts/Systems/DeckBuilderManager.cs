@@ -1,7 +1,6 @@
 using UnityEngine;
-using CardLibrary;
 using System.Collections.Generic;
-using UnityEngine.UI;
+using TMPro;
 
 namespace CardLibrary
 {
@@ -9,6 +8,7 @@ namespace CardLibrary
     {
         [SerializeField] private CardLibraryGridManager cardLibraryGrid;
         [SerializeField] private DeckPanel deckPanel;
+        [SerializeField] private TMP_InputField deckNameInput;
         private List<CardEntry> deckCards = new List<CardEntry>();
 
         private void Start()
@@ -19,6 +19,11 @@ namespace CardLibrary
                 return;
             }
 
+            // Set default deck name if input field exists
+            if (deckNameInput != null)
+            {
+                deckNameInput.text = "New Deck";
+            }
         }
 
         public void OnCardLibraryCardClicked(CardEntry card)
@@ -53,8 +58,19 @@ namespace CardLibrary
                 return;
             }
 
-            CardLibraryManager.Instance.SaveDeck("Deck", deckCards);
-            Debug.Log($"Deck has been saved successfully!");
+            // Get deck name from input field
+            string deckName = "New Deck"; // Default fallback
+            if (deckNameInput != null && !string.IsNullOrWhiteSpace(deckNameInput.text))
+            {
+                deckName = deckNameInput.text.Trim();
+            }
+            else
+            {
+                Debug.LogWarning("No deck name provided, using default name 'New Deck'");
+            }
+
+            CardLibraryManager.Instance.SaveDeck(deckName, deckCards);
+            Debug.Log($"Deck '{deckName}' has been saved successfully!");
         }
     }
 } 

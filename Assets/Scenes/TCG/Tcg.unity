@@ -1888,6 +1888,65 @@ MonoBehaviour:
   content: {fileID: 1522545477}
   deckUIPrefab: {fileID: 8264274234722078946, guid: 47a42f0f5dcfc5c45a929a7f279a30e6, type: 3}
   confirmButton: {fileID: 2057429065}
+--- !u!1 &767164967
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 767164970}
+  - component: {fileID: 767164969}
+  - component: {fileID: 767164968}
+  m_Layer: 0
+  m_Name: Registries
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &767164968
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 767164967}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd89d6ba9b34043fda094f5c9b3a14ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  saveFileName: deckLibrary.json
+--- !u!114 &767164969
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 767164967}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5dff2816d8aa4567859a592f7781fed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  saveFileName: cardLibrary.json
+--- !u!4 &767164970
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 767164967}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1231.0908, y: 439.97162, z: 4.457292}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &842754358
 GameObject:
   m_ObjectHideFlags: 0
@@ -7574,6 +7633,7 @@ SceneRoots:
   - {fileID: 1505187658}
   - {fileID: 1226679125}
   - {fileID: 519420032}
+  - {fileID: 767164970}
   - {fileID: 6155219491839174570}
   - {fileID: 1499463023}
   - {fileID: 92292181}

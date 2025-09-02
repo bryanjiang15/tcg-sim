@@ -58,7 +58,7 @@ public class ObjectMapper
         deckDefinition.CardCollection = new List<SnapCardDefinition>();
 
         foreach (int cardId in deckData.CardIds) {
-            deckDefinition.CardCollection.Add(CardLibraryManager.Instance.GetCard(cardId).getCardDefinition());
+            deckDefinition.CardCollection.Add(CardLibraryManager.Instance.GetCard(cardId));
         }
 
         return deckDefinition;
