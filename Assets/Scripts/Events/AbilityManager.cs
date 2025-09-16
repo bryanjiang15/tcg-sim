@@ -237,6 +237,12 @@ public class AbilityManager : Singleton<AbilityManager> {
 
     //GAMEACTION PERFORMER
 
+    private IEnumerator UpdateStatPerformer(UpdateStatGA action) {
+        foreach (IBuffObtainable target in action.targets) {
+            
+        }
+        yield return null;
+    }
     private IEnumerator GainPowerPerformer(GainPowerGA action) {
         List<ITargetable> targets = action.targets.Cast<ITargetable>().ToList();
         foreach (ITargetable target in targets) {

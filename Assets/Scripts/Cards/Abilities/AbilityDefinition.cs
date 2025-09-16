@@ -25,6 +25,7 @@ public class AbilityAmount{
     public string stringValue;
     public string targetValueProperty;
     public string multiplierCondition;
+
     public T GetValue<T>(ITargetable owner, GameAction triggeredAction = null) {
         SnapCard snapCard = owner as SnapCard;
         switch (amountType)

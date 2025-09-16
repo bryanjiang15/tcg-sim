@@ -1,4 +1,4 @@
-public enum StatType {
+public enum StatValueType {
     ValueStat,
     ThresholdStat,
     TagStat, //Tags are labels
