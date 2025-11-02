@@ -12,7 +12,7 @@ using UnityEngine;
 public class StatTypeRegistry : Singleton<StatTypeRegistry>
 {
 	[SerializeField] private string saveFileName = "stat_type_registry.json";
-	private readonly Dictionary<int, StatType> _statTypes = new Dictionary<int, StatType>();
+	private readonly Dictionary<int, StatTypeModal> _statTypes = new Dictionary<int, StatTypeModal>();
 	private string _savePath;
 
 	private int _nextStatTypeId = 1;
@@ -29,24 +29,24 @@ public class StatTypeRegistry : Singleton<StatTypeRegistry>
 
 	public bool HasStatType(int statTypeId) => _statTypes.ContainsKey(statTypeId);
 
-	public StatType GetStatTypeById(int statTypeId)
+	public StatTypeModal GetStatTypeById(int statTypeId)
 	{
 		return _statTypes.TryGetValue(statTypeId, out var data) ? data : null;
 	}
 
-	public StatType GetStatTypeByName(string name)
+	public StatTypeModal GetStatTypeByName(string name)
 	{
 		if (string.IsNullOrWhiteSpace(name)) return null;
 		return _statTypes.Values.FirstOrDefault(s => 
 			string.Equals(s.Name, name, StringComparison.OrdinalIgnoreCase));
 	}
 
-	public List<StatType> GetAllStatType()
+	public List<StatTypeModal> GetAllStatType()
 	{
 		return _statTypes.Values.ToList();
 	}
 
-	public bool TryGetStatType(int statTypeId, out StatType data)
+	public bool TryGetStatType(int statTypeId, out StatTypeModal data)
 	{
 		if (_statTypes.TryGetValue(statTypeId, out var found))
 		{
@@ -57,7 +57,7 @@ public class StatTypeRegistry : Singleton<StatTypeRegistry>
 		return false;
 	}
 
-	public bool InsertStatType(StatType data)
+	public bool InsertStatType(StatTypeModal data)
 	{
 		if (data == null)
 		{
@@ -80,7 +80,7 @@ public class StatTypeRegistry : Singleton<StatTypeRegistry>
 		return true;
 	}
 
-	public bool UpdateStatType(int statTypeId, StatType data)
+	public bool UpdateStatType(int statTypeId, StatTypeModal data)
 	{
 		if (data == null)
 		{
@@ -149,7 +149,7 @@ public class StatTypeRegistry : Singleton<StatTypeRegistry>
 			var json = File.ReadAllText(_savePath);
 			_statTypes.Clear();
 
-			var dataList = JsonConvert.DeserializeObject<List<StatType>>(json);
+			var dataList = JsonConvert.DeserializeObject<List<StatTypeModal>>(json);
 			if (dataList != null && dataList.Count > 0)
 			{
 				foreach (var s in dataList)

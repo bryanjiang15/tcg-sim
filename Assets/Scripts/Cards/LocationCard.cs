@@ -23,7 +23,7 @@ public class LocationCard : SnapCard {
         int power = location.totalPower;
         foreach (var buff in buffs) {
             // Apply buffs to the power
-            if (buff.type == BuffType.AdditionalPower) {
+            if (buff.statType?.Name == "Power") {
                 StatBuff statBuff = buff as StatBuff;
                 power += statBuff.amount;
             }
@@ -35,7 +35,7 @@ public class LocationCard : SnapCard {
         int power = 0;
         foreach (var buff in buffs) {
             // Apply buffs to the power
-            if (buff.type == BuffType.AdditionalPower) {
+            if (buff.statType?.Name == "Power") {
                 StatBuff statBuff = buff as StatBuff;
                 power += statBuff.amount;
             }

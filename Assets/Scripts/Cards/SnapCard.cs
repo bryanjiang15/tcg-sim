@@ -6,66 +6,116 @@ using UnityEngine;
 using UnityEngine.Events;
 
 public struct SnapCardStats {
-    private Dictionary<string, CardStat> stats;
+    private Dictionary<StatTypeModal, CardStat> statsByType;
+    private Dictionary<string, StatTypeModal> nameToType;
     public string card_name;
     public int card_id;
     public int series;
 
+    public SnapCardStats(string name, int series, int id) {
+        this.card_name = name;
+        this.card_id = id;
+        this.series = series;
+        this.statsByType = new Dictionary<StatTypeModal, CardStat>();
+        this.nameToType = new Dictionary<string, StatTypeModal>();
+    }
+
+    // Backward-compatible constructor
     public SnapCardStats(int power, int cost, string name, int series, int id) {
         this.card_name = name;
         this.card_id = id;
         this.series = series;
-        this.stats = new Dictionary<string, CardStat>();
-        
-        // Initialize with default stats
-        stats["power"] = new CardStat("power", power);
-        stats["cost"] = new CardStat("cost", cost);
+        this.statsByType = new Dictionary<StatTypeModal, CardStat>();
+        this.nameToType = new Dictionary<string, StatTypeModal>();
+
+        var powerType = new StatTypeModal { Name = "Power", StatValueType = StatValueType.ValueStat };
+        var costType = new StatTypeModal { Name = "Cost", StatValueType = StatValueType.ValueStat };
+        AddStat(powerType, power);
+        AddStat(costType, cost);
     }
 
-    // Indexer to access stats by name
-    public int this[string statName] {
+    // Indexer by StatTypeModal
+    public int this[StatTypeModal statType] {
         get {
-            if (stats.ContainsKey(statName)) {
-                return stats[statName].statValue;
+            if (statType != null && statsByType.ContainsKey(statType)) {
+                return statsByType[statType].statValue;
             }
-            return 0; // Default value if stat doesn't exist
+            return 0;
         }
         set {
-            if (stats.ContainsKey(statName)) {
-                stats[statName] = new CardStat(statName, value);
-            } else {
-                stats[statName] = new CardStat(statName, value);
+            if (statType != null) {
+                AddStat(statType, value);
             }
         }
     }
 
-    // Method to add a new stat
-    public void AddStat(string statName, int statValue) {
-        stats[statName] = new CardStat(statName, statValue);
+    // Indexer by name (compatibility)
+    public int this[string statName] {
+        get {
+            if (string.IsNullOrEmpty(statName)) return 0;
+            if (nameToType.TryGetValue(statName, out var type) && statsByType.TryGetValue(type, out var cardStat)) {
+                return cardStat.statValue;
+            }
+            return 0;
+        }
+        set {
+            if (string.IsNullOrEmpty(statName)) return;
+            if (!nameToType.TryGetValue(statName, out var type)) {
+                type = new StatTypeModal { Name = statName, StatValueType = StatValueType.ValueStat };
+            }
+            AddStat(type, value);
+        }
     }
 
-    // Method to get a CardStat object
-    public CardStat GetCardStat(string statName) {
-        if (stats.ContainsKey(statName)) {
-            return stats[statName];
+    // Add or update stat by type
+    public void AddStat(StatTypeModal statType, int statValue) {
+        if (statType == null) return;
+        statsByType[statType] = new CardStat(statType, statValue);
+        if (!string.IsNullOrEmpty(statType.Name)) {
+            nameToType[statType.Name] = statType;
+        }
+    }
+
+    // Convenience overload by name
+    public void AddStat(string statName, int statValue) {
+        if (string.IsNullOrEmpty(statName)) return;
+        var type = nameToType.ContainsKey(statName) ? nameToType[statName] : new StatTypeModal { Name = statName, StatValueType = StatValueType.ValueStat };
+        AddStat(type, statValue);
+    }
+
+    // Get a CardStat by type
+    public CardStat GetCardStat(StatTypeModal statType) {
+        if (statType != null && statsByType.ContainsKey(statType)) {
+            return statsByType[statType];
         }
         return null;
     }
 
-    // Method to check if a stat exists
-    public bool HasStat(string statName) {
-        return stats.ContainsKey(statName);
+    // Get a CardStat by name (compatibility)
+    public CardStat GetCardStat(string statName) {
+        if (!string.IsNullOrEmpty(statName) && nameToType.TryGetValue(statName, out var type)) {
+            return GetCardStat(type);
+        }
+        return null;
     }
 
-    // Method to get all stat names
+    public bool HasStat(StatTypeModal statType) {
+        return statType != null && statsByType.ContainsKey(statType);
+    }
+
+    public bool HasStat(string statName) {
+        return !string.IsNullOrEmpty(statName) && nameToType.ContainsKey(statName);
+    }
+
     public IEnumerable<string> GetStatNames() {
-        return stats.Keys;
+        return nameToType.Keys;
     }
 }
 
 public class SnapCard : Card, IBuffObtainable, IDestructible, IDiscardable, IMoveable { 
     public SnapCardStats stats { get ; private set; }
     public int PlayedOrder { get; private set; }
+    public int cardInstanceId { get; private set; }
 
     [SerializeField] private GameObject highlight;
     public bool IsSelectable { get; private set; } = false;
@@ -111,6 +161,10 @@ public class SnapCard : Card, IBuffObtainable, IDestructible, IDiscardable, IMov
             power.SetBasePower(stats["power"]);
     }
 
+    public void SetCardInstanceId(int instanceId) {
+        this.cardInstanceId = instanceId;
+    }
+
     public void SetPlayedLocation(Location location) {
         PlayedLocation = location;
     }
@@ -150,12 +204,43 @@ public class SnapCard : Card, IBuffObtainable, IDestructible, IDiscardable, IMov
 
     public void ApplyBuff(Buff buff)
     {
-        if (buff.type == BuffType.SetPower){
-            //Remove other SetPower buffs
-            buffs.RemoveAll(b => b.type == BuffType.SetPower || b.type == BuffType.AdditionalPower);
+        // If it's a StatBuff, apply the stat change
+        if (buff is StatBuff statBuff && statBuff.statType != null)
+        {
+            ApplyStatBuff(statBuff);
         }
+        
         buffs.Add(buff);
         BuffChanged.Invoke();
+    }
+
+    private void ApplyStatBuff(StatBuff statBuff)
+    {
+        if (statBuff.statType == null) return;
+        
+        int currentValue = stats[statBuff.statType];
+        int newValue = currentValue;
+        
+        switch (statBuff.buffModifierType)
+        {
+            case BuffModifierType.Add:
+                newValue = currentValue + statBuff.amount;
+                break;
+            case BuffModifierType.Subtract:
+                newValue = currentValue - statBuff.amount;
+                break;
+            case BuffModifierType.Multiply:
+                newValue = currentValue * statBuff.amount;
+                break;
+            case BuffModifierType.Set:
+                newValue = statBuff.amount;
+                break;
+        }
+        
+        // Update the stats struct properly
+        var updatedStats = stats;
+        updatedStats[statBuff.statType] = newValue;
+        stats = updatedStats;
     }
     
     public void RemoveBuff(Buff buff, bool replacingRemovedBuff = false)
@@ -181,7 +266,7 @@ public class SnapCard : Card, IBuffObtainable, IDestructible, IDiscardable, IMov
         if (keyword=="OnReveal" || keyword=="Ongoing")
             return AbilityManager.Instance.GetAbilities()[this].Any(ability => ability.definition.triggerDefinition.triggerType.ToString() == keyword);
         else{
-            return buffs.Any(buff => buff.type.ToString() == keyword);
+            return buffs.Any(buff => buff.statType?.Name == keyword);
         }
     }
 
@@ -220,22 +305,26 @@ public class SnapCard : Card, IBuffObtainable, IDestructible, IDiscardable, IMov
     /*  Public Actions */
 
     public void GainPower(int power, SnapCard source) {
-        StatBuff powerBuff = new StatBuff(BuffType.AdditionalPower, source, power);
+        var powerStatType = new StatTypeModal { Name = "Power", StatValueType = StatValueType.ValueStat };
+        StatBuff powerBuff = new StatBuff(powerStatType, BuffModifierType.Add, power, source?.cardInstanceId ?? 0);
         ApplyBuff(powerBuff);
     }
 
     public void GainCost(int cost, SnapCard source) {
-        StatBuff costBuff = new StatBuff(BuffType.AdditionalCost, source, cost);
+        var costStatType = new StatTypeModal { Name = "Cost", StatValueType = StatValueType.ValueStat };
+        StatBuff costBuff = new StatBuff(costStatType, BuffModifierType.Add, cost, source?.cardInstanceId ?? 0);
         ApplyBuff(costBuff);
     }
 
     public void SetPower(int power, SnapCard source) {
-        StatBuff powerBuff = new StatBuff(BuffType.SetPower, source, power);
+        var powerStatType = new StatTypeModal { Name = "Power", StatValueType = StatValueType.ValueStat };
+        StatBuff powerBuff = new StatBuff(powerStatType, BuffModifierType.Set, power, source?.cardInstanceId ?? 0);
         ApplyBuff(powerBuff);
     }
 
     public void SetCost(int cost, SnapCard source) {
-        StatBuff costBuff = new StatBuff(BuffType.SetCost, source, cost);
+        var costStatType = new StatTypeModal { Name = "Cost", StatValueType = StatValueType.ValueStat };
+        StatBuff costBuff = new StatBuff(costStatType, BuffModifierType.Set, cost, source?.cardInstanceId ?? 0);
         ApplyBuff(costBuff);
     }
 
@@ -314,7 +403,7 @@ public class SnapCard : Card, IBuffObtainable, IDestructible, IDiscardable, IMov
             for(int i = 0; i < buffs.Count; i++) {
                 Buff buff = buffs[i];
                 StatBuff statBuff = buff as StatBuff;
-                Debug.Log($"- Buff Type: {statBuff.type}, Amount: {statBuff.amount}, Source: {statBuff.source.stats.card_name}, count: {i}");
+                Debug.Log($"- Buff StatType: {statBuff.statType?.Name}, Amount: {statBuff.amount}, Modifier: {statBuff.buffModifierType}, count: {i}");
             }
         } else {
             Debug.Log($"No buffs on {stats.card_name}");

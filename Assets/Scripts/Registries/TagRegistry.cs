@@ -384,12 +384,12 @@ public class UserCreatedTag : Tag
     protected override void OnTagAdded()
     {
         // Handle tag-specific logic when added to a card
-        Debug.Log($"User-created tag '{statName}' added to card");
+        Debug.Log($"User-created tag '{Name}' added to card");
     }
     
     protected override void OnTagRemoved()
     {
         // Handle tag-specific logic when removed from a card
-        Debug.Log($"User-created tag '{statName}' removed from card");
+        Debug.Log($"User-created tag '{Name}' removed from card");
     }
 }

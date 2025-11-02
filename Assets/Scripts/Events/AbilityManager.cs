@@ -33,6 +33,7 @@ public class AbilityManager : Singleton<AbilityManager> {
         ActionSystem.AttachPerformer<SetPowerGA>(SetPowerPerformer);
         ActionSystem.AttachPerformer<GainEnergyGA>(GainEnergyPerformer);
         ActionSystem.AttachPerformer<GainMaxEnergyGA>(GainMaxEnergyPerformer);
+        ActionSystem.AttachPerformer<UpdateStatGA>(UpdateStatPerformer);
      }
 
     public Dictionary<SnapCard, List<Ability>> GetAbilities() {
@@ -237,9 +238,21 @@ public class AbilityManager : Singleton<AbilityManager> {
 
     //GAMEACTION PERFORMER
 
+    /// <summary>
+    /// Update a stat by adding/subtracting values to the stat
+    /// </summary>
+    /// <param name="action"></param>
+    /// <returns></returns>
     private IEnumerator UpdateStatPerformer(UpdateStatGA action) {
+        StatTypeModal statType = action.statType;
         foreach (IBuffObtainable target in action.targets) {
-            
+            StatBuff statBuff = null;
+            if (action.amount > 0) {
+                 statBuff = new StatBuff(statType, BuffModifierType.Add, action.amount, action.source.cardInstanceId);
+            } else {
+                statBuff = new StatBuff(statType, BuffModifierType.Subtract, -action.amount, action.source.cardInstanceId);
+            }
+            target.ApplyBuff(statBuff);
         }
         yield return null;
     }

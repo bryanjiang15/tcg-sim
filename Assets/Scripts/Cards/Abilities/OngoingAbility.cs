@@ -124,7 +124,7 @@ public class OngoingAbility : Ability {
 
     public GameAction RemoveAbilityEffect(List<SnapCard> targets, bool replacingBuff = false) {
         foreach (SnapCard target in targets) {
-            Buff buffToRemove = target.buffs.Find(buff => buff.source == owner);
+            Buff buffToRemove = target.buffs.Find(buff => buff.sourceCardInstanceId == owner.cardInstanceId);
             if (buffToRemove != null) {
                  // Remove the buff from the target
                 target.RemoveBuff(buffToRemove, replacingRemovedBuff: replacingBuff);
@@ -135,7 +135,7 @@ public class OngoingAbility : Ability {
 
     public int GetTargetCurrentBuffAmount(SnapCard target) {
         StatBuff buff = target.buffs.Find(
-            buff => buff.source == owner &&
+            buff => buff.sourceCardInstanceId == owner.cardInstanceId &&
             buff is StatBuff) as StatBuff;
         if (buff != null) {
             return buff.amount;

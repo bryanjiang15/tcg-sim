@@ -1,11 +1,11 @@
 public class CardStat
 {
-    public string statName;
+    public StatTypeModal statType;
     public int statValue;
 
-    public CardStat(string statName, int statValue)
+    public CardStat(StatTypeModal statType, int statValue)
     {
-        this.statName = statName;
+        this.statType = statType;
         this.statValue = statValue;
     }
 }

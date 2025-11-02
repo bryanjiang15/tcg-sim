@@ -2,6 +2,9 @@
 
 A powerful Unity-based Trading Card Game (TCG) simulator that allows you to create, design, and play custom card games with AI-powered card generation capabilities.
 
+## UPDATE ##
+This is the first draft of the TCG game engine, where all of the rule execution is done in Unity C# while it communicates with a python server to retrieve AI generated game components and cards. The ![Teapot](https://github.com/bryanjiang15/Teapot) repository is the second stage of the project, containing the AI agent pipeline, new python-based rules engine, and the system infrastructure for developing a game as a user.
+
 ## 🎮 Features
 
 ### Core Game Systems
@@ -31,20 +34,12 @@ A powerful Unity-based Trading Card Game (TCG) simulator that allows you to crea
 ## 🖼️ Screenshots
 
 ### Main Game Interface
-![Main Game Interface](docs/images/game-interface.png)
+![Main Game Interface](docs/images/main-interface.png)
 *The main TCG gameplay interface showing cards, locations, and game state*
 
 ### Card Creation Tool
 ![Card Creation](docs/images/card-creation.png)
 *AI-powered card creation interface for designing new cards*
-
-### Deck Builder
-![Deck Builder](docs/images/deck-builder.png)
-*Intuitive deck building interface with card library integration*
-
-### Card Library
-![Card Library](docs/images/card-library.png)
-*Comprehensive card library for managing your collection*
 
 ## 🛠️ Tech Stack
 
@@ -81,23 +76,6 @@ Assets/
 └── UI/                  # UI assets and components
 ```
 
-## 🚀 Getting Started
-
-### Prerequisites
-- Unity 2022.3 LTS or later
-- Python 3.8+ (for AI features)
-- OpenAI API key (for card generation)
-
-### Installation
-1. Clone this repository
-2. Clone the ![Cards](https://github.com/bryanjiang15/cards) repository
-
-### Basic Usage
-1. **Create Cards**: Use the Card Creation tool to design new cards with AI assistance
-2. **Build Decks**: Assemble your card collection into powerful decks
-3. **Play Games**: Challenge AI opponents or other players in the main game
-4. **Build The Game**: Edit the rules and features of your games freely
-
 ## 🎯 Key Systems
 
 ### Card System
@@ -115,21 +93,3 @@ Advanced targeting mechanics for:
 - Strategic positioning
 - Multi-target effects
 - Requirement activation
-
-## 🤝 Contributing
-
-We welcome contributions! Please feel free to submit pull requests or open issues for bugs and feature requests.
-
-### Development Guidelines
-- Follow Unity coding standards
-- Add comments for complex game logic
-- Test AI features thoroughly
-- Update documentation for new features
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
----
-
-**Ready to create your own trading card game? Start building with TCG Simulator today!** 🃏

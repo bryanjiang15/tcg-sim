@@ -8,6 +8,11 @@ using UnityEngine;
 public class SnapCardData
 {
     public int cardId;
+
+    public int SnapCardTypeId;
+
+    public List<StatModal> Stats;
+    
     public int cost;
     public int power;
     public string card_name;
@@ -30,6 +35,25 @@ public class SnapCardData
         series = definition.series;
         artPath = definition.Art != null ? definition.Art.name : string.Empty;
         abilities = new List<SnapAbilityData>();
+        
+        // Initialize stats list
+        Stats = new List<StatModal>();
+        
+        // Copy stats from definition
+        if (definition.Stats != null)
+        {
+            foreach (var stat in definition.Stats)
+            {
+                if (stat != null)
+                {
+                    Stats.Add(new StatModal
+                    {
+                        StatTypeId = stat.StatTypeId,
+                        BaseValue = stat.BaseValue
+                    });
+                }
+            }
+        }
         
         if (definition.abilities != null)
         {
@@ -61,6 +85,23 @@ public class SnapCardData
         cachedDefinition.abilities = abilities.Select(ability => ObjectMapper.GetAbilityDefinition(ability)).ToList();
         cachedDefinition.Art = CardLibraryManager.Instance.LoadCardArt(artPath);
         cachedDefinition.artPath = artPath;
+        
+        // Copy Stats (both use StatTypeId now)
+        cachedDefinition.Stats = new List<StatModal>();
+        if (Stats != null)
+        {
+            foreach (var stat in Stats)
+            {
+                if (stat != null)
+                {
+                    cachedDefinition.Stats.Add(new StatModal
+                    {
+                        StatTypeId = stat.StatTypeId,
+                        BaseValue = stat.BaseValue
+                    });
+                }
+            }
+        }
         
         return cachedDefinition;
     }

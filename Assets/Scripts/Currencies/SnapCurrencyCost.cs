@@ -30,7 +30,7 @@ public class SnapCurrencyCost : CurrencyCost {
 
     public void UpdateCost() {
         int totalCost = BaseEnergyCost;
-        List<StatBuff> costBuffs = card.buffs.FindAll(buff => buff.type == BuffType.AdditionalCost).ConvertAll(buff => (StatBuff)buff);
+        List<StatBuff> costBuffs = card.buffs.FindAll(buff => buff.statType?.Name == "Cost" && buff.buffModifierType == BuffModifierType.Add).ConvertAll(buff => (StatBuff)buff);
         foreach (StatBuff buff in costBuffs) {
             totalCost -= buff.amount;
         }

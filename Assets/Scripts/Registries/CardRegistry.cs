@@ -39,17 +39,6 @@ public class CardRegistry : Singleton<CardRegistry>
 		return _cards.Values.ToList();
 	}
 
-	public bool TryGetCard(int cardId, out SnapCardData data)
-	{
-		if (_cards.TryGetValue(cardId, out var found))
-		{
-			data = found;
-			return true;
-		}
-		data = null;
-		return false;
-	}
-
 	public bool InsertCard(SnapCardData data)
 	{
 		if (data == null)

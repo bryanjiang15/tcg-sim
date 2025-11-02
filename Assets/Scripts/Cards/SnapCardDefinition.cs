@@ -7,6 +7,9 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "SnapCardDefinition", menuName = "CardHouse/Card Definition/SnapCard")]
 public class SnapCardDefinition : CardDefinition {
     public int card_id;
+
+    public SnapCardTypeModal SnapCardType;
+    public List<StatModal> Stats;
     public int cost;
     public int power;
     public List<Tag> tags;

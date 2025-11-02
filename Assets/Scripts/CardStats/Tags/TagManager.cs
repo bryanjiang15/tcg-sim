@@ -154,7 +154,7 @@ public static class TagManager
         if (Registry == null || taggable == null)
             return Enumerable.Empty<TagDefinition>();
             
-        var existingTagNames = taggable.Tags.Select(t => t.statName).ToHashSet();
+        var existingTagNames = taggable.Tags.Select(t => t.Name).ToHashSet();
         return Registry.AllTags.Values.Where(t => !existingTagNames.Contains(t.Name));
     }
     
@@ -167,7 +167,7 @@ public static class TagManager
             return Enumerable.Empty<TagDefinition>();
             
         return taggable.Tags
-            .Select(t => Registry.GetTag(t.statName))
+            .Select(t => Registry.GetTag(t.Name))
             .Where(t => t != null);
     }
     

@@ -11,12 +11,16 @@ using System;
  * - isPermanent: whether the tag is permanent or not
  */
 [Serializable]
-public abstract class Tag : CardStat
+public abstract class Tag
 {
     protected bool isPermanent {get; private set;}
 
+    public string Name { get; private set; }
 
-    protected Tag(string name, bool isPermanent, bool isActive) : base(name, isActive ? 1 : 0)
+    public bool IsActive { get; private set; }
+
+
+    protected Tag(string name, bool isPermanent, bool isActive)
     {
         this.isPermanent = isPermanent;
     }

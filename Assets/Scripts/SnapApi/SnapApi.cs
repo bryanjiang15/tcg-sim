@@ -29,7 +29,7 @@ public class SnapApi : Singleton<SnapApi> {
         
         //validation
 
-        StatType statType = StatTypeRegistry.Instance.GetStatTypeByName(statName);
+        StatTypeModal statType = StatTypeRegistry.Instance.GetStatTypeByName(statName);
         if (statType == null) {
             result["success"] = false;
             result["error"] = $"Stat type {statName} not found";
@@ -43,7 +43,7 @@ public class SnapApi : Singleton<SnapApi> {
 
         List<IBuffObtainable> targetsList = targets.Cast<IBuffObtainable>().ToList();
         
-        UpdateStatGA updateStatGA = new UpdateStatGA(statName, amount, targetsList);
+        UpdateStatGA updateStatGA = new UpdateStatGA(statType, amount, targetsList, ability.owner);
 
         yield return Execute(updateStatGA);
         

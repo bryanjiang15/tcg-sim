@@ -18,30 +18,37 @@ public enum BuffType
 }
 public class Buff
 {
-    public BuffType type;
-    public SnapCard source;
+    public StatTypeModal statType;
+    public BuffModifierType buffModifierType;
+    public string value;
+    public int sourceCardInstanceId;
 }
 
 public class StatBuff : Buff
 {
     public int amount;
 
-    public StatBuff(BuffType type, SnapCard source=null, int amount=0)
+    public StatBuff(StatTypeModal statType, BuffModifierType modifierType, int amount, int sourceCardInstanceId = 0)
     {
-        this.type = type;
+        this.statType = statType;
+        this.buffModifierType = modifierType;
         this.amount = amount;
-        this.source = source;
+        this.value = amount.ToString();
+        this.sourceCardInstanceId = sourceCardInstanceId;
     }
+
 }
 
 public class UnplayableBuff : Buff
 {
     public List<LocationPosition> locations;
 
-    public UnplayableBuff(List<LocationPosition> locations, SnapCard source)
+    public UnplayableBuff(List<LocationPosition> locations, int sourceCardInstanceId = 0)
     {
-        type = BuffType.Unplayable;
         this.locations = locations;
-        this.source = source;
+        this.statType = null; // UnplayableBuff doesn't target a specific stat
+        this.buffModifierType = BuffModifierType.Set;
+        this.value = "true";
+        this.sourceCardInstanceId = sourceCardInstanceId;
     }
 }
